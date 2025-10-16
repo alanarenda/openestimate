@@ -214,5 +214,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For questions or issues, please:
 - Open an issue on GitHub
-- Contact the authors at [email]
+- Contact the authors at marzoev@mit.edu
 
