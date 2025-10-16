@@ -1,0 +1,50 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+.env/
+ENV/
+.venv/
+env/
+# If your venv is in a custom path, add it here:
+# path/to/your/custom-venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VSCode settings
+.vscode/
+
+# Pytest cache
+.pytest_cache/
+
+# mypy
+.mypy_cache/
+
+# coverage
+.coverage
+htmlcov/
+coverage.xml
+
+# logs and temp files
+*.log
+*.tmp
+*.swp
+.DS_Store
+
+# build artifacts
+build/
+dist/
+*.egg-info/
+
+# environment files
+.env
+*.env
+
+# data files 
+Company.csv
+nhanes_combined_processed_results_with_posteriors.csv
+*posteriors*.csv

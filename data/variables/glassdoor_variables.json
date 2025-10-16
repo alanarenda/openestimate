@@ -1,0 +1,1012 @@
+{
+    "Midpoint Salary": {
+        "mean": 125685.70774091627,
+        "std": 31627.035629085392,
+        "se": 1257.061810741376,
+        "base_variable": "Midpoint Salary",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US",
+        "conditions": [],
+        "nat_langs": []
+    },
+    "single_0": {
+        "mean": 133754.13194444444,
+        "std": 32425.307908670307,
+        "se": 1910.6795920235472,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public"
+    },
+    "single_1": {
+        "mean": 115062.5,
+        "std": 16700.044229663803,
+        "se": 2231.6372804061825,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Aerospace & Defense"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Aerospace & Defense sector"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Aerospace & Defense sector"
+    },
+    "single_2": {
+        "mean": 116732.74774774775,
+        "std": 33485.34242789019,
+        "se": 3178.288050594237,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$1 to $5 billion (USD)"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $1 to $5 billion (USD) revenue"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $1 to $5 billion (USD) revenue"
+    },
+    "single_3": {
+        "mean": 113268.88888888889,
+        "std": 28279.416520539075,
+        "se": 3848.3411499418676,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$500 million to $1 billion (USD)"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $500 million to $1 billion (USD) revenue"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $500 million to $1 billion (USD) revenue"
+    },
+    "single_4": {
+        "mean": 112262.5,
+        "std": 13963.3161791155,
+        "se": 2207.7941407542316,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "201 to 500 Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 201 to 500 Employees"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 201 to 500 Employees"
+    },
+    "single_5": {
+        "mean": 118243.68421052632,
+        "std": 39585.8262527612,
+        "se": 6421.668991358371,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "Remote"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in Remote"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in Remote"
+    },
+    "single_6": {
+        "mean": 118950.32753623188,
+        "std": 29334.606716705843,
+        "se": 1579.322136026833,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public"
+    },
+    "single_7": {
+        "mean": 135893.49512195121,
+        "std": 32009.673418251445,
+        "se": 2235.6525672996963,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $10+ billion (USD) revenue"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $10+ billion (USD) revenue"
+    },
+    "single_8": {
+        "mean": 118044.11764705883,
+        "std": 24740.583653198064,
+        "se": 4242.97509212335,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Manufacturing"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Manufacturing sector"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Manufacturing sector"
+    },
+    "single_9": {
+        "mean": 112807.69230769231,
+        "std": 16914.235015330905,
+        "se": 2097.952650906065,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "VA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in VA"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in VA"
+    },
+    "single_10": {
+        "mean": 117827.01190476191,
+        "std": 26107.960210625628,
+        "se": 4028.545721176537,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Healthcare"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Healthcare sector"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Healthcare sector"
+    },
+    "single_11": {
+        "mean": 115400.0,
+        "std": 20561.641741629268,
+        "se": 3380.3130796594146,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "1 to 50 Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 1 to 50 Employees"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 1 to 50 Employees"
+    },
+    "single_12": {
+        "mean": 143781.25,
+        "std": 32280.75865019684,
+        "se": 5706.4858358501215,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "NY"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in NY"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in NY"
+    },
+    "single_13": {
+        "mean": 109039.28787878787,
+        "std": 7714.3352263722945,
+        "se": 1342.8933934633567,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "PA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in PA"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in PA"
+    },
+    "single_14": {
+        "mean": 139015.625,
+        "std": 44274.5256208535,
+        "se": 7826.704325080761,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Retail & Wholesale"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Retail & Wholesale sector"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Retail & Wholesale sector"
+    },
+    "single_15": {
+        "mean": 150660.61693548388,
+        "std": 31442.842428575816,
+        "se": 2823.6506054823262,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in CA"
+        ],
+        "difficulty": "single",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in CA"
+    },
+    "double_0": {
+        "mean": 138975.45454545456,
+        "std": 33174.212629185844,
+        "se": 2294.708270297645,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company has 10000+ Employees"
+    },
+    "double_1": {
+        "mean": 108505.234375,
+        "std": 27795.916855271185,
+        "se": 3474.489606908898,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$1 to $5 billion (USD)"
+            ],
+            [
+                "IsPublic",
+                "not public"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $1 to $5 billion (USD) revenue",
+            "the company is not public"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $1 to $5 billion (USD) revenue, the company is not public"
+    },
+    "double_2": {
+        "mean": 118297.25,
+        "std": 39573.8322869686,
+        "se": 5108.959779767825,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$1 to $5 billion (USD)"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $1 to $5 billion (USD) revenue",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $1 to $5 billion (USD) revenue, the company has 10000+ Employees"
+    },
+    "double_3": {
+        "mean": 113714.28571428571,
+        "std": 19229.376161566583,
+        "se": 3250.3578157446213,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Size",
+                "1 to 50 Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company has 1 to 50 Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company has 1 to 50 Employees"
+    },
+    "double_4": {
+        "mean": 112529.09042553192,
+        "std": 29535.90958895818,
+        "se": 3046.3964677630292,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company has 10000+ Employees"
+    },
+    "double_5": {
+        "mean": 116711.14102564103,
+        "std": 25338.820199020174,
+        "se": 4057.458498068151,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Sector",
+                "Healthcare"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company is in the Healthcare sector"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company is in the Healthcare sector"
+    },
+    "double_6": {
+        "mean": 139578.4756097561,
+        "std": 30687.985470916876,
+        "se": 2396.3290678879875,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "IsPublic",
+                "public"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $10+ billion (USD) revenue",
+            "the company is public"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $10+ billion (USD) revenue, the company is public"
+    },
+    "double_7": {
+        "mean": 118237.36842105263,
+        "std": 29275.37445779953,
+        "se": 4749.092848679467,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Size",
+                "1001 to 5000 Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company has 1001 to 5000 Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company has 1001 to 5000 Employees"
+    },
+    "double_8": {
+        "mean": 146107.8173076923,
+        "std": 31500.129059186107,
+        "se": 4368.281942562644,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company is in CA"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company is in CA"
+    },
+    "double_9": {
+        "mean": 110533.33333333333,
+        "std": 5589.296009790272,
+        "se": 1020.4611683785827,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Location",
+                "PA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company is in PA"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company is in PA"
+    },
+    "double_10": {
+        "mean": 135604.4896373057,
+        "std": 31752.640959878838,
+        "se": 2285.6051090788933,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $10+ billion (USD) revenue",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $10+ billion (USD) revenue, the company has 10000+ Employees"
+    },
+    "double_11": {
+        "mean": 153948.75,
+        "std": 31206.438254891218,
+        "se": 3677.714017785479,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company is in CA"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company is in CA"
+    },
+    "double_12": {
+        "mean": 143354.83870967742,
+        "std": 27206.676125658054,
+        "se": 4886.463282693461,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Financial Services"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Financial Services sector",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Financial Services sector, the company has 10000+ Employees"
+    },
+    "double_13": {
+        "mean": 132852.9411764706,
+        "std": 30301.203625870552,
+        "se": 4243.017195938385,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Financial Services"
+            ],
+            [
+                "IsPublic",
+                "public"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Financial Services sector",
+            "the company is public"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Financial Services sector, the company is public"
+    },
+    "double_14": {
+        "mean": 133413.73983739837,
+        "std": 30187.55781037465,
+        "se": 2721.92042223825,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Information Technology"
+            ],
+            [
+                "IsPublic",
+                "public"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Information Technology sector",
+            "the company is public"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Information Technology sector, the company is public"
+    },
+    "double_15": {
+        "mean": 110052.63157894737,
+        "std": 12156.96604043421,
+        "se": 1610.2294884296016,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Location",
+                "VA"
+            ],
+            [
+                "IsPublic",
+                "not public"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in VA",
+            "the company is not public"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in VA, the company is not public"
+    },
+    "double_16": {
+        "mean": 113263.15789473684,
+        "std": 22483.548592821084,
+        "se": 3647.3132047899926,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$1 to $5 billion (USD)"
+            ],
+            [
+                "Size",
+                "1001 to 5000 Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $1 to $5 billion (USD) revenue",
+            "the company has 1001 to 5000 Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $1 to $5 billion (USD) revenue, the company has 1001 to 5000 Employees"
+    },
+    "double_17": {
+        "mean": 114908.16326530612,
+        "std": 12483.603191364893,
+        "se": 1783.371884480699,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Sector",
+                "Aerospace & Defense"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company is in the Aerospace & Defense sector"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company is in the Aerospace & Defense sector"
+    },
+    "double_18": {
+        "mean": 138943.62637362638,
+        "std": 31149.68173607641,
+        "se": 3265.3739032642584,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Sector",
+                "Information Technology"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is in the Information Technology sector",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Information Technology sector, the company has 10000+ Employees"
+    },
+    "double_19": {
+        "mean": 152904.9014084507,
+        "std": 31951.49559830825,
+        "se": 3791.9448927933868,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "10000+ Employees"
+            ],
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 10000+ Employees",
+            "the company is in CA"
+        ],
+        "difficulty": "double",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 10000+ Employees, the company is in CA"
+    },
+    "triple_0": {
+        "mean": 118251.32857142857,
+        "std": 29762.34499204709,
+        "se": 5030.754500145311,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company has $10+ billion (USD) revenue",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company has $10+ billion (USD) revenue, and the company has 10000+ Employees"
+    },
+    "triple_1": {
+        "mean": 139448.54430379748,
+        "std": 30970.37225704694,
+        "se": 2463.8705242727638,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ],
+            [
+                "IsPublic",
+                "public"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $10+ billion (USD) revenue",
+            "the company has 10000+ Employees",
+            "the company is public"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $10+ billion (USD) revenue, the company has 10000+ Employees, and the company is public"
+    },
+    "triple_2": {
+        "mean": 155810.33898305084,
+        "std": 31713.111558323875,
+        "se": 4128.695457591563,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Location",
+                "CA"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company is in CA",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company is in CA, and the company has 10000+ Employees"
+    },
+    "triple_3": {
+        "mean": 118862.40322580645,
+        "std": 26235.376858172305,
+        "se": 4712.012784398298,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Sector",
+                "Healthcare"
+            ],
+            [
+                "Size",
+                "10000+ Employees"
+            ]
+        ],
+        "nat_langs": [
+            "the company is not public",
+            "the company is in the Healthcare sector",
+            "the company has 10000+ Employees"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is not public, the company is in the Healthcare sector, and the company has 10000+ Employees"
+    },
+    "triple_4": {
+        "mean": 149777.29166666666,
+        "std": 31146.891292546617,
+        "se": 4495.66651804295,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Location",
+                "CA"
+            ],
+            [
+                "Sector",
+                "Information Technology"
+            ]
+        ],
+        "nat_langs": [
+            "the company is public",
+            "the company is in CA",
+            "the company is in the Information Technology sector"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is public, the company is in CA, and the company is in the Information Technology sector"
+    },
+    "triple_5": {
+        "mean": 141910.6349206349,
+        "std": 31045.11716180781,
+        "se": 3911.3171158574683,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "10000+ Employees"
+            ],
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "Sector",
+                "Information Technology"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 10000+ Employees",
+            "the company has $10+ billion (USD) revenue",
+            "the company is in the Information Technology sector"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 10000+ Employees, the company has $10+ billion (USD) revenue, and the company is in the Information Technology sector"
+    },
+    "triple_6": {
+        "mean": 106126.84782608696,
+        "std": 28652.24645349617,
+        "se": 4224.543265335689,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "10000+ Employees"
+            ],
+            [
+                "IsPublic",
+                "not public"
+            ],
+            [
+                "Revenue",
+                "$1 to $5 billion (USD)"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 10000+ Employees",
+            "the company is not public",
+            "the company has $1 to $5 billion (USD) revenue"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 10000+ Employees, the company is not public, and the company has $1 to $5 billion (USD) revenue"
+    },
+    "triple_7": {
+        "mean": 151015.88235294117,
+        "std": 28683.114627004554,
+        "se": 4016.439416008697,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "IsPublic",
+                "public"
+            ],
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company has $10+ billion (USD) revenue",
+            "the company is public",
+            "the company is in CA"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has $10+ billion (USD) revenue, the company is public, and the company is in CA"
+    },
+    "triple_8": {
+        "mean": 150605.63636363635,
+        "std": 28965.900243257707,
+        "se": 3905.7611920256672,
+        "base_variable": "Midpoint Salary",
+        "conditions": [
+            [
+                "Size",
+                "10000+ Employees"
+            ],
+            [
+                "Revenue",
+                "$10+ billion (USD)"
+            ],
+            [
+                "Location",
+                "CA"
+            ]
+        ],
+        "nat_langs": [
+            "the company has 10000+ Employees",
+            "the company has $10+ billion (USD) revenue",
+            "the company is in CA"
+        ],
+        "difficulty": "triple",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company has 10000+ Employees, the company has $10+ billion (USD) revenue, and the company is in CA"
+    }
+}

@@ -1,0 +1,8 @@
+{
+  "experiment_name": "o4-mini_base_direct_temp0.5",
+  "experts_spec": "~/openestimate/experiments/nhanes/ablations/nhanes_o4-mini_base_temp0.5_experts.json",
+  "variables": "~/openestimate/data/variables/nhanes_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "direct"
+  }
+}

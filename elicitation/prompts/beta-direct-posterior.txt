@@ -1,0 +1,58 @@
+You are a statistical expert tasked with constructing a Beta posterior distribution for a proportion parameter. Your goal is to use all available data and context to inform your estimate and reflect your uncertainty about the population-level proportion, not the variation in outcomes across individuals or samples.
+
+Here is the information about the variable you need to model:
+{{variable}}
+{{units_description}}
+
+Number of samples provided:
+{{num_samples}}
+
+Sample data:
+{{samples}}
+
+Your task is to construct a Beta prior distribution, calculate the posterior distribution using the provided sample data, and analyze the results. Please follow these steps:
+
+1. Construct the Beta prior distribution:
+   a. Consider the context of what {{variable}} represents.
+   b. Estimate appropriate α and β parameters for the Beta distribution.
+   c. Express the prior distribution in the form p~Beta(α,β).
+   d. Justify your parameter choices and explain the implied confidence level.
+
+2. Calculate the posterior distribution:
+   a. Combine the prior distribution with the likelihood from the sample data.
+   b. Apply Bayes' theorem to derive the posterior distribution.
+   c. Express the posterior distribution in the form p~Beta(α_post, β_post).
+
+3. Analyze the results:
+   a. Calculate the posterior mean and credible intervals.
+   b. Compare the prior and posterior distributions.
+   c. Interpret the results in the context of {{variable}}.
+
+Before providing your final answer, conduct your reasoning process inside <statistical_reasoning> tags in your thinking block. Include the following:
+
+1. List known facts or context about the variable.
+2. State the possible range of the variable (typically 0 to 1 for proportions).
+3. Propose at least three possible pairs of α and β parameters for the prior.
+4. For each proposed prior:
+   a. Compute the 68% and 95% credible intervals.
+   b. Interpret what these intervals imply about your beliefs about the mean.
+   c. Mentally visualize the shape of the distribution.
+5. Reflect on what different choices of α and β say about your confidence.
+6. Consider edge cases of α and β and what they would imply.
+7. Compare and evaluate the trade-offs of different options.
+8. Show the calculations for deriving the posterior distribution.
+9. Analyze the posterior distribution, including its mean and credible intervals.
+10. Compare the prior and posterior distributions, explaining any shifts in belief.
+11. Mentally visualize the prior and posterior distributions side by side.
+12. Consider how the sample size impacts the posterior distribution.
+13. Summarize your final choices for both prior and posterior, giving clear, reasoned justifications.
+
+After your analysis, provide your final answer in the following format:
+
+Posterior Distribution: p~Beta(α_post,β_post)
+<alpha>[Calculated α value for the posterior]</alpha>
+<beta>[Calculated β value for the posterior]</beta>
+<justification>[Explanation of how the posterior was derived]</justification>
+<confidence_level>These parameters imply [level of confidence] because [explanation].</confidence_level>
+
+Please proceed with your analysis and construction of the Beta prior and posterior distributions for {{variable}}. Your final output should consist only of the formatted answer and should not duplicate or rehash any of the work you did in the statistical reasoning section.

@@ -1,0 +1,29 @@
+{
+  "The probability that a venture-backed company is based in the US if the company is not a technology company and has more than 45 employees.": {
+    "var_output": {
+      "variable": "the probability that a venture-backed company is based in the US if the company is not a technology company and has more than 45 employees.",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "q5": "0.55",
+      "q25": "0.70",
+      "q50": "0.80",
+      "q75": "0.90",
+      "q95": "0.97"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with estimating a population-level parameter and expressing your uncertainty about its true value. Your goal is to describe what you believe the value is likely to be and quantify your uncertainty about this estimate.\n\nHere is the variable you need to assess:\n\nthe probability that a venture-backed company is based in the US if the company is not a technology company and has more than 45 employees.\n\n\nImportant: Focus on expressing uncertainty about the parameter itself (such as a population mean or proportion), not the variability of individual data points or outcomes.\n\nPlease follow these steps to complete your analysis:\n\n1. Consider the context of the variable, including its meaning and any relevant information that informs your beliefs.\n\n2. Estimate the following percentiles of the parameter's true value:\n   - 5th percentile (only a 5% chance the true value is below this)\n   - 25th percentile\n   - 50th percentile (median - your best estimate of the true value)\n   - 75th percentile\n   - 95th percentile (only a 5% chance the true value is above this)\n\n3. Explain your reasoning behind these estimates.\n\nBegin your analysis by showing your thought process inside <parameter_estimation_process> tags. Include the following elements:\n1. Explicitly state the type of parameter being estimated (e.g., population mean, proportion).\n2. List any known facts or data points about the variable.\n3. Consider and list possible data sources or methods for estimating this parameter.\n4. Brainstorm factors that might influence the parameter's value.\n5. Note potential biases or limitations in the available information.\n6. State any assumptions you're making.\n7. Consider how the parameter might have changed over time or across different subgroups.\n8. Provide your quantile estimates with a brief explanation for each.\n9. Include relevant facts or context about the variable.\n10. Justify your choices.\n11. Emphasize population parameter uncertainty (not individual variability).\n12. Reflect on what your estimate spread indicates about your certainty.\n13. Consider any plausible edge cases or alternative scenarios.\n\nAfter your analysis, provide your final answer in the following format:\n\n<q5>[5th percentile value]</q5>\n<q25>[25th percentile value]</q25>\n<q50>[50th percentile (median) value]</q50>\n<q75>[75th percentile value]</q75>\n<q95>[95th percentile value]</q95>\n\n<justification>\n[Brief summary of your reasoning]\n</justification>\n\n<confidence_level>\n[Description of how certain or uncertain you are, and why]\n</confidence_level>\n\nRemember to tailor your analysis to the specific variable and units provided, focusing on uncertainty about the population-level parameter rather than individual variability."
+      },
+      {
+        "role": "assistant",
+        "content": "<q5>0.55</q5>\n<q25>0.70</q25>\n<q50>0.80</q50>\n<q75>0.90</q75>\n<q95>0.97</q95>\n\n<justification>\nBased on the predominance of U.S. venture capital and the high concentration of larger, non-technology venture-backed firms in the U.S., the median estimate is that about 80% of such firms are U.S.-based. The lower tail accounts for the presence of established non-tech ventures in Europe and Asia, while the upper tail reflects the possibility that U.S. dominance is even stronger than typical. These percentiles capture uncertainty in the true population proportion rather than variability among individual companies.\n</justification>\n\n<confidence_level>\nModerate. Data on non-technology, mid-sized venture-backed firms are sparse and definitions vary, so there is substantial uncertainty, though general industry patterns suggest U.S. predominance.\n</confidence_level>"
+      }
+    ]
+  }
+}

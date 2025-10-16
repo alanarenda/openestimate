@@ -1,0 +1,29 @@
+{
+  "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor": {
+    "var_output": {
+      "variable": "the probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "q5": "10%",
+      "q25": "11%",
+      "q50": "12.5%",
+      "q75": "14%",
+      "q95": "16%"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about human health."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with estimating a population-level parameter and expressing your uncertainty about its true value. Your goal is to describe what you believe the value is likely to be and quantify your uncertainty about this estimate.\n\nHere is the variable you need to assess:\n\nthe probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor\n\n\nImportant: Focus on expressing uncertainty about the parameter itself (such as a population mean or proportion), not the variability of individual data points or outcomes.\n\nPlease follow these steps to complete your analysis:\n\n1. Consider the context of the variable, including its meaning and any relevant information that informs your beliefs.\n\n2. Estimate the following percentiles of the parameter's true value:\n   - 5th percentile (only a 5% chance the true value is below this)\n   - 25th percentile\n   - 50th percentile (median - your best estimate of the true value)\n   - 75th percentile\n   - 95th percentile (only a 5% chance the true value is above this)\n\n3. Explain your reasoning behind these estimates.\n\nBegin your analysis by showing your thought process inside <parameter_estimation_process> tags. Include the following elements:\n1. Explicitly state the type of parameter being estimated (e.g., population mean, proportion).\n2. List any known facts or data points about the variable.\n3. Consider and list possible data sources or methods for estimating this parameter.\n4. Brainstorm factors that might influence the parameter's value.\n5. Note potential biases or limitations in the available information.\n6. State any assumptions you're making.\n7. Consider how the parameter might have changed over time or across different subgroups.\n8. Provide your quantile estimates with a brief explanation for each.\n9. Include relevant facts or context about the variable.\n10. Justify your choices.\n11. Emphasize population parameter uncertainty (not individual variability).\n12. Reflect on what your estimate spread indicates about your certainty.\n13. Consider any plausible edge cases or alternative scenarios.\n\nAfter your analysis, provide your final answer in the following format:\n\n<q5>[5th percentile value]</q5>\n<q25>[25th percentile value]</q25>\n<q50>[50th percentile (median) value]</q50>\n<q75>[75th percentile value]</q75>\n<q95>[95th percentile value]</q95>\n\n<justification>\n[Brief summary of your reasoning]\n</justification>\n\n<confidence_level>\n[Description of how certain or uncertain you are, and why]\n</confidence_level>\n\nRemember to tailor your analysis to the specific variable and units provided, focusing on uncertainty about the population-level parameter rather than individual variability."
+      },
+      {
+        "role": "assistant",
+        "content": "<parameter_estimation_process>\nType of parameter: population proportion of US adults ever diagnosed with diabetes.\nKey data: CDC reports roughly 10\u201313 % of adults diagnosed; upward trend over past decade.\nData sources: National Diabetes Statistics Report, NHANES, BRFSS.\nInfluencing factors: aging population, obesity rates, diagnostic criteria.\nLimitations: underdiagnosis, survey self\u2010report biases, changes in screening.\nAssumptions: recent estimates (2020\u20132022) stable; diagnosed proportion reflects survey data.\nUncertainty spread (quantiles) reflects sampling error, underdiagnosis, temporal trends.\n</parameter_estimation_process>\n\n<q5>10%</q5>\n<q25>11%</q25>\n<q50>12.5%</q50>\n<q75>14%</q75>\n<q95>16%</q95>\n\n<justification>\nBased on CDC and NHANES data indicating roughly 12 % of US adults have a diabetes diagnosis, I center the median at 12.5 %. I allow for downward uncertainty (5th percentile ~10 %) to account for possible underdiagnosis and survey biases, and upward uncertainty (95th percentile ~16 %) reflecting rising trends and regional hotspots. The 25th and 75th percentiles capture moderate variation around these central values.\n</justification>\n\n<confidence_level>\nModerate certainty. National survey data are reasonably precise, but underdiagnosis and recent trends introduce uncertainty of a few percentage points.\n</confidence_level>"
+      }
+    ]
+  }
+}

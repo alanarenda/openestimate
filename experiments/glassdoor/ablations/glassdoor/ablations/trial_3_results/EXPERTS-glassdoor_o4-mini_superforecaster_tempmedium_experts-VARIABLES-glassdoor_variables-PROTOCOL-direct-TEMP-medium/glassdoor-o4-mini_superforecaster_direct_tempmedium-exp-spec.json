@@ -1,0 +1,8 @@
+{
+  "experiment_name": "o4-mini_superforecaster_direct_tempmedium",
+  "experts_spec": "~/openestimate/experiments/glassdoor/ablations/glassdoor_o4-mini_superforecaster_tempmedium_experts.json",
+  "variables": "~/openestimate/data/variables/glassdoor_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "direct"
+  }
+}

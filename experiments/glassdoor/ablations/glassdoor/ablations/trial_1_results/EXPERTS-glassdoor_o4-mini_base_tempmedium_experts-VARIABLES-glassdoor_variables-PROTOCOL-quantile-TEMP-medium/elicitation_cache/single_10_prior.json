@@ -1,0 +1,29 @@
+{
+  "The average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Healthcare sector": {
+    "var_output": {
+      "variable": "the average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Healthcare sector",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "normal",
+      "q5": "105000",
+      "q25": "115000",
+      "q50": "120000",
+      "q75": "125000",
+      "q95": "135000"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about the labor market."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with estimating a population-level parameter and expressing your uncertainty about its true value. Your goal is to describe what you believe the value is likely to be and quantify your uncertainty about this estimate.\n\nHere is the variable you need to assess:\n\nthe average midpoint of the posted salary range (in dollars) for data science and adjacent jobs in the US, given the company is in the Healthcare sector\n\n\nImportant: Focus on expressing uncertainty about the parameter itself (such as a population mean or proportion), not the variability of individual data points or outcomes.\n\nPlease follow these steps to complete your analysis:\n\n1. Consider the context of the variable, including its meaning and any relevant information that informs your beliefs.\n\n2. Estimate the following percentiles of the parameter's true value:\n   - 5th percentile (only a 5% chance the true value is below this)\n   - 25th percentile\n   - 50th percentile (median - your best estimate of the true value)\n   - 75th percentile\n   - 95th percentile (only a 5% chance the true value is above this)\n\n3. Explain your reasoning behind these estimates.\n\nBegin your analysis by showing your thought process inside <parameter_estimation_process> tags. Include the following elements:\n1. Explicitly state the type of parameter being estimated (e.g., population mean, proportion).\n2. List any known facts or data points about the variable.\n3. Consider and list possible data sources or methods for estimating this parameter.\n4. Brainstorm factors that might influence the parameter's value.\n5. Note potential biases or limitations in the available information.\n6. State any assumptions you're making.\n7. Consider how the parameter might have changed over time or across different subgroups.\n8. Provide your quantile estimates with a brief explanation for each.\n9. Include relevant facts or context about the variable.\n10. Justify your choices.\n11. Emphasize population parameter uncertainty (not individual variability).\n12. Reflect on what your estimate spread indicates about your certainty.\n13. Consider any plausible edge cases or alternative scenarios.\n\nAfter your analysis, provide your final answer in the following format:\n\n<q5>[5th percentile value]</q5>\n<q25>[25th percentile value]</q25>\n<q50>[50th percentile (median) value]</q50>\n<q75>[75th percentile value]</q75>\n<q95>[95th percentile value]</q95>\n\n<justification>\n[Brief summary of your reasoning]\n</justification>\n\n<confidence_level>\n[Description of how certain or uncertain you are, and why]\n</confidence_level>\n\nRemember to tailor your analysis to the specific variable and units provided, focusing on uncertainty about the population-level parameter rather than individual variability."
+      },
+      {
+        "role": "assistant",
+        "content": "<parameter_estimation_process>\n\u2022 Parameter: the true US population mean of midpoints of posted salary ranges for data\u2010science and related roles at healthcare companies.  \n\u2022 Data sources considered: aggregated job\u2010listing sites (Glassdoor, Indeed, LinkedIn), compensation surveys (Payscale, Salary.com), industry reports.  \n\u2022 Influencing factors: role specialization (data scientist vs. ML engineer vs. data engineer vs. analytics), company size, geographic location, public vs. private, regional cost of living, seniority mix.  \n\u2022 Assumptions: posted ranges reflect actual hiring targets; sample of publicly listed salaries approximates the full market; mid-2025 compensation levels.  \n\u2022 Limitations/biases: self\u2010reported and scraped data may skew toward larger/coastal employers; under-representation of small or remote postings; range posting practices vary by firm.  \n\u2022 Time/sector trends: salaries in tech\u2010enabled healthcare have trended upward ~3\u20135% annually; rising demand for machine\u2010learning expertise.  \n\u2022 Uncertainty focus: confidence in the population mean, not individual salaries; credible interval reflects uncertainty in our estimate of that mean.  \n</parameter_estimation_process>\n\n<q5>105000</q5>\n<q25>115000</q25>\n<q50>120000</q50>\n<q75>125000</q75>\n<q95>135000</q95>\n\n<justification>\nBased on aggregated midpoints from major salary\u2010survey and job\u2010listing sources, typical role midpoints in healthcare range from roughly $90k\u2013$160k depending on specialization. Weighting by role frequency and adjusting for known upward trends yields a central estimate near $120k. A plausible 90% credible interval for the population mean spans about $105k to $135k, with quartiles at $115k and $125k.\n</justification>\n\n<confidence_level>\nModerate. While multiple sources converge around a $120k average midpoint, reporting biases, regional differences, and evolving market conditions introduce uncertainty on the order of \u00b1$10\u201315k around our central estimate.\n</confidence_level>"
+      }
+    ]
+  }
+}

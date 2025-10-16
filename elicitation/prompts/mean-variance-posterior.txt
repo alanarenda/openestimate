@@ -1,0 +1,72 @@
+You are a statistical expert tasked with estimating a population-level parameter and expressing your uncertainty about its true value. Your goal is to describe what you believe the value is likely to be and how uncertain you are about this estimate — not how much individual outcomes vary.
+
+Here is the variable you need to assess:
+{{variable}}
+{{units_description}}
+
+Number of samples provided:
+{{num_samples}}
+
+Sample data:
+{{samples}}
+
+Important: Focus on uncertainty about the parameter itself, such as the population mean or true proportion, not the variability of individual data points.
+
+Please follow these steps to complete your analysis:
+
+1. Consider the context of the variable, including what it represents and any relevant information or assumptions that inform your beliefs.
+
+2. Estimate the prior distribution:
+   - Best guess for the prior mean: your initial estimate of the most likely value of the population-level parameter before considering the sample data
+   - Prior standard deviation: a numerical expression of your initial uncertainty about the true value
+
+3. Update your estimates using the sample data to calculate the posterior distribution:
+   - Best guess for the posterior mean: your updated estimate after considering the sample data
+   - Posterior standard deviation: your updated uncertainty after considering the sample data
+
+4. Conduct your analysis inside <estimation_process> tags in your thinking block. Include the following elements:
+
+   - Clearly state the type of parameter being estimated (e.g., population mean, true proportion).
+   - List any known facts, data points, or previous estimates about the variable.
+   - Consider possible data sources, analogous populations, or related studies that inform your prior belief.
+   - Identify key factors that might influence the value of the parameter.
+   - Provide your prior mean and standard deviation estimates.
+   - Calculate and report the sample mean and standard deviation.
+   - Compare the prior estimates with the sample statistics.
+   - Analyze how the sample data impacts your initial estimates.
+   - List potential sources of bias or confounding factors.
+   - Calculate and provide your posterior mean and standard deviation estimates. You can decide the best way to go about doing this (you don't need to do conjugate updating if you don't want to). 
+   - Justify your choices with reference to the context, data, and assumptions.
+   - Emphasize that your uncertainty pertains to the population parameter, not individual variation.
+   - Reflect on what the magnitude of your standard deviation implies about your confidence.
+   - Consider plausible edge cases or outliers that helped you calibrate your uncertainty.
+
+5. After your analysis, provide your final answer in the following format:
+
+<mean>[Best guess for the true value (posterior mean)]</mean>
+<std_dev>[Standard deviation representing your uncertainty (posterior standard deviation)]</std_dev>
+
+<justification>
+[Brief summary of your reasoning, including how your prior was updated by the sample data]
+</justification>
+
+<confidence_level>
+[Explanation of how confident or uncertain you are, and why]
+</confidence_level>
+
+Remember: you are modeling beliefs about the parameter, not the spread of raw data. Your standard deviation should reflect how much uncertainty you have about the single true value that governs the population, not the spread of outcomes across individuals.
+
+Here's a generic example of the output format:
+
+<mean>[Numerical value]</mean>
+<std_dev>[Numerical value]</std_dev>
+
+<justification>
+[1-3 sentences explaining how the prior and posterior were formed.]
+</justification>
+
+<confidence_level>
+[1-2 sentences describing the level of certainty and reasons for it]
+</confidence_level>
+
+Provide your analysis and final answer based on the given variable and units description. Your final output should consist only of the formatted answer and should not duplicate or rehash any of the work you did in the estimation process.

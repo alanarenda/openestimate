@@ -1,0 +1,88 @@
+You are a statistical expert tasked with constructing a prior distribution for the **mean** of a normal (Gaussian) variable. Your goal is to use all available data and context to inform your estimate and reflect the **uncertainty about the population-level mean** — not the variation across individual observations.
+
+Here is the variable whose mean you need to model:
+
+{{variable}}
+{{units_description}}
+
+Please follow these steps to construct a prior distribution over the population {{variable}}, denoted $\mu$:
+
+---
+
+### Instructions
+
+1. **Consider the context**: Reflect on what {{variable}} represents and any relevant information you have about its population-level average.
+
+2. **Estimate parameters**: Based on your knowledge and context, determine appropriate values for:
+
+   * $\mu_0$: your best estimate of the population mean
+   * $\sigma_0$: the standard deviation that reflects your **uncertainty about $\mu$** — not the standard deviation of individual-level data
+
+3. **Construct the prior**: Express the distribution in the form:
+
+   $$
+   \mu \sim \mathcal{N}(\mu_0, \sigma_0^2)
+   $$
+
+   where $\mu_0$ is your belief about the central tendency and $\sigma_0$ reflects the degree of confidence (epistemic uncertainty) in that belief.
+
+4. **Justify your choices**: Explain your reasoning for selecting each parameter, grounding it in evidence or plausible domain knowledge.
+
+5. **Explain confidence**: Discuss the level of confidence implied by your chosen $\sigma_0$, making sure this reflects uncertainty about the mean — not about individual values.
+
+---
+
+### Important Guidance
+
+* Do **not** base $\sigma_0$ on the variability **across individuals** in the population.
+* Do **not** confuse the standard deviation of individual measurements with your uncertainty about the average.
+* If relevant, acknowledge population-level variation, but only to explain why your uncertainty about the mean is more or less constrained (e.g., if prior studies have large samples, your uncertainty might be smaller).
+* Your prior reflects **what you believe about the average**, **before seeing new data**.
+
+---
+
+### Reasoning Process Format
+
+Before providing your final answer, show your reasoning inside `<prior_distribution_analysis>` tags:
+
+1. List known facts or context about the variable and its mean.
+2. Consider the plausible range of the **population mean**.
+3. Propose at least three possible pairs of $\mu_0$ and $\sigma_0$, representing different reasonable priors.
+4. For each set:
+   a. Compute the 68% and 95% credible intervals.
+   b. Interpret what these intervals imply about your beliefs about the **mean**.
+5. Reflect on what different choices of $\sigma_0$ say about your confidence.
+6. Consider edge cases (very large or small $\sigma_0$) and what they would imply.
+7. Compare and evaluate the trade-offs of different options.
+8. Interpret the final confidence level implied by your chosen prior.
+9. Summarize your final choice and give a clear, reasoned justification.
+
+This detailed analysis helps ensure your prior is carefully reasoned and reflects proper statistical thinking.
+
+---
+
+### Final Answer Format
+
+After the analysis, return your prior in this format:
+
+```
+Prior Distribution for the mean: μ ~ N(μ_0, σ_0^2)  
+<mean>[Your chosen μ_0 value]</mean>  
+<std>[Your chosen σ_0 value]</std>  
+<justification>[Your reasoning]</justification>
+<confidence_level>[What σ_0 implies about your belief]</confidence_level> 
+```
+
+**Example (for illustration only):**
+
+```
+Prior Distribution for the mean: μ ~ N(100, 10^2)  
+<mean>100</mean>  
+<std>10</std>  
+Justification: Based on aggregated reports and historical survey data, I chose μ_0 = 100. Given some variability in sources but general consistency, I set σ_0 = 10 to reflect moderate confidence.  
+Confidence Level: 68% of the prior mass lies within 90–110, showing modest uncertainty about the true mean.  
+```
+
+---
+
+Please proceed with your analysis and construction of the prior distribution for {{variable}}

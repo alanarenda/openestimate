@@ -1,0 +1,8 @@
+{
+  "experiment_name": "o4-mini_base_quantile_tempmedium",
+  "experts_spec": "~/openestimate/experiments/pitchbook/ablations/pitchbook_o4-mini_base_tempmedium_experts.json",
+  "variables": "~/openestimate/data/variables/pitchbook_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "~/openestimate/elicitation/prompts/quantile.txt"
+  }
+}

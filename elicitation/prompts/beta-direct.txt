@@ -1,0 +1,51 @@
+You are a statistical expert tasked with constructing a Beta prior distribution for a proportion parameter. Your goal is to use all available data and context to inform your estimate and reflect your uncertainty about the population-level proportion, not the variation in outcomes across individuals or samples.
+
+Here is the variable you need to model:
+
+{{variable}} {{units_description}}
+
+Please follow these steps to construct the Beta prior distribution:
+
+1. Consider the context: Reflect on what {{variable}} represents and any relevant information you have about it.
+
+2. Estimate parameters: Based on your knowledge and the context, determine appropriate α and β parameters for the Beta distribution. These values should encode your uncertainty about the true population proportion — not the variability of observed outcomes.
+
+3. Construct the prior: Express the prior distribution in the form p~Beta(α,β).
+
+4. Justify your choices: Provide a clear explanation for why you selected the specific α and β parameters.
+
+5. Explain confidence: Discuss the level of confidence implied by your chosen parameters.
+
+Before providing your final answer, show your reasoning process by wrapping your analysis in <beta_prior_analysis> tags:
+
+1. List known facts or context about the variable.
+2. State the possible range of the variable (typically 0 to 1 for proportions).
+3. Propose at least three possible pairs of α and β parameters representing different reasonable priors. 
+4. For each set:
+   a. Compute the 68% and 95% credible intervals.
+   b. Interpret what these intervals imply about your beliefs about the **mean**.
+5. Reflect on what different choices of α and β say about your confidence.
+6. Consider edge cases of α and β and what they would imply.
+7. Compare and evaluate the trade-offs of different options.
+8. Interpret the final confidence level implied by your chosen prior.
+9. Summarize your final choice and give a clear, reasoned justification.
+
+This analysis helps ensure a thorough and well-considered response. It's acceptable for this section to be quite extensive.
+
+After your analysis, provide your final answer in the following format:
+
+Prior Distribution: p~Beta(α,β)
+<alpha>[Your chosen α value]</alpha>
+<beta>[Your chosen β value]</beta>
+<justification>[Your explanation for the chosen parameters]</justification>
+<confidence_level>[Explanation of the implied confidence]<confidence_level>
+
+Example (for illustration only, do not use these specific values):
+
+Prior Distribution: p~Beta(α,β)
+<alpha>5</alpha>
+<beta>15</beta>
+<justification>Based on [reason], I chose α=5 and β=15 because [explanation].</justification>
+<confidence_level>These parameters imply [level of confidence] because [explanation].</confidence_level>
+
+Please proceed with your analysis and construction of the Beta prior distribution for {{variable}}

@@ -1,0 +1,76 @@
+You are a statistical expert tasked with constructing a posterior distribution for the mean of a normal (Gaussian) variable. Your goal is to use all available data and context to inform your estimate and reflect the uncertainty about the population-level mean — not the variation across individual observations.
+
+Here is the information about the variable whose mean you need to model:
+
+Here is the variable you need to assess:
+{{variable}}
+{{units_description}}
+
+Number of samples provided:
+{{num_samples}}
+
+Sample data:
+{{samples}}
+
+Your task is to construct a posterior distribution over the population mean of {{variable}}, denoted as μ. Follow these steps:
+
+1. Consider the context: Reflect on what {{variable}} represents and any relevant information about its population-level average.
+
+2. Estimate prior parameters: Based on your knowledge and context, determine appropriate values for:
+   * μ0: your best estimate of the population mean before seeing the sample data
+   * σ0: the standard deviation that reflects your uncertainty about μ (not the standard deviation of individual-level data)
+
+3. Construct the prior: Express the distribution in the form:
+   μ ~ N(μ0, σ0^2)
+
+4. Justify your choices: Explain your reasoning for selecting each parameter, grounding it in evidence or plausible domain knowledge.
+
+5. Explain confidence: Discuss the level of confidence implied by your chosen σ0, ensuring it reflects uncertainty about the mean, not individual values.
+
+6. Update the prior: Use the provided sample data to update your prior distribution, forming a posterior distribution. You do not need to do conjugate updating if you don't want to, you can form the posterior using your best judgment.
+
+Important Guidance:
+- Base σ0 on uncertainty about the mean, not variability across individuals.
+- Acknowledge population-level variation only to explain constraints on your uncertainty about the mean.
+- Your prior should reflect beliefs about the average before seeing new data.
+- Your posterior should incorporate information from the sample data.
+
+Before providing your final answer, conduct your analysis inside <bayesian_analysis> tags in your thinking block:
+
+1. List known facts or context about the variable and its mean.
+2. Consider the plausible range of the population mean.
+3. Calculate sample statistics (mean, standard deviation) from the provided data.
+4. Propose at least three possible pairs of μ0 and σ0 for the prior, representing different reasonable beliefs.
+5. For each set:
+   a. Compute the 68% and 95% credible intervals.
+   b. Interpret what these intervals imply about your beliefs about the mean.
+6. Reflect on what different choices of σ0 say about your confidence.
+7. Consider edge cases (very large or small σ0) and what they would imply.
+8. Compare and evaluate the trade-offs of different options.
+9. Form an initial prior distribution based on steps 1-8.
+10. Compare your prior beliefs with the sample data and explain how they inform your posterior.
+11. Update your prior to form a posterior distribution. You do not need to do conjugate updating if you don't want to, you can form the posterior using your best judgment.
+12. Interpret the final confidence level implied by your posterior.
+13. Summarize your final choice and give a clear, reasoned justification.
+
+After the analysis, return your posterior in this format:
+
+```
+Posterior Distribution for the mean: μ ~ N(μ_post, σ_post^2)  
+<mean>[Your chosen μ_post value]</mean>  
+<std>[Your chosen σ_post value]</std>  
+<justification>[Your reasoning, including how the sample data influenced your posterior]</justification>
+<confidence_level>[What σ_post implies about your updated belief]</confidence_level> 
+```
+
+Example (for illustration only):
+
+```
+Posterior Distribution for the mean: μ ~ N(105, 8^2)  
+<mean>105</mean>  
+<std>8</std>  
+<justification>Initial prior was N(100, 10^2) based on historical data. Sample data (n=30) had a mean of 107, which shifted our belief upward and increased precision.</justification>
+<confidence_level>68% of the posterior mass lies within 97–113, showing increased certainty about the true mean after incorporating new data.</confidence_level>  
+```
+
+Please proceed with your analysis and construction of the posterior distribution for {{variable}}. Your final output should consist only of the posterior distribution in the format specified above and should not duplicate or rehash any of the work you did in the thinking block.
