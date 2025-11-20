@@ -1,8 +1,0 @@
-{
-  "experiment_name": "o3-mini_base_direct_tempmedium",
-  "experts_spec": "~/openestimate/experiments/glassdoor/model_family_comparison/glassdoor_o3-mini_base_tempmedium_experts.json",
-  "variables": "~/openestimate/data/variables/glassdoor_variables.json",
-  "protocol_spec": {
-    "individual_elicitation_protocol": "direct"
-  }
-}

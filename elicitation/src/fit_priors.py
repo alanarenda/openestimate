@@ -136,114 +136,203 @@ def fit_beta_prior(q1, median, q3, plausible_range):
     return {'a': a_opt, 'b': b_opt, 'type': 'beta'}
 
 
+
 def assign_prior_direct(elicited_priors, variables):
+    """
+    Assign priors from direct elicitation.
+
+    Supports two modes:
+    1. Traditional mode: Uses ground truth distribution type from variables
+    2. Unified mode: LLM chooses distribution type (checks for 'distribution_type' in output)
+    """
     for var_name, info in elicited_priors.items():
         var = get_variable_name(var_name, variables)
-        distr = variables[var]['ground_truth_distribution_type']
         output = info[var_name]['var_output']
-        if distr == 'normal':
-            try:    
+
+        # Check if LLM chose the distribution type (unified prompt)
+        if 'distribution_type' in output:
+            chosen_type = output['distribution_type'].lower().strip()
+
+            if chosen_type == 'normal':
+                try:
+                    info['fitted_prior'] = {
+                        'type': 'gaussian',
+                        'mean': coerce_float(output['mean'], variable_name=var_name),
+                        'std': coerce_float(output['std'], variable_name=var_name)
+                    }
+                except Exception as e:
+                    print(f"Error extracting Normal parameters for {var_name}: {e}")
+                    info['fitted_prior'] = {
+                        'type': 'gaussian',
+                        'mean': None,
+                        'std': None
+                    }
+
+            elif chosen_type == 'lognormal':
+                try:
+                    info['fitted_prior'] = {
+                        'type': 'lognormal',
+                        'mu': coerce_float(output['mu'], variable_name=var_name),
+                        'sigma': coerce_float(output['sigma'], variable_name=var_name)
+                    }
+                except Exception as e:
+                    print(f"Error extracting Lognormal parameters for {var_name}: {e}")
+                    info['fitted_prior'] = {
+                        'type': 'lognormal',
+                        'mu': None,
+                        'sigma': None
+                    }
+
+            elif chosen_type == 'beta':
+                try:
+                    info['fitted_prior'] = {
+                        'type': 'beta',
+                        'a': float(output['alpha']),
+                        'b': float(output['beta'])
+                    }
+                except Exception as e:
+                    print(f"Error extracting Beta parameters for {var_name}: {e}")
+                    info['fitted_prior'] = {
+                        'type': 'beta',
+                        'a': None,
+                        'b': None
+                    }
+            else:
+                print(f"Warning: Unknown distribution type '{chosen_type}' for {var_name}")
                 info['fitted_prior'] = {
-                    'type': 'gaussian',
-                    'mean': coerce_float(output['mean'], variable_name=var_name),
-                    'std': coerce_float(output['std'], variable_name=var_name)
+                    'type': 'unknown',
+                    'error': f"Unknown distribution type: {chosen_type}"
                 }
-            except Exception as e:
-                info['fitted_prior'] = {
-                    'type': 'gaussian',
-                    'mean': None,
-                    'std': None
-                }
-        elif distr == 'beta':
-            try: 
-                info['fitted_prior'] = {
-                    'type': 'beta',
-                    'a': float(output['alpha']),
-                    'b': float(output['beta'])
-                }
-            except Exception as e:
-                info['fitted_prior'] = {
-                    'type': 'beta',
-                    'a': None,
-                    'b': None
-                }
+
         else:
-            raise ValueError("Unknown distribution type: ", distr)
+            # Traditional mode: use ground truth distribution type
+            distr = variables[var]['ground_truth_distribution_type']
+
+            if distr == 'normal':
+                try:
+                    info['fitted_prior'] = {
+                        'type': 'gaussian',
+                        'mean': coerce_float(output['mean'], variable_name=var_name),
+                        'std': coerce_float(output['std'], variable_name=var_name)
+                    }
+                except Exception as e:
+                    info['fitted_prior'] = {
+                        'type': 'gaussian',
+                        'mean': None,
+                        'std': None
+                    }
+            elif distr == 'beta' or distr == 'binomial':
+                try:
+                    info['fitted_prior'] = {
+                        'type': 'beta',
+                        'a': float(output['alpha']),
+                        'b': float(output['beta'])
+                    }
+                except Exception as e:
+                    info['fitted_prior'] = {
+                        'type': 'beta',
+                        'a': None,
+                        'b': None
+                    }
+            else:
+                raise ValueError("Unknown distribution type: ", distr)
+
     return elicited_priors
 
 
 def process_priors(elicited_priors, variables):
+    """
+    Process elicited priors into a standardized DataFrame format.
+
+    Handles Normal, Lognormal, and Beta distributions.
+    """
     all_processed_results = []
 
     for var_name, info in elicited_priors.items():
         var = get_variable_name(var_name, variables)
-        distr = variables[var]['ground_truth_distribution_type']
-        if distr == 'normal':
-            ground_truth = get_variable_mean(var_name, variables)
-            try:    
-                mean = float(info['fitted_prior']['mean'])
-                std = float(info['fitted_prior']['std'])
-                base_var = variables[get_variable_name(var_name, variables)]['base_variable']
+        ground_truth = get_variable_mean(var_name, variables)
+        ground_truth_distr = variables[var]['ground_truth_distribution_type']
 
-                info['processed_results'] = {
-                    'variable_name': var_name,
-                    'variable': get_variable_name(var_name, variables),
-                    'ground_truth': ground_truth,
-                    'ground_truth_distribution_type': distr,
-                    'mean': mean,
-                    'std': std
-                }
-            except Exception as e:
-                print(f"Error fitting normal prior for {var_name}: {e}")
-                info['processed_results'] = {
-                    'variable_name': var_name,
-                    'variable': get_variable_name(var_name, variables),
-                    'ground_truth': ground_truth,
-                    'ground_truth_distribution_type': distr,
-                    'mean': None,
-                    'std': None,
+        # Get the fitted prior type (may differ from ground truth if using unified prompt)
+        fitted_type = info['fitted_prior'].get('type', 'unknown')
+
+        # Build processed result based on fitted distribution type
+        processed_result = {
+            'variable_name': var_name,
+            'variable': var,
+            'ground_truth': ground_truth,
+            'ground_truth_distribution_type': ground_truth_distr,
+            'fitted_distribution_type': fitted_type,
+        }
+
+        try:
+            if fitted_type == 'gaussian':
+                processed_result.update({
+                    'mean': float(info['fitted_prior']['mean']),
+                    'std': float(info['fitted_prior']['std']),
+                    'mu': None,
+                    'sigma': None,
                     'a': None,
-                    'b': None,
-                }
-            all_processed_results.append(info['processed_results'])
-        elif distr == 'binomial' or distr == 'beta':
-            ground_truth = get_variable_mean(var_name, variables)
-            ground_truth_norm = ground_truth
-            try: 
+                    'b': None
+                })
+
+            elif fitted_type == 'lognormal':
+                mu = float(info['fitted_prior']['mu'])
+                sigma = float(info['fitted_prior']['sigma'])
+                # Compute real-space mean and std for comparison
+                mean_realspace = np.exp(mu + sigma**2 / 2)
+                std_realspace = np.sqrt((np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2))
+
+                processed_result.update({
+                    'mu': mu,
+                    'sigma': sigma,
+                    'mean': mean_realspace,  # For comparison with ground truth
+                    'std': std_realspace,
+                    'a': None,
+                    'b': None
+                })
+
+            elif fitted_type == 'beta':
                 a = float(info['fitted_prior']['a'])
                 b = float(info['fitted_prior']['b'])
-        
-                if 'mean' in info['fitted_prior'] and 'std' in info['fitted_prior']:
-                    mean = info['fitted_prior']['mean']
-                    std = info['fitted_prior']['std']
-                else: 
-                    mean = None
-                    std = None
-                info['processed_results'] = {
-                    'variable_name': var_name,
-                    'variable': get_variable_name(var_name, variables),
-                    'ground_truth': ground_truth,
-                    'ground_truth_distribution_type': distr,
-                    'mean': mean,
-                    'std': std, 
+                # Compute mean and std from Beta parameters
+                mean_beta = a / (a + b)
+                std_beta = np.sqrt(a * b / ((a + b)**2 * (a + b + 1)))
+
+                processed_result.update({
                     'a': a,
-                    'b': b, 
-                }
-            except Exception as e:
-                info['processed_results'] = {
-                    'variable_name': var_name,
-                    'variable': get_variable_name(var_name, variables),
-                    'ground_truth': ground_truth,
-                    'ground_truth_distribution_type': distr,
+                    'b': b,
+                    'mean': mean_beta,
+                    'std': std_beta,
+                    'mu': None,
+                    'sigma': None
+                })
+
+            else:
+                # Unknown or failed extraction
+                processed_result.update({
                     'mean': None,
                     'std': None,
+                    'mu': None,
+                    'sigma': None,
                     'a': None,
-                    'b': None,
-                }
-            all_processed_results.append(info['processed_results'])
-        else:
-            raise ValueError("Unknown distribution type: ", distr)
-        
+                    'b': None
+                })
+
+        except Exception as e:
+            print(f"Error processing {fitted_type} prior for {var_name}: {e}")
+            processed_result.update({
+                'mean': None,
+                'std': None,
+                'mu': None,
+                'sigma': None,
+                'a': None,
+                'b': None
+            })
+
+        info['processed_results'] = processed_result
+        all_processed_results.append(processed_result)
+
     processed_results_df = pd.DataFrame(all_processed_results)
     return processed_results_df
 

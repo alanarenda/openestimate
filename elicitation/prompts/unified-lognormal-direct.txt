@@ -1,0 +1,86 @@
+You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.
+
+Your estimates should reflect **uncertainty about the population-level parameter** — not the variation across individual observations.
+
+Here is the variable you need to model:
+
+{{variable}}
+{{units_description}}
+
+---
+
+## Available Distribution Types
+
+You may choose from:
+- **Normal** (Gaussian)
+- **Lognormal**
+- **Beta**
+
+---
+
+## Instructions
+
+1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:
+   - What range do you expect the population parameter to fall in and why?
+   - How certain/uncertain are you about this parameter?
+   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?
+   - Why is this distribution type appropriate for this variable?
+
+2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:
+
+### If you choose Normal:
+<distribution_type>Normal</distribution_type>
+<mean>value</mean>
+<std>value</std>
+
+### If you choose Lognormal:
+<distribution_type>Lognormal</distribution_type>
+<mu>value</mu>
+<sigma>value</sigma>
+
+CRITICAL: μ (mu) and σ (sigma) are parameters in LOG-SPACE, not real-space!
+
+Key relationships to real-space values:
+- MEDIAN (real-space) = exp(μ)
+- MEAN (real-space) = exp(μ + σ²/2)
+- MODE (real-space) = exp(μ - σ²)
+
+HOW TO SET μ:
+1. First decide what you think the MEDIAN value should be (in the original units)
+2. Then set μ = log(median)
+3. Examples:
+   - If median should be $30, then μ = log(30) ≈ 3.4
+   - If median should be 100 employees, then μ = log(100) ≈ 4.6
+   - If median should be $1000, then μ = log(1000) ≈ 6.9
+
+HOW TO SET σ:
+- σ controls the spread in log-space (typical values: 0.2 to 1.0)
+- σ = 0.3 gives roughly a 95% credible interval of [exp(μ-0.6), exp(μ+0.6)]
+- σ = 0.5 gives roughly a 95% credible interval of [exp(μ-1.0), exp(μ+1.0)]
+
+COMMON MISTAKE TO AVOID:
+❌ WRONG: Setting μ = 30 when you mean the value is $30
+   (This gives median = exp(30) = $10 trillion!)
+✓ CORRECT: Setting μ = log(30) ≈ 3.4 when you mean the value is $30
+   (This gives median = exp(3.4) = $30)
+
+ALWAYS VERIFY YOUR ANSWER:
+- Calculate exp(μ) - does this match your expected median?
+- Calculate exp(μ + σ²/2) - does this match your expected mean?
+- If these are wildly different from what you expect, you've made an error!
+
+### If you choose Beta:
+<distribution_type>Beta</distribution_type>
+<alpha>value</alpha>
+<beta>value</beta>
+
+---
+
+CRITICAL UNIT CHECK: Pay close attention to units. If the variable says "in millions USD", you need to work in millions!
+
+E.g. 
+- I think the typical company has raised about $3.5 million
+- In millions, this is: 3.5
+- NOT 3500000!
+
+Now, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.

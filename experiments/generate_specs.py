@@ -2,6 +2,12 @@ import os
 import json
 import argparse
 from itertools import product
+from pathlib import Path
+
+
+# Project root configuration - automatically detect based on script location
+# This script is in openestimate/experiments/, so go up one level
+PROJECT_ROOT = str(Path(__file__).parent.parent.resolve())
 
 
 # Dataset-specific configurations
@@ -77,8 +83,8 @@ def generate_experiment_specs(dataset):
 
     # Part 1 Evaluation
     for model, protocol in product(
-        models_part1, 
-        ["direct"]
+        models_part1,
+        ["unified-lognormal"]
     ):
         prompt_name = "base"
         experiment_name = "model_family_comparison"
@@ -117,17 +123,23 @@ def generate_experiment_specs(dataset):
             
             # Create experiment specification
             exp_name = f"{model_short_name}_{prompt_name}_{protocol}_temp{temp}"
-            
-            if protocol == "direct":
+
+            if protocol == "unified":
+                protocol_spec = {"individual_elicitation_protocol": "unified"}
+            elif protocol == "unified-lognormal":
+                protocol_spec = {"individual_elicitation_protocol": "unified-lognormal"}
+            elif protocol == "unified-no-lognormal":
+                protocol_spec = {"individual_elicitation_protocol": "unified-no-lognormal"}
+            elif protocol == "direct":
                 protocol_spec = {"individual_elicitation_protocol": "direct"}
             else:
                 protocol_spec = {
-                    "individual_elicitation_protocol": f"~/openestimate/elicitation/prompts/{protocol}.txt"
+                    "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
                 }
             exp_spec = {
                 "experiment_name": exp_name,
-                "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-                "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+                "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+                "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
                 "protocol_spec": protocol_spec
             }
             exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -166,8 +178,8 @@ def generate_experiment_specs(dataset):
         protocol_spec = {"individual_elicitation_protocol": "direct"}
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -194,8 +206,8 @@ def generate_experiment_specs(dataset):
         protocol_spec = {"individual_elicitation_protocol": "direct"}
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -222,12 +234,12 @@ def generate_experiment_specs(dataset):
             protocol_spec = {"individual_elicitation_protocol": "direct"}
         else:
             protocol_spec = {
-                "individual_elicitation_protocol": f"~/openestimate/elicitation/prompts/{protocol}.txt"
+                "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
             }
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -266,8 +278,8 @@ def generate_experiment_specs(dataset):
         protocol_spec = {"individual_elicitation_protocol": "direct"}
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -293,8 +305,8 @@ def generate_experiment_specs(dataset):
         protocol_spec = {"individual_elicitation_protocol": "direct"}
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")
@@ -320,12 +332,12 @@ def generate_experiment_specs(dataset):
             protocol_spec = {"individual_elicitation_protocol": "direct"}
         else:
             protocol_spec = {
-                "individual_elicitation_protocol": f"~/openestimate/elicitation/prompts/{protocol}.txt"
+                "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
             }
         exp_spec = {
             "experiment_name": exp_name,
-            "experts_spec": f"~/openestimate/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
-            "variables": f"~/openestimate/data/variables/{dataset}_variables.json",
+            "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
+            "variables": f"{PROJECT_ROOT}/data/variables/{dataset}_variables.json",
             "protocol_spec": protocol_spec
         }
         exp_spec_path = os.path.join(f"{dataset}/{experiment_name}", f"{dataset}-{exp_name}-exp-spec.json")

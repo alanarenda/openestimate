@@ -1,7 +1,7 @@
 {
   "experiment_name": "o4-mini_base_direct_templow",
-  "experts_spec": "~/openestimate/experiments/glassdoor/ablations/glassdoor_o4-mini_base_templow_experts.json",
-  "variables": "~/openestimate/data/variables/glassdoor_variables.json",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/glassdoor/ablations/glassdoor_o4-mini_base_templow_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/glassdoor_variables.json",
   "protocol_spec": {
     "individual_elicitation_protocol": "direct"
   }

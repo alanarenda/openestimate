@@ -3,11 +3,17 @@ import glob
 import json
 import argparse
 from datetime import datetime
+from pathlib import Path
+
+
+# Project root configuration - automatically detect based on script location
+# This script is in openestimate/experiments/, so go up one level
+PROJECT_ROOT = str(Path(__file__).parent.parent.resolve())
 
 
 def generate_run_script(dataset, output_dir='results'):
     """Generate a shell script to run all experiment specs in parallel."""
-    num_trials = 5
+    num_trials = 1
 
     exp_names = ['model_family_comparison', 'ablations']
     
@@ -37,9 +43,9 @@ def generate_run_script(dataset, output_dir='results'):
                 log_file = f'{results_dir}/logs/{log_base}'
                 wait_command = " && wait" if ("llama" in spec.lower() or "deepseek" in spec.lower()) else ""
                 script_lines.append(f'''(
-                    echo "[{i}/{total_exps}] Running {spec}..." && 
-                    python3 ~/openestimate/elicitation/src/main.py --experiment_config ~/openestimate/experiments/{spec} --output_dir {results_dir} 2> {log_file} && 
-                    echo "[{i}/{total_exps}] Completed {spec}" || 
+                    echo "[{i}/{total_exps}] Running {spec}..." &&
+                    python3 {PROJECT_ROOT}/elicitation/src/main.py --experiment_config {PROJECT_ROOT}/experiments/{spec} --output_dir {results_dir} 2> {log_file} &&
+                    echo "[{i}/{total_exps}] Completed {spec}" ||
                     echo "[{i}/{total_exps}] Failed {spec} - see {log_file} for details"{wait_command}
                 ) &'''.replace('\n', ' '))
                 

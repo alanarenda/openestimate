@@ -1,8 +1,0 @@
-{
-  "experiment_name": "meta-llama-3-70b_base_direct_temp0.5",
-  "experts_spec": "~/openestimate/experiments/pitchbook/model_family_comparison/pitchbook_meta-llama-3-70b_base_temp0.5_experts.json",
-  "variables": "~/openestimate/data/variables/pitchbook_variables.json",
-  "protocol_spec": {
-    "individual_elicitation_protocol": "direct"
-  }
-}

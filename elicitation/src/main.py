@@ -39,12 +39,15 @@ def generate_results_name(experiment_spec, experts):
 
 
 def get_protocol_content(experiment_spec):
-    """Get protocol content or None for direct protocols."""
+    """Get protocol content or None for built-in protocols."""
     protocol_path = experiment_spec["protocol_spec"]["individual_elicitation_protocol"]
-    
-    if 'direct' in protocol_path:
+
+    # Built-in protocols that don't require external files
+    built_in_protocols = ['direct', 'unified', 'unified-lognormal', 'unified-no-lognormal']
+    if any(protocol in protocol_path for protocol in built_in_protocols):
         return None
-    
+
+    # External protocol file
     protocol_file = Path(protocol_path).expanduser()
     try:
         with open(protocol_file, "r") as f:
@@ -53,31 +56,39 @@ def get_protocol_content(experiment_spec):
         raise FileNotFoundError(f"Protocol file not found: {protocol_file}")
 
 
-def elicit_all_priors(protocol, variables, experts, cache_dir):
-    """Elicit priors for all variables with caching support."""
+def elicit_all_priors(protocol, variables, experts, cache_dir, protocol_name=None):
+    """Elicit priors for all variables with caching support.
+
+    Args:
+        protocol: Protocol text content or None for built-in protocols
+        variables: Dictionary of variables
+        experts: Expert configuration
+        cache_dir: Directory for caching results
+        protocol_name: Name of the protocol (e.g., 'unified-lognormal', 'direct')
+    """
     all_elicited_priors = {}
     num_new_elicited = 0
-    
+
     for var_id, variable in variables.items():
         var_name = variable["variable"]
         print(f"\nEliciting prior for variable: {var_name}")
-        
+
         cache_file = Path(cache_dir) / get_safe_filename(var_id)
-        
+
         if cache_file.exists():
             # Load from cache
             elicited_prior = load_json_file(cache_file)
         else:
             # Elicit new prior
-            elicited_prior = elicit_priors(protocol, [variable], experts)
+            elicited_prior = elicit_priors(protocol, [variable], experts, protocol_name=protocol_name)
             num_new_elicited += 1
-            
+
             # Save to cache
             with open(cache_file, "w") as f:
                 json.dump(elicited_prior, f, indent=2)
-        
+
         all_elicited_priors[var_name] = elicited_prior
-    
+
     print(f"Elicited {num_new_elicited} new priors")
     return all_elicited_priors
 
@@ -155,7 +166,8 @@ def main():
         create_directory(cache_dir)
         
         # Elicit priors
-        all_elicited_priors = elicit_all_priors(protocol, variables, experts, cache_dir)
+        protocol_name = experiment_spec["protocol_spec"]["individual_elicitation_protocol"]
+        all_elicited_priors = elicit_all_priors(protocol, variables, experts, cache_dir, protocol_name=protocol_name)
         
         # Fit priors
         results = fit_priors_by_protocol(all_elicited_priors, variables, experiment_spec)

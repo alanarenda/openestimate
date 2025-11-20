@@ -1,8 +1,0 @@
-{
-  "model_type": "meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo",
-  "model_kwargs": {
-    "temperature": 0.5,
-    "max_tokens": 4096
-  },
-  "system_prompt": "You are a helpful assistant."
-}

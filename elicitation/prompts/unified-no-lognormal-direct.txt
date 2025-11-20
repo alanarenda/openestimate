@@ -1,0 +1,49 @@
+You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.
+
+Your estimates should reflect **uncertainty about the population-level parameter** — not the variation across individual observations.
+
+Here is the variable you need to model:
+
+{{variable}}
+{{units_description}}
+
+---
+
+## Available Distribution Types
+
+You may choose from:
+- **Normal** (Gaussian)
+- **Beta**
+
+---
+
+## Instructions
+
+1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:
+   - What range do you expect the population parameter to fall in and why?
+   - How certain/uncertain are you about this parameter?
+   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?
+   - Why is this distribution type appropriate for this variable?
+
+2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:
+
+### If you choose Normal:
+<distribution_type>Normal</distribution_type>
+<mean>value</mean>
+<std>value</std>
+
+### If you choose Beta:
+<distribution_type>Beta</distribution_type>
+<alpha>value</alpha>
+<beta>value</beta>
+
+---
+
+CRITICAL UNIT CHECK: Pay close attention to units. If the variable says "in millions USD", you need to work in millions!
+
+E.g. 
+- I think the typical company has raised about $3.5 million
+- In millions, this is: 3.5
+- NOT 3500000!
+
+Now, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.
