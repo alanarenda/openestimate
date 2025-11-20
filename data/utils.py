@@ -30,6 +30,17 @@ def compute_mean_continuous(data_df, var):
     return mean_value, std_value, se_value
 
 
+def compute_lognormal_mean_continuous(data_df, var): 
+    col = data_df[var].dropna()  # Remove NaN values for accurate count
+    log_col = np.log(col[col > 0])  # Log-transform, avoid log(0)
+    mean_log = log_col.mean()
+    std_log = log_col.std()
+    se_log = std_log / np.sqrt(len(log_col))
+    mean_value_lognormal = np.exp(mean_log + 0.5 * std_log ** 2)
+    std_value_lognormal = np.sqrt((np.exp(std_log ** 2) - 1) * np.exp(2 * mean_log + std_log ** 2))   
+    return mean_value_lognormal, std_value_lognormal
+
+
 def gaussian_posterior(mu0: float, sigma0: float,
                        n_eff: float, mean_hat: float, pop_sd: float):
     """

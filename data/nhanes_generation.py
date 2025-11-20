@@ -142,6 +142,29 @@ def nhanes_domain_mean_and_variance(df, var_name, domain_var=None,
     # Calculate weighted totals
     weighted_sum = (work_df['_y'] * work_df['_in_analysis'] * work_df[weight_name]).sum()
     weight_sum = (work_df['_in_analysis'] * work_df[weight_name]).sum()
+
+    if var_name in target_variables_continuous:
+        # Log-transform the values (add small constant to avoid log(0))
+        work_df['_log_y'] = np.log(work_df['_y'] + 1e-6)
+
+        # Calculate weighted mean on log scale
+        weighted_log_sum = (work_df['_log_y'] * work_df['_in_analysis'] * work_df[weight_name]).sum()
+        log_mean = weighted_log_sum / weight_sum if weight_sum > 0 else np.nan
+
+        # Calculate weighted variance on log scale
+        work_df['_log_squared_dev'] = (work_df['_log_y'] - log_mean) ** 2
+        weighted_log_sq_dev = (work_df['_log_squared_dev'] *
+                            work_df['_in_analysis'] *
+                            work_df[weight_name]).sum()
+        log_variance = weighted_log_sq_dev / weight_sum if weight_sum > 0 else np.nan
+        log_std = np.sqrt(log_variance)
+
+        # Convert log-scale parameters to original scale using lognormal formulas
+        mean_lognormal = np.exp(log_mean + 0.5 * log_std ** 2)
+        std_lognormal = np.sqrt((np.exp(log_std ** 2) - 1) * np.exp(2 * log_mean + log_std ** 2))
+    else: 
+        mean_lognormal = np.nan
+        std_lognormal = np.nan
     
     if weight_sum == 0:
         return {
@@ -152,7 +175,9 @@ def nhanes_domain_mean_and_variance(df, var_name, domain_var=None,
             'ci_upper': np.nan,
             'n_domain': 0,
             'weighted_n': 0,
-            'df': 0
+            'df': 0, 
+            'mean_lognormal': np.nan, 
+            'std_lognormal':np.nanargmax
         }
     
     # Domain mean
@@ -229,7 +254,7 @@ def nhanes_domain_mean_and_variance(df, var_name, domain_var=None,
     
     # Additional statistics
     n_domain = work_df['_in_analysis'].sum()
-    
+
     # Calculate percentiles (weighted)
     domain_data = work_df[work_df['_in_analysis'] == 1].copy()
     if len(domain_data) > 0:
@@ -237,19 +262,68 @@ def nhanes_domain_mean_and_variance(df, var_name, domain_var=None,
         domain_data = domain_data.sort_values(var_name)
         domain_data['_cumweight'] = domain_data[weight_name].cumsum()
         total_weight = domain_data[weight_name].sum()
-        
+
         # Find weighted percentiles
         def weighted_percentile(percent):
             threshold = total_weight * percent / 100
             idx = (domain_data['_cumweight'] >= threshold).idxmax()
             return domain_data.loc[idx, var_name]
-        
+
         p25 = weighted_percentile(25)
         p50 = weighted_percentile(50)  # median
         p75 = weighted_percentile(75)
     else:
         p25 = p50 = p75 = np.nan
-    
+
+    # ========================================
+    # LOGNORMAL PARAMETERS
+    # ========================================
+
+    # Log-transform the values (add small constant to avoid log(0))
+    work_df['_log_y'] = np.log(work_df['_y'] + 1e-6)
+
+    # Calculate weighted mean on log scale
+    weighted_log_sum = (work_df['_log_y'] * work_df['_in_analysis'] * work_df[weight_name]).sum()
+    log_mean = weighted_log_sum / weight_sum if weight_sum > 0 else np.nan
+
+    # Calculate weighted variance on log scale
+    work_df['_log_squared_dev'] = (work_df['_log_y'] - log_mean) ** 2
+    weighted_log_sq_dev = (work_df['_log_squared_dev'] *
+                          work_df['_in_analysis'] *
+                          work_df[weight_name]).sum()
+    log_variance = weighted_log_sq_dev / weight_sum if weight_sum > 0 else np.nan
+    log_std = np.sqrt(log_variance)
+
+    # Standard error of log mean using Taylor linearization
+    work_df['_log_lin'] = work_df['_in_analysis'] * (work_df['_log_y'] - log_mean)
+
+    log_variance_sum = 0
+    for stratum, stratum_data in work_df.groupby(strata_name):
+        stratum_domain_n = stratum_data['_in_analysis'].sum()
+
+        if stratum_domain_n > 0:
+            psu_totals = []
+
+            for psu, psu_data in stratum_data.groupby(psu_name):
+                if psu_data['_in_analysis'].sum() > 0:
+                    psu_total = (psu_data['_log_lin'] * psu_data[weight_name]).sum()
+                    psu_totals.append(psu_total)
+
+            n_psu_stratum = len(psu_totals)
+
+            if n_psu_stratum > 1:
+                psu_totals = np.array(psu_totals)
+                psu_mean = psu_totals.mean()
+                stratum_variance = (n_psu_stratum / (n_psu_stratum - 1)) * \
+                                   np.sum((psu_totals - psu_mean) ** 2)
+                log_variance_sum += stratum_variance
+
+    se_log_mean = np.sqrt(log_variance_sum) / weight_sum if weight_sum > 0 else np.nan
+
+    # Convert log-scale parameters to original scale using lognormal formulas
+    mean_lognormal = np.exp(log_mean + 0.5 * log_std ** 2)
+    std_lognormal = np.sqrt((np.exp(log_std ** 2) - 1) * np.exp(2 * log_mean + log_std ** 2))
+
     return {
         'mean': domain_mean,
         'stdev': weighted_std,  # Population standard deviation
@@ -261,6 +335,9 @@ def nhanes_domain_mean_and_variance(df, var_name, domain_var=None,
         'q3': p75,
         'iqr': p75 - p25,
         'cv': (weighted_std / domain_mean * 100) if domain_mean != 0 else np.nan,  # Coefficient of variation
+        'mean_lognormal': mean_lognormal,
+        'std_lognormal': std_lognormal,
+        'se_lognormal': se_log_mean,
         'n_domain': n_domain,
         'weighted_n': weight_sum,
         'df': df,
@@ -412,7 +489,7 @@ def apply_conditions(data_df, var, conditions):
         return None
     
     mean_result = nhanes_domain_mean_and_variance(
-        data_df, 
+        data_df,
         var,
         weight_name='WTMEC2YR',
         strata_name='SDMVSTRA',
@@ -421,8 +498,8 @@ def apply_conditions(data_df, var, conditions):
     )
     if mean_result is None:
         return None
-        
-    return mean_result['mean'], mean_result['stdev'], mean_result['se']
+
+    return mean_result['mean'], mean_result['stdev'], mean_result['se'], mean_result['mean_lognormal'], mean_result['std_lognormal']
 
 
 def sample_conditions(data_df, var, num_conditions, all_conditions):
@@ -482,27 +559,29 @@ def create_variables_by_difficulty(data_df, ground_truths, all_conditions, num_e
         res, conds = sample_conditions(data_df, var, 1, all_conditions)
         if res is None:
             continue
-        mean, stdev, se = res
-    
+        mean, stdev, se, mean_lognormal, std_lognormal = res
+
         if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
             continue
         elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
-            continue 
-        
-        if var in target_variables_boolean: 
-            ground_truth_distribution_type = 'beta'
-        elif var in target_variables_continuous:
-            ground_truth_distribution_type = 'normal'
+            continue
 
         varname = 'easy_{}'.format(easy_vars)
-        
+
         signature = condition_signature(var, conds)
         if signature in seen_signatures:
             continue
         seen_signatures.add(signature)
-        variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
+        if var in target_variables_boolean:
+            ground_truth_distribution_type = 'beta'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
+        elif var in target_variables_continuous:
+            ground_truth_distribution_type = 'normal'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': mean_lognormal, 'std_lognormal': std_lognormal, 'base_variable': var, 'conditions': conds, 'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
         easy_vars += 1
 
     medium_vars = 0
@@ -513,26 +592,29 @@ def create_variables_by_difficulty(data_df, ground_truths, all_conditions, num_e
         res, conds = sample_conditions(data_df, var, 2, all_conditions)
         if res is None:
             continue
-        mean, stdev, se = res
-    
+        mean, stdev, se, mean_lognormal, std_lognormal = res
+
         if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
             continue
         elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
-            continue 
-        
-        if var in target_variables_boolean: 
-            ground_truth_distribution_type = 'beta'
-        elif var in target_variables_continuous:
-            ground_truth_distribution_type = 'normal'
+            continue
+
         varname = 'medium_{}'.format(medium_vars)
-        
+
         signature = condition_signature(var, conds)
         if signature in seen_signatures:
             continue
         seen_signatures.add(signature)
-        variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
+        if var in target_variables_boolean:
+            ground_truth_distribution_type = 'beta'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
+        elif var in target_variables_continuous:
+            ground_truth_distribution_type = 'normal'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': mean_lognormal, 'std_lognormal': std_lognormal, 'base_variable': var, 'conditions': conds, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
         medium_vars += 1
 
     hard_vars = 0   
@@ -543,25 +625,28 @@ def create_variables_by_difficulty(data_df, ground_truths, all_conditions, num_e
         res, conds = sample_conditions(data_df, var, 3, all_conditions)
         if res is None:
             continue
-        mean, stdev, se = res
-    
+        mean, stdev, se, mean_lognormal, std_lognormal = res
+
         if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
             continue
         elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
             attempts += 1
-            continue 
+            continue
 
-        if var in target_variables_boolean: 
-            ground_truth_distribution_type = 'beta'
-        elif var in target_variables_continuous:
-            ground_truth_distribution_type = 'normal'
         varname = 'hard_{}'.format(hard_vars)
         signature = condition_signature(var, conds)
         if signature in seen_signatures:
             continue
         seen_signatures.add(signature)
-        variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
+        if var in target_variables_boolean:
+            ground_truth_distribution_type = 'beta'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
+        elif var in target_variables_continuous:
+            ground_truth_distribution_type = 'normal'
+            variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': mean_lognormal, 'std_lognormal': std_lognormal, 'base_variable': var, 'conditions': conds, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
         hard_vars += 1
     return variables_by_difficulty  
 
@@ -786,11 +871,14 @@ def generate_nhanes(generation_config):
     gt = {}
     df = load_and_preprocess_nhanes_data()
     for var in target_variables_continuous + target_variables_boolean:
-        results_manual = nhanes_domain_mean_and_variance(df, var, domain_var=None, 
+        results_manual = nhanes_domain_mean_and_variance(df, var, domain_var=None,
                         weight_name='WTMEC2YR',
-                        strata_name='SDMVSTRA', 
+                        strata_name='SDMVSTRA',
                         psu_name='SDMVPSU')
-        gt[var] = {'mean': results_manual['mean'], 'std': results_manual['stdev'], 'se': results_manual['se']}
+        if var in target_variables_continuous:
+            gt[var] = {'mean': results_manual['mean'], 'std': results_manual['stdev'], 'se': results_manual['se'], 'mean_lognormal': results_manual['mean_lognormal'], 'std_lognormal': results_manual['std_lognormal']}
+        else:  # boolean variables
+            gt[var] = {'mean': results_manual['mean'], 'std': results_manual['stdev'], 'se': results_manual['se']}
     
     all_possible_conditions = {}
     for var in target_variables_boolean + target_variables_continuous:
@@ -894,6 +982,7 @@ def generate_nhanes(generation_config):
             if n == "all":
                 # Special case: use all available data
                 trials: List[Dict[str, float]] = []
+                lognorm_trials: List[Dict[str, float]] = []
                 
                 for trial_idx in range(RESAMPLES_PER_N):
                     # Use the full subset as the sample
@@ -922,14 +1011,26 @@ def generate_nhanes(generation_config):
                             MU0, SIGMA0, n_eff, mean_hat, pop_sd
                         )
                         trials.append({"mu": mu_n, "sigma": sig_n})
+
+                        dsw_log = DescrStatsW(np.log(samp[base_var] + 1e-6), weights=w, ddof=0)
+                        mean_hat_log = float(dsw_log.mean)
+                        pop_sd_log = float(dsw_log.std)  # population σ in log-scale
+                        mu_n_log, sig_n_log = gaussian_posterior(
+                            MU0, SIGMA0, n_eff, mean_hat_log, pop_sd_log
+                        )
+                        mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
+                        std_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
+                        lognorm_trials.append({"mu": mu_n_exp, "std": std_n_exp})
                 
                 baselines[var_key]["all"] = trials
+                baselines[var_key]["all_lognorm"] = lognorm_trials
                 continue
             
             if len(subset) < n:
                 continue
 
             trials: List[Dict[str, float]] = []
+            lognorm_trials: List[Dict[str, float]] = []
 
             for trial_idx in range(RESAMPLES_PER_N):
                 # ──────────────────────────────────────────────────────
@@ -975,7 +1076,18 @@ def generate_nhanes(generation_config):
                     )
                     trials.append({"mu": mu_n, "sigma": sig_n})
 
+                    dsw_log = DescrStatsW(np.log(samp[base_var] + 1e-6), weights=w, ddof=0)
+                    mean_hat_log = float(dsw_log.mean)
+                    pop_sd_log = float(dsw_log.std)  # population σ in log-scale
+                    mu_n_log, sig_n_log = gaussian_posterior(
+                        MU0, SIGMA0, n_eff, mean_hat_log, pop_sd_log
+                    )
+                    mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
+                    std_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
+                    lognorm_trials.append({"mu": mu_n_exp, "std": std_n_exp})
+
             baselines[var_key][str(n)] = trials
+            baselines[var_key][f"{n}_lognorm"] = lognorm_trials
     return variables, baselines
 
 

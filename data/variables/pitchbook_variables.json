@@ -1,8 +1,8 @@
 {
     "IsUSBased": {
-        "mean": 0.4274580250930025,
-        "std": 0.49471317317048064,
-        "se": 0.0018605998530984611,
+        "mean": 0.4262274212484264,
+        "std": 0.49453115767286265,
+        "se": 0.0018599152988425893,
         "base_variable": "IsUSBased",
         "ground_truth_distribution_type": "beta",
         "variable": "The probability that a venture-backed company is based in the US",
@@ -23,6 +23,8 @@
         "mean": 27.092343523063214,
         "std": 187.8983559868531,
         "se": 0.7066794912819231,
+        "mean_lognormal": 26.633789161101923,
+        "std_lognormal": 193.9773166722882,
         "base_variable": "TotalRaised",
         "ground_truth_distribution_type": "normal",
         "variable": "The average total raised in millions USD for venture-backed companies",
@@ -33,6 +35,8 @@
         "mean": 94.3918270930874,
         "std": 1024.0697659041743,
         "se": 3.8514924593432593,
+        "mean_lognormal": 52.925985886353764,
+        "std_lognormal": 126.5052977561764,
         "base_variable": "Employees",
         "ground_truth_distribution_type": "normal",
         "variable": "The average number of employees for venture-backed companies",
@@ -40,9 +44,11 @@
         "nat_langs": []
     },
     "easy_0": {
-        "mean": 68.85502978160159,
-        "std": 943.5940442290982,
-        "se": 5.42797652869371,
+        "mean": 69.00162612418279,
+        "std": 944.9507231980643,
+        "se": 5.443622192590706,
+        "mean_lognormal": 43.56474056862943,
+        "std_lognormal": 93.48399005968575,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -55,12 +61,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are headquartered in the United States."
+        "variable": "The average number of employees for venture-backed companies headquartered in the United States is shown."
     },
     "easy_1": {
-        "mean": 113.45751908491242,
-        "std": 1079.8686913497716,
-        "se": 5.367434970988084,
+        "mean": 113.25295828813726,
+        "std": 1078.719431226557,
+        "se": 5.3559697418117755,
+        "mean_lognormal": 60.7309160105468,
+        "std_lognormal": 155.65406432223102,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -73,12 +81,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies headquartered outside the United States."
+        "variable": "The average number of employees for venture-backed companies headquartered outside of the United States."
     },
     "easy_2": {
-        "mean": 34.618962940105895,
-        "std": 247.45129719126265,
-        "se": 1.423450944146565,
+        "mean": 34.690467595327384,
+        "std": 247.80188918297435,
+        "se": 1.427524028720808,
+        "mean_lognormal": 38.06608735973108,
+        "std_lognormal": 271.270032470736,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -97,6 +107,8 @@
         "mean": 70.71898529939047,
         "std": 465.3071612354267,
         "se": 2.543459673942705,
+        "mean_lognormal": 49.208786319268306,
+        "std_lognormal": 105.59388699961433,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -109,12 +121,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are technology companies."
+        "variable": "The average number of employees for venture-backed companies that operate in the technology sector."
     },
     "easy_4": {
-        "mean": 21.47299330483979,
-        "std": 126.00166910485154,
-        "se": 0.6262851868692545,
+        "mean": 21.448070949610493,
+        "std": 125.87171379673025,
+        "se": 0.624967967508215,
+        "mean_lognormal": 18.598487457686396,
+        "std_lognormal": 125.2003591320692,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -127,12 +141,12 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies headquartered outside the United States."
+        "variable": "The average total raised in millions USD for venture-backed companies that are headquartered outside the United States."
     },
     "easy_5": {
-        "mean": 0.3227794900532362,
-        "std": 0.46755228699286383,
-        "se": 0.003500031149621281,
+        "mean": 0.32121042308769965,
+        "std": 0.4669545011033979,
+        "se": 0.003495556207904299,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -145,12 +159,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US when it has raised at most 1 million USD."
+        "variable": "The probability that a venture-backed company is based in the US, given it has raised at most 1 million USD."
     },
     "easy_6": {
         "mean": 14.25118825404052,
         "std": 34.553945461845736,
         "se": 0.2606675956746341,
+        "mean_lognormal": 17.026401060877355,
+        "std_lognormal": 57.448300097852076,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -163,12 +179,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies with more than 17 and at most 45 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies with 18 to 45 employees."
     },
     "easy_7": {
         "mean": 65.71121691322338,
         "std": 875.514904959838,
         "se": 6.591394828925499,
+        "mean_lognormal": 41.09059644234458,
+        "std_lognormal": 63.66041404610825,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -181,12 +199,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised more than 4 million USD and no more than 14 million USD in total funding."
+        "variable": "The average number of employees for venture-backed companies where the total amount raised is greater than 4 million USD and at most 14 million USD."
     },
     "easy_8": {
         "mean": 115.67315802197211,
         "std": 1340.1207881148569,
         "se": 6.9454958895710055,
+        "mean_lognormal": 56.49353473348555,
+        "std_lognormal": 148.3114224122866,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -199,12 +219,12 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies operating outside the technology sector."
+        "variable": "The average number of employees for venture-backed companies that are not in the technology sector."
     },
     "easy_9": {
-        "mean": 0.5387967626917199,
-        "std": 0.498506645780362,
-        "se": 0.003750290994706459,
+        "mean": 0.5381176071084951,
+        "std": 0.49855903929970574,
+        "se": 0.0037506851538323983,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -217,12 +237,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US, given that it has raised more than 14 million USD in total."
+        "variable": "The probability that a venture-backed company is based in the US when total funding raised exceeds 14 million USD."
     },
     "easy_10": {
         "mean": 256.85115173467653,
         "std": 1764.152075159836,
         "se": 13.271806297402176,
+        "mean_lognormal": 175.56077703126715,
+        "std_lognormal": 412.65939558744304,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -235,12 +257,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised more than 14 million USD."
+        "variable": "The average number of employees for venture-backed companies where total funding raised exceeds 14 million USD."
     },
     "easy_11": {
         "mean": 23.810367049593722,
         "std": 484.581324654704,
         "se": 3.627508148285656,
+        "mean_lognormal": 13.915005213178095,
+        "std_lognormal": 18.39129224407478,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -253,12 +277,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised at most 1 million USD in total."
+        "variable": "The average number of employees for venture-backed companies that have raised no more than 1 million USD in total."
     },
     "easy_12": {
         "mean": 3.5290062040752512,
         "std": 16.955653656865923,
         "se": 0.12240195812288279,
+        "mean_lognormal": 3.5048616444432636,
+        "std_lognormal": 12.84825401961707,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -271,12 +297,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies with up to 8 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies that have at most 8 employees."
     },
     "easy_13": {
         "mean": 6.678734494347694,
         "std": 21.86095891468351,
         "se": 0.17088785685143856,
+        "mean_lognormal": 7.360417687263842,
+        "std_lognormal": 23.020041112940415,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -289,12 +317,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that have more than eight but at most seventeen employees."
+        "variable": "The average total raised in millions USD for venture-backed companies with more than eight and at most seventeen employees."
     },
     "easy_14": {
         "mean": 25.585287438747457,
         "std": 195.86137527682044,
         "se": 1.0706164684353523,
+        "mean_lognormal": 24.349392559192886,
+        "std_lognormal": 164.03818216236823,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -313,6 +343,8 @@
         "mean": 84.67986682602015,
         "std": 368.27982406957267,
         "se": 2.778303510301056,
+        "mean_lognormal": 100.53687557905226,
+        "std_lognormal": 528.5212128342281,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -325,12 +357,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies where the number of employees exceeds 45."
+        "variable": "The average total raised in millions USD for venture-backed companies with more than 45 employees."
     },
     "easy_16": {
         "mean": 31.395496009122006,
         "std": 213.67497195403277,
         "se": 1.6133881436719442,
+        "mean_lognormal": 23.227436675584435,
+        "std_lognormal": 32.07990088136662,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -343,12 +377,14 @@
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised more than 1 million USD and no more than 4 million USD."
+        "variable": "The average number of employees for venture-backed companies that have raised more than $1 million but no more than $4 million in funding."
     },
     "medium_0": {
-        "mean": 142.4984939759036,
-        "std": 1368.683797518887,
-        "se": 9.246175160177113,
+        "mean": 142.19630337794774,
+        "std": 1367.014345659967,
+        "se": 9.223538874183193,
+        "mean_lognormal": 69.7258037224626,
+        "std_lognormal": 204.5389618692533,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -366,12 +402,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are based outside the US and are not technology companies."
+        "variable": "The average number of employees for venture-backed companies that are headquartered outside the United States and that do not operate in the technology sector."
     },
     "medium_1": {
         "mean": 2.5228256465260395,
         "std": 10.294882678148593,
         "se": 0.11238660215647978,
+        "mean_lognormal": 2.597187257725504,
+        "std_lognormal": 7.917035315003468,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -389,12 +427,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that have no more than eight employees and are technology companies."
+        "variable": "The average total raised in millions USD for venture-backed companies with no more than eight employees and operating in the technology industry."
     },
     "medium_2": {
-        "mean": 371.38213277702783,
-        "std": 1949.8875273140955,
-        "se": 21.600181597226037,
+        "mean": 370.8900869991423,
+        "std": 1948.495631577216,
+        "se": 21.568887614155745,
+        "mean_lognormal": 265.5117661200676,
+        "std_lognormal": 719.9364411328319,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -412,12 +452,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised over 14 million USD and are headquartered outside the United States."
+        "variable": "The average number of employees for venture-backed companies that have raised more than 14 million USD and are not based in the United States."
     },
     "medium_3": {
-        "mean": 7.822495974235105,
-        "std": 21.826195651984108,
-        "se": 0.2528375776371411,
+        "mean": 7.828107926254878,
+        "std": 21.84290801499363,
+        "se": 0.25338845660032616,
+        "mean_lognormal": 9.083193323877333,
+        "std_lognormal": 26.366019188462747,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -435,12 +477,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies headquartered in the United States with eight to fifteen employees."
+        "variable": "The average total raised in millions USD for venture-backed companies that are located in the United States and have between 8 and 15 employees, inclusive."
     },
     "medium_4": {
-        "mean": 33.99552545652437,
-        "std": 268.0876674523897,
-        "se": 2.9481551844198,
+        "mean": 34.03795319510125,
+        "std": 268.44246255433853,
+        "se": 2.9559917448489377,
+        "mean_lognormal": 25.917837807209114,
+        "std_lognormal": 32.223883596796696,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -458,12 +502,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are headquartered in the United States and have raised more than 4 million USD, up to 14 million USD."
+        "variable": "The average number of employees for venture-backed companies that are based in the US and have raised between 4 and 14 million USD."
     },
     "medium_5": {
-        "mean": 23.94411737860533,
-        "std": 143.5346864591903,
-        "se": 0.9696519056984465,
+        "mean": 23.912042247109166,
+        "std": 143.36477580867535,
+        "se": 0.9673128793842181,
+        "mean_lognormal": 20.858908054561006,
+        "std_lognormal": 152.91340785185992,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -481,12 +527,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are neither in the technology sector nor based in the United States."
+        "variable": "The average total raised in millions USD for venture-backed companies that are neither technology companies nor US-based."
     },
     "medium_6": {
         "mean": 21.63714593044102,
         "std": 464.2407874913884,
         "se": 5.0752613342493795,
+        "mean_lognormal": 13.158649458655448,
+        "std_lognormal": 16.246500594840434,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -504,12 +552,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are technology companies and have raised no more than 2 million USD."
+        "variable": "The average number of employees for venture-backed companies that are technology companies and have raised at most 2 million USD."
     },
     "medium_7": {
-        "mean": 20.566884904086738,
-        "std": 41.25458266367032,
-        "se": 0.48639262510801634,
+        "mean": 20.566304196291647,
+        "std": 41.276991379733026,
+        "se": 0.48736868312017084,
+        "mean_lognormal": 24.846175251842663,
+        "std_lognormal": 69.82993318404665,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -527,12 +577,12 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that have between 18 and 45 employees and are based in the United States."
+        "variable": "The average total raised in millions USD for venture-backed companies with more than 17 but no more than 45 employees and based in the US."
     },
     "medium_8": {
-        "mean": 0.48846960167714887,
-        "std": 0.4998961442012809,
-        "se": 0.005394911750106804,
+        "mean": 0.48730491497787093,
+        "std": 0.4998679191571656,
+        "se": 0.0053946071435922085,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -550,12 +600,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US given that it has raised between 4 and 14 million USD and is a technology company."
+        "variable": "The probability that a venture-backed company is based in the US, given it operates in the technology sector and has raised between 4 and 14 million USD."
     },
     "medium_9": {
         "mean": 44.00244584206848,
         "std": 215.8656825171633,
         "se": 2.3296365066335816,
+        "mean_lognormal": 36.31555727586345,
+        "std_lognormal": 45.824918228719355,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -573,12 +625,12 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised more than 4 million USD but no more than 14 million USD and are technology companies."
+        "variable": "The average number of employees for venture-backed companies that have raised more than 4 million USD and up to 14 million USD and are technology companies."
     },
     "medium_10": {
-        "mean": 0.25865775017912584,
-        "std": 0.4379494569478307,
-        "se": 0.00676818952904326,
+        "mean": 0.2579412467160258,
+        "std": 0.4375537516762876,
+        "se": 0.0067620741925975645,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -596,12 +648,12 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US, given that it has raised more than 1 million USD but no more than 4 million USD and has more than 25 employees."
+        "variable": "The probability that a venture-backed company is based in the US, has raised more than 1 million USD but no more than 4 million USD, and employs more than 25 people."
     },
     "medium_11": {
-        "mean": 0.2473410273817606,
-        "std": 0.4315154470565085,
-        "se": 0.006491339837247642,
+        "mean": 0.24711473183978275,
+        "std": 0.43138283779701175,
+        "se": 0.006489344979879659,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -619,12 +671,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US given that it employs more than 45 people and has raised no more than 6 million USD."
+        "variable": "The probability that a venture-backed company is based in the US if it has more than 45 employees and has raised at most 6 million USD."
     },
     "medium_12": {
-        "mean": 77.29770842854344,
-        "std": 1297.2475619697284,
-        "se": 10.481803334895517,
+        "mean": 77.50193277861496,
+        "std": 1299.5352560734216,
+        "se": 10.518846418357594,
+        "mean_lognormal": 40.82203632343113,
+        "std_lognormal": 88.42451316908088,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -642,12 +696,12 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are non-technology businesses and are headquartered in the United States."
+        "variable": "The average number of employees for venture-backed companies based in the US and operating outside the technology sector."
     },
     "medium_13": {
-        "mean": 0.2299567930868939,
-        "std": 0.4208552979423971,
-        "se": 0.006520383891954512,
+        "mean": 0.228516562650024,
+        "std": 0.41992745968116946,
+        "se": 0.006506008733360985,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -665,12 +719,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US given that it has raised at most 1 million USD and has more than 15 employees."
+        "variable": "The probability that a venture-backed company is based in the US when it has raised at most 1 million USD and employs more than 15 people."
     },
     "medium_14": {
-        "mean": 60.17781654700396,
-        "std": 275.28723018918055,
-        "se": 2.255013859430202,
+        "mean": 60.27666442501681,
+        "std": 275.58368968124813,
+        "se": 2.2599458131932355,
+        "mean_lognormal": 46.31871974250509,
+        "std_lognormal": 97.7840761820049,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -691,9 +747,9 @@
         "variable": "The average number of employees for venture-backed companies that operate in the technology sector and are headquartered in the United States."
     },
     "medium_15": {
-        "mean": 0.5289747399702823,
-        "std": 0.4991934751967981,
-        "se": 0.005801830349272256,
+        "mean": 0.5292765382014875,
+        "std": 0.4991759004487013,
+        "se": 0.005804763374579326,
         "base_variable": "IsTechCompany",
         "conditions": [
             [
@@ -714,9 +770,11 @@
         "variable": "The probability that a venture-backed company is a technology company, given that it is headquartered in the United States and has more than 42 employees."
     },
     "medium_16": {
-        "mean": 158.8140756302521,
-        "std": 1581.5319824077862,
-        "se": 16.209122507271825,
+        "mean": 158.96813209928482,
+        "std": 1582.5236574754076,
+        "se": 16.22951809904126,
+        "mean_lognormal": 115.10374663647184,
+        "std_lognormal": 218.88145714948917,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -734,12 +792,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised over 14 million USD and are headquartered in the United States."
+        "variable": "The average number of employees for venture-backed companies that have raised more than 14 million USD and are headquartered in the United States."
     },
     "medium_17": {
         "mean": 36.159646442601485,
         "std": 274.4217472538334,
         "se": 2.866658669175951,
+        "mean_lognormal": 24.42145114631295,
+        "std_lognormal": 36.934012811829675,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -757,12 +817,12 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are not technology companies and have raised more than 1 million USD and up to 4 million USD."
+        "variable": "The average number of employees for venture-backed companies that are not technology companies and have raised over 1 million USD but no more than 4 million USD."
     },
     "medium_18": {
-        "mean": 0.35208672086720866,
-        "std": 0.4776467242350962,
-        "se": 0.00497305905183764,
+        "mean": 0.3516531165311653,
+        "std": 0.47751221927269843,
+        "se": 0.004971658642106283,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -780,12 +840,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US if the company is not a technology company and has more than 45 employees."
+        "variable": "The probability that a venture-backed company is based in the US given that the company does not operate in the technology sector and has more than 45 employees."
     },
     "medium_19": {
-        "mean": 5.2056466724620885,
-        "std": 19.121116665617098,
-        "se": 0.18792308974585611,
+        "mean": 5.2096888246628135,
+        "std": 19.10877828243449,
+        "se": 0.18755741765615633,
+        "mean_lognormal": 5.365911329267959,
+        "std_lognormal": 16.01987107472043,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -803,12 +865,14 @@
         ],
         "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are headquartered outside the US and have 9 to 19 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies that are not headquartered in the US and have between 9 and 19 employees."
     },
     "hard_0": {
-        "mean": 24.068650556611455,
-        "std": 48.352427810552655,
-        "se": 0.7967414758954652,
+        "mean": 24.0746973827699,
+        "std": 48.398017377317345,
+        "se": 0.7991216699028834,
+        "mean_lognormal": 30.28932814207766,
+        "std_lognormal": 101.6661009803174,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -831,12 +895,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are based in the US, have more than 15 but no more than 42 employees, and are not technology companies."
+        "variable": "The average total raised in millions USD for venture-backed companies headquartered in the US with between 16 and 42 employees and that are not technology companies."
     },
     "hard_1": {
-        "mean": 0.41822008418520745,
-        "std": 0.49334087801876264,
-        "se": 0.008554329605427496,
+        "mean": 0.41809437932070936,
+        "std": 0.4933199952042673,
+        "se": 0.008552681871680836,
         "base_variable": "IsTechCompany",
         "conditions": [
             [
@@ -859,12 +923,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is a technology company given that it employs more than 45 people, has raised at most 6 million USD, and is headquartered outside the United States."
+        "variable": "The probability that a venture-backed company is a technology company when it has more than 45 employees, has raised at most 6 million USD, and is not based in the US."
     },
     "hard_2": {
-        "mean": 69.41699180190732,
-        "std": 265.9492846373444,
-        "se": 3.439990146300521,
+        "mean": 69.3911135261662,
+        "std": 265.86409571590036,
+        "se": 3.4377381181732245,
+        "mean_lognormal": 71.46943316967013,
+        "std_lognormal": 393.2169425685117,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -887,12 +953,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies with at least 46 employees that operate outside the technology sector and are headquartered outside the United States."
+        "variable": "The average total raised in millions USD for venture-backed companies that have more than 45 employees, are not technology companies, and are not based in the US."
     },
     "hard_3": {
-        "mean": 0.5677083333333334,
-        "std": 0.4955377752906549,
-        "se": 0.011920786164903661,
+        "mean": 0.5678654292343387,
+        "std": 0.4955166053708479,
+        "se": 0.01193409751131844,
         "base_variable": "IsTechCompany",
         "conditions": [
             [
@@ -911,16 +977,18 @@
         "nat_langs": [
             "Employees > 45.00",
             "the company is based in the US",
-            "TotalRaised in (12.39, 38.00]"
+            "TotalRaised in (12.41, 38.00]"
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is a technology company, given that it employs more than 45 people, is headquartered in the United States, and has raised between 13 million and 38 million USD."
+        "variable": "The probability that a venture-backed company is a technology company with more than 45 employees, based in the US, and having raised between 13 and 38 million USD."
     },
     "hard_4": {
-        "mean": 35.3890759446315,
-        "std": 236.95612976166058,
-        "se": 3.240809256561671,
+        "mean": 35.34596713965646,
+        "std": 236.7374178866054,
+        "se": 3.2347939504849967,
+        "mean_lognormal": 25.165161975113936,
+        "std_lognormal": 37.472761413595556,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -943,12 +1011,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that are headquartered outside the US, have raised between 1 and 3 million USD, and are not technology companies."
+        "variable": "The average number of employees for venture-backed companies headquartered outside the United States, that have raised between 1 million and 3 million USD, and that are not technology companies."
     },
     "hard_5": {
-        "mean": 2.046984253537971,
-        "std": 9.835172571536967,
-        "se": 0.13885449205734507,
+        "mean": 2.047198489966223,
+        "std": 9.82059653763809,
+        "se": 0.13842814652182325,
+        "mean_lognormal": 1.8933781805065584,
+        "std_lognormal": 5.227074933205457,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -971,12 +1041,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are headquartered outside the US, operate in the technology sector, and have at most 9 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies that are based outside the US, operate in the technology sector, and have at most 9 employees."
     },
     "hard_6": {
-        "mean": 0.5411849710982659,
-        "std": 0.4984810308726301,
-        "se": 0.01339925312116637,
+        "mean": 0.541757443718228,
+        "std": 0.49843428325943273,
+        "se": 0.01343200782554035,
         "base_variable": "IsTechCompany",
         "conditions": [
             [
@@ -999,12 +1069,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is a technology company given that it has raised more than 1 million USD but no more than 4 million USD, employs more than 12 but no more than 25 people, and is based in the United States."
+        "variable": "The probability that a venture-backed company is a technology company, given it has raised more than 1 million USD and up to 4 million USD, employs between 13 and 25 people, and is based in the US."
     },
     "hard_7": {
-        "mean": 0.4188701923076923,
-        "std": 0.49352236737207317,
-        "se": 0.012098462411657252,
+        "mean": 0.4179640718562874,
+        "std": 0.4933719332271467,
+        "se": 0.012073027900754246,
         "base_variable": "IsTechCompany",
         "conditions": [
             [
@@ -1027,12 +1097,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is a technology company when it employs between 18 and 45 people, has raised more than 15 million USD, and is not based in the US."
+        "variable": "The probability that a venture-backed company is a technology company with between 18 and 45 employees, having raised more than 15 million USD, and headquartered outside the US."
     },
     "hard_8": {
-        "mean": 58.906992545260906,
-        "std": 194.06919076835064,
-        "se": 2.8322970280042745,
+        "mean": 58.89021290185224,
+        "std": 194.0296098474912,
+        "se": 2.8311164311007637,
+        "mean_lognormal": 64.08962424148365,
+        "std_lognormal": 286.3874037984979,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -1055,12 +1127,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that operate in the technology sector, have more than 45 employees, and are headquartered outside the US."
+        "variable": "The average total raised in millions USD for venture-backed companies that operate in the technology sector, employ more than 46 individuals, and are headquartered outside the United States."
     },
     "hard_9": {
-        "mean": 72.63626264418811,
-        "std": 273.35871476290714,
-        "se": 3.6415473698686194,
+        "mean": 72.61639411138701,
+        "std": 273.28919043175904,
+        "se": 3.6396524790067657,
+        "mean_lognormal": 75.2653647522545,
+        "std_lognormal": 413.056834327821,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -1083,12 +1157,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are headquartered outside the United States, employ over 49 people, and are not in the technology sector."
+        "variable": "The average total raised in millions USD for venture-backed companies that are headquartered outside the US, have at least 50 employees, and are not in the technology sector."
     },
     "hard_10": {
-        "mean": 8.591864776444929,
-        "std": 20.10470051397383,
-        "se": 0.2969121283183753,
+        "mean": 8.60061642343716,
+        "std": 20.11239355255778,
+        "se": 0.29683158573198626,
+        "mean_lognormal": 9.962835179802607,
+        "std_lognormal": 27.239685742828275,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -1111,12 +1187,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that are technology firms headquartered outside the US and have between 20 and 46 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies that are not based in the US, are technology companies, and have between 20 and 46 employees."
     },
     "hard_11": {
-        "mean": 168.4002843216897,
-        "std": 2150.3194815770535,
-        "se": 30.643895132060237,
+        "mean": 168.64252288911496,
+        "std": 2152.2800666572703,
+        "se": 30.699904352113812,
+        "mean_lognormal": 102.21814252992061,
+        "std_lognormal": 210.19887437229826,
         "base_variable": "Employees",
         "conditions": [
             [
@@ -1139,12 +1217,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average number of employees for venture-backed companies that have raised more than 14 million USD, are not technology companies, and are based in the US."
+        "variable": "The average number of employees for venture-backed companies that have raised more than 14 million USD, are not technology companies, and are based in the United States."
     },
     "hard_12": {
-        "mean": 0.664759179780639,
-        "std": 0.4721871835916153,
-        "se": 0.010311336973002424,
+        "mean": 0.6628516928946113,
+        "std": 0.4728487579948337,
+        "se": 0.010325784033069598,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -1167,12 +1245,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US given that it is a technology company, employs no more than 8 people, and has raised over 3 million USD."
+        "variable": "The probability that a venture-backed company is based in the US, given that it operates in the technology sector, employs at most eight people, and has raised over 3 million USD."
     },
     "hard_13": {
-        "mean": 0.3178694158075601,
-        "std": 0.46578182370429344,
-        "se": 0.011147062015478215,
+        "mean": 0.3167239404352806,
+        "std": 0.46533203534365813,
+        "se": 0.011136297708039235,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -1195,12 +1273,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US given that it is a technology company, has raised at most 2 million USD, and has between 9 and 14 employees."
+        "variable": "The probability that a venture-backed company is based in the US when it is a technology company, has raised at most 2 million USD in total, and has between nine and fourteen employees."
     },
     "hard_14": {
-        "mean": 0.2635457303857824,
-        "std": 0.4406512742533033,
-        "se": 0.009174263995170507,
+        "mean": 0.2626788036410923,
+        "std": 0.44018477798035066,
+        "se": 0.009164551643905705,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -1223,12 +1301,14 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US when it has more than 45 employees, is not a technology company, and has raised more than 6 million USD but no more than 19 million USD."
+        "variable": "The probability that a venture-backed company is based in the US, has more than 45 employees, is not a technology company, and has raised between 6 and 19 million USD."
     },
     "hard_15": {
-        "mean": 3.082831903079253,
-        "std": 10.210119261102673,
-        "se": 0.1622084892175506,
+        "mean": 3.0854064320081034,
+        "std": 10.225548697666929,
+        "se": 0.16272079389510763,
+        "mean_lognormal": 3.547634065997962,
+        "std_lognormal": 10.780293385885793,
         "base_variable": "TotalRaised",
         "conditions": [
             [
@@ -1251,7 +1331,7 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average total raised in millions USD for venture-backed companies that operate in the technology sector, are based in the United States, and have at most 8 employees."
+        "variable": "The average total raised in millions USD for venture-backed companies operating in the technology sector, based in the United States, and having eight or fewer employees."
     },
     "hard_16": {
         "mean": 0.2613690761129727,
@@ -1279,12 +1359,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US, given that it is a technology company, has more than 45 employees, and has raised at most 8 million USD."
+        "variable": "The probability that a venture-backed company is based in the US, assuming it is a technology company, has more than 46 employees, and has raised at most 8 million USD."
     },
     "hard_17": {
-        "mean": 0.5236160487557135,
-        "std": 0.49956884547409763,
-        "se": 0.011258291484726487,
+        "mean": 0.5226003047232097,
+        "std": 0.49961585163725963,
+        "se": 0.011259350816370665,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -1307,40 +1387,12 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US if it is a technology company with between 9 and 17 employees and has raised between 3 and 6 million USD."
+        "variable": "The probability that a venture-backed company is based in the US, given that it has between 9 and 17 employees, is a technology company, and has raised between 3 and 6 million USD."
     },
     "hard_18": {
-        "mean": 0.47746741154562383,
-        "std": 0.4995850656829068,
-        "se": 0.009641337866114017,
-        "base_variable": "IsUSBased",
-        "conditions": [
-            [
-                "Employees",
-                0
-            ],
-            [
-                "IsTechCompany",
-                0
-            ],
-            [
-                "TotalRaised",
-                2
-            ]
-        ],
-        "nat_langs": [
-            "Employees \u2264 8.00",
-            "the company is not a technology company",
-            "TotalRaised in (1.08, 3.17]"
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US with no more than 8 employees, that is not a technology company, and that has raised more than 2 million USD but no more than 4 million USD."
-    },
-    "hard_19": {
-        "mean": 0.5179153094462541,
-        "std": 0.4997952376749597,
-        "se": 0.010781368889176773,
+        "mean": 0.5169846440204746,
+        "std": 0.49982774523204393,
+        "se": 0.010782070128280695,
         "base_variable": "IsUSBased",
         "conditions": [
             [
@@ -1363,6 +1415,34 @@
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a venture-backed company is based in the US, given that it is a technology firm, has raised between 2 and 4 million USD, and employs no more than 7 people."
+        "variable": "The probability that a venture-backed company is based in the US, given that it is a technology company, has raised between 2 and 4 million USD, and has at most 7 employees."
+    },
+    "hard_19": {
+        "mean": 0.5303334672559261,
+        "std": 0.4991793197404138,
+        "se": 0.010005623032504407,
+        "base_variable": "IsTechCompany",
+        "conditions": [
+            [
+                "Employees",
+                3
+            ],
+            [
+                "TotalRaised",
+                3
+            ],
+            [
+                "IsUSBased",
+                1
+            ]
+        ],
+        "nat_langs": [
+            "Employees > 45.00",
+            "TotalRaised > 63.00",
+            "the company is based in the US"
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a venture-backed company is a technology company, given that it employs more than 45 people, has raised more than 63 million USD, and is based in the US."
     }
 }

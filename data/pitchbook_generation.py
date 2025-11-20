@@ -9,7 +9,7 @@ from openai import OpenAI
 from typing import List, Dict, Union
 from utils import (check_difference_threshold_continuous, check_difference_threshold_proportion, 
 compute_mean_continuous, SUBSAMPLE_SIZES, RESAMPLES_PER_N, ALPHA0, BETA0, MU0, SIGMA0, save_sample_to_csv, 
-gaussian_posterior, beta_posterior)
+gaussian_posterior, beta_posterior, compute_lognormal_mean_continuous)
 
 random.seed(42)
 
@@ -436,9 +436,10 @@ def compute_ground_truths(data_df):
         ground_truths[var] = { 'mean': mean_proportion, 'std': std_proportion, 'se': se_proportion, 'base_variable': var, 'ground_truth_distribution_type': 'beta'}
 
     # Compute ground truth proportions for base continuous variables 
-    for var in target_variables_continuous: 
+    for var in target_variables_continuous:
         mean_value, std_value, se_value = compute_mean_continuous(data_df, var)
-        ground_truths[var] = { 'mean': mean_value, 'std': std_value, 'se': se_value, 'base_variable': var, 'ground_truth_distribution_type': 'normal'}
+        lognormal_mean_value, lognormal_std_value = compute_lognormal_mean_continuous(data_df, var)
+        ground_truths[var] = { 'mean': mean_value, 'std': std_value, 'se': se_value, 'mean_lognormal': lognormal_mean_value, 'std_lognormal': lognormal_std_value, 'base_variable': var, 'ground_truth_distribution_type': 'normal'}
 
     return ground_truths
 
@@ -451,7 +452,10 @@ def apply_conditions(data_df, var, conditions):
     if var in target_variables_boolean:
         return {"res": compute_proportion_boolean(subset, var), "nat_langs": descriptions}
     else:
-        return {"res": compute_mean_continuous(subset, var), "nat_langs": descriptions}
+        mean_value, std_value, se_value = compute_mean_continuous(subset, var)
+        lognormal_mean_value, lognormal_std_value = compute_lognormal_mean_continuous(subset, var)
+        res = (mean_value, std_value, se_value, lognormal_mean_value, lognormal_std_value)
+        return {"res": res, "nat_langs": descriptions} 
 
 
 def sample_conditions(data_df, var, num_conditions, all_conditions): 
@@ -491,128 +495,135 @@ def create_variables_by_difficulty(data_df, ground_truths, all_conditions, num_e
         seen_signatures.append((var, []))
         
     easy_vars = 0
-    attempts = 0  
+    attempts = 0
     while easy_vars < num_easy:
         attempts += 1
-        
+
         if attempts > 1000:
             break
-            
+
         var = random.choice(list(ground_truths.keys()))
         results = sample_conditions(data_df, var, 1, all_conditions)
-        res = results['res']
+        res_data = results['res']
         conds = results['conds']
-        res, nat_langs = res['res'], res['nat_langs']
-        if res is None:
+        if res_data is None:
             continue
-        mean, stdev, se = res
-    
-        if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue
-        elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue 
-        
-        if var in target_variables_boolean: 
+        res, nat_langs = res_data['res'], res_data['nat_langs']
+
+        if var in target_variables_boolean:
+            mean, stdev, se = res
+            if not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'beta'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs,'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
         elif var in target_variables_continuous:
+            mean, stdev, se, lognormal_mean, lognormal_std = res
+            if not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'normal'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': lognormal_mean, 'std_lognormal': lognormal_std, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs,'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
 
         varname = 'easy_{}'.format(easy_vars)
         signature = (var, nat_langs)
         dup = False
         for other_signature in seen_signatures:
             var_other, nat_langs_other = other_signature
-            if var_other == var and set(nat_langs) == set(nat_langs_other):  
+            if var_other == var and set(nat_langs) == set(nat_langs_other):
                 dup = True
-        if dup: 
+        if dup:
             continue
         else:
             seen_signatures.append(signature)
         easy_vars += 1
-        variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs,'difficulty': 'easy', 'ground_truth_distribution_type': ground_truth_distribution_type}
+        variables_by_difficulty[varname] = var_dict
     medium_vars = 0
-    attempts = 0  
+    attempts = 0
     while medium_vars < num_medium:
         attempts += 1
         if attempts > 1000:
             break
-            
+
         var = random.choice(list(ground_truths.keys()))
         results = sample_conditions(data_df, var, 2, all_conditions)
-        res = results['res']
+        res_data = results['res']
         conds = results['conds']
-        res, nat_langs = res['res'], res['nat_langs']
-        if res is None:
+        if res_data is None:
             continue
-        mean, stdev, se = res
-    
-        if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue
-        elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue 
-        
-        if var in target_variables_boolean: 
+        res, nat_langs = res_data['res'], res_data['nat_langs']
+
+        if var in target_variables_boolean:
+            mean, stdev, se = res
+            if not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'beta'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
         elif var in target_variables_continuous:
+            mean, stdev, se, lognormal_mean, lognormal_std = res
+            if not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'normal'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': lognormal_mean, 'std_lognormal': lognormal_std, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
         varname = 'medium_{}'.format(medium_vars)
         signature = (var, nat_langs)
         dup = False
         for other_signature in seen_signatures:
             var_other, nat_langs_other = other_signature
-            if var_other == var and set(nat_langs) == set(nat_langs_other):  
+            if var_other == var and set(nat_langs) == set(nat_langs_other):
                 dup = True
-        if dup: 
+        if dup:
             continue
         else:
             seen_signatures.append(signature)
         medium_vars += 1
-        variables_by_difficulty[varname] = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'medium', 'ground_truth_distribution_type': ground_truth_distribution_type}
-    hard_vars = 0   
-    attempts = 0  
+        variables_by_difficulty[varname] = var_dict
+    hard_vars = 0
+    attempts = 0
     while hard_vars < num_hard:
         attempts += 1
         if attempts > 1000:
             break
-            
+
         var = random.choice(list(ground_truths.keys()))
         results = sample_conditions(data_df, var, 3, all_conditions)
-        res = results['res']
+        res_data = results['res']
         conds = results['conds']
-        res, nat_langs = res['res'], res['nat_langs']
-        if res is None:
+        if res_data is None:
             continue
-        mean, stdev, se = res
-    
-        if (var in target_variables_boolean and not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue
-        elif (var in target_variables_continuous and not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold)) or (mean == 0 or stdev == 0):
-            attempts += 1
-            continue 
+        res, nat_langs = res_data['res'], res_data['nat_langs']
 
-        if var in target_variables_boolean: 
+        if var in target_variables_boolean:
+            mean, stdev, se = res
+            if not check_difference_threshold_proportion(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'beta'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
         elif var in target_variables_continuous:
+            mean, stdev, se, lognormal_mean, lognormal_std = res
+            if not check_difference_threshold_continuous(mean, ground_truths[var]['mean'], se, difference_threshold) or (mean == 0 or stdev == 0):
+                attempts += 1
+                continue
             ground_truth_distribution_type = 'normal'
+            var_dict = {'mean': mean, 'std': stdev, 'se': se, 'mean_lognormal': lognormal_mean, 'std_lognormal': lognormal_std, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
+
         varname = 'hard_{}'.format(hard_vars)
-        
+
         signature = (var, nat_langs)
         dup = False
         for other_signature in seen_signatures:
             var_other, nat_langs_other = other_signature
-            if var_other == var and set(nat_langs) == set(nat_langs_other):  
+            if var_other == var and set(nat_langs) == set(nat_langs_other):
                 dup = True
-        if dup: 
+        if dup:
             continue
         else:
             seen_signatures.append(signature)
-        var = {'mean': mean, 'std': stdev, 'se': se, 'base_variable': var, 'conditions': conds, 'nat_langs': nat_langs, 'difficulty': 'hard', 'ground_truth_distribution_type': ground_truth_distribution_type}
-        variables_by_difficulty[varname] = var
+        variables_by_difficulty[varname] = var_dict
         hard_vars += 1
     return variables_by_difficulty  
 
@@ -701,7 +712,7 @@ def beta_posterior(alpha0: float, beta0: float,
 
 
 def generate_pitchbook(generation_config): 
-    company_raw = pd.read_csv('data/Company.csv')
+    company_raw = pd.read_csv('Company.csv')
     df = pitchbook_load(company_raw)
     all_possible_conditions = {}
     for var in target_variables_boolean + target_variables_continuous:
@@ -751,6 +762,7 @@ def generate_pitchbook(generation_config):
                 continue
 
             trials: List[Dict[str, float]] = []
+            lognorm_trials: List[Dict[str, float]] = []
 
             for trial_idx in range(RESAMPLES_PER_N):
                 samp = subset.sample(
@@ -760,7 +772,7 @@ def generate_pitchbook(generation_config):
                 )
 
                 # Save the sample to CSV for reproducibility
-                save_sample_to_csv(samp, var_key, n, trial_idx)
+                save_sample_to_csv('pitchbook', samp, var_key, n, trial_idx)
 
                 # For Pitchbook data, we don't have survey weights, so treat as unweighted
                 n_eff = len(samp)
@@ -773,22 +785,36 @@ def generate_pitchbook(generation_config):
                     trials.append({"alpha": alpha, "beta": beta})
 
                 else:  # continuous
+                    # Normal update
                     mean_hat = float(samp[base_var].mean())
                     pop_sd   = float(samp[base_var].std())          # sample σ
                     mu_n, sig_n = gaussian_posterior(
                         MU0, SIGMA0, n_eff, mean_hat, pop_sd
                     )
+
+                    #Lognormal update
+                    log_values = np.log(samp[base_var] + 1e-6)  # avoid log(0)
+                    mean_log_hat = float(log_values.mean())
+                    pop_log_sd   = float(log_values.std())
+                    mu_n_log, sig_n_log = gaussian_posterior(mean_log_hat, pop_log_sd, n_eff, mean_hat, pop_sd)
+                    mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
+                    sig_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
+
                     trials.append({"mu": mu_n, "sigma": sig_n})
+                    lognorm_trials.append({"mu": mu_n_exp, "sigma": sig_n_exp})
 
             baselines[var_key][str(n)] = trials
+            if len(lognorm_trials) > 0:
+                baselines[var_key][str(n) + "_lognorm"] = lognorm_trials
 
         # ───────────────────────────────────────────────────
         # ALL-examples baseline (single trial using all rows)
         # ───────────────────────────────────────────────────
         all_trials: List[Dict[str, float]] = []
+        all_lognorm_trials: List[Dict[str, float]] = []
         
         # Save the full subset as "ALL" sample
-        save_sample_to_csv(subset, var_key, "ALL", 0)
+        save_sample_to_csv('pitchbook', subset, var_key, "ALL", 0)
         
         n_eff_all = len(subset)
         if is_boolean:
@@ -800,15 +826,25 @@ def generate_pitchbook(generation_config):
             mean_all = float(subset[base_var].mean())
             sd_all   = float(subset[base_var].std())
             mu_all, sig_all = gaussian_posterior(MU0, SIGMA0, n_eff_all, mean_all, sd_all)
+
+            # Lognormal update for ALL
+            log_values_all = np.log(subset[base_var] + 1e-6)  # avoid log(0)
+            mean_log_all = float(log_values_all.mean())
+            sd_log_all   = float(log_values_all.std())
+            mu_all_log, sig_all_log = gaussian_posterior(mean_log_all, sd_log_all, n_eff_all, mean_all, sd_all)
+            mu_all_exp = np.exp(mu_all_log + 0.5 * sig_all_log ** 2)
+            sig_all_exp = np.sqrt((np.exp(sig_all_log ** 2) - 1) * np.exp(2 * mu_all_log + sig_all_log ** 2))
+            all_lognorm_trials.append({"mu": mu_all_exp, "sigma": sig_all_exp})
             all_trials.append({"mu": mu_all, "sigma": sig_all})
 
         baselines[var_key]["ALL"] = all_trials
+        baselines[var_key]["ALL_lognorm"] = all_lognorm_trials
     
     return variables, baselines 
 
 if __name__ == "__main__":
     # Test case
-    company_raw = pd.read_csv('data/Company.csv')
+    company_raw = pd.read_csv('Company.csv')
     data_df = pitchbook_load(company_raw)
     conditions = [['IsTechCompany', 0], ['Employees', 3], ['TotalRaised', 3]]
     subset, descriptions = apply_conditions_get_data_subset(data_df, 'IsUSBased', conditions)# Ensure the subset is valid

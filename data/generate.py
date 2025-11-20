@@ -3,8 +3,8 @@ import click
 import numpy as np
 from pathlib import Path 
 from nhanes_generation import generate_nhanes
-from glassdoor import generate_glassdoor 
-from pitchbook import generate_pitchbook
+from glassdoor_generation import generate_glassdoor 
+from pitchbook_generation import generate_pitchbook
 
 
 GENERATION_CONFIG = {

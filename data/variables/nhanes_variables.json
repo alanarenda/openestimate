@@ -3,6 +3,8 @@
         "mean": 100.38684903677463,
         "std": 17.500716827469283,
         "se": 0.7423643662011419,
+        "mean_lognormal": 100.38366116511118,
+        "std_lognormal": 17.470939366111267,
         "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population",
         "base_variable": "WaistCircumferenceCm",
         "conditions": [],
@@ -12,6 +14,8 @@
         "mean": 188.1221353263126,
         "std": 40.60786922454955,
         "se": 1.756392300430365,
+        "mean_lognormal": 188.16673621832686,
+        "std_lognormal": 41.16246964811539,
         "variable": "The average total cholesterol among adult (over 18) individuals in units of mg/dL in the general US population",
         "base_variable": "TotalCholesterolMgdl",
         "conditions": [],
@@ -21,6 +25,8 @@
         "mean": 1.0978834294272068,
         "std": 1.318523872679893,
         "se": 0.026764869084457753,
+        "mean_lognormal": 1.067269951891853,
+        "std_lognormal": 0.8489305392244149,
         "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population",
         "base_variable": "BloodLeadUgdl",
         "conditions": [],
@@ -30,6 +36,8 @@
         "mean": 0.4368693057644108,
         "std": 0.5397619496253873,
         "se": 0.0161828229962125,
+        "mean_lognormal": 0.41525127732455963,
+        "std_lognormal": 0.4250715644091607,
         "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population",
         "base_variable": "BloodCadmiumUgl",
         "conditions": [],
@@ -39,6 +47,8 @@
         "mean": 1.2959934071907038,
         "std": 1.997491517448921,
         "se": 0.0664636598149528,
+        "mean_lognormal": 1.2093726473954551,
+        "std_lognormal": 1.526547152591543,
         "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population",
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [],
@@ -48,6 +58,8 @@
         "mean": 9.843415617395952,
         "std": 3.5550331648212747,
         "se": 0.07662800557539051,
+        "mean_lognormal": 9.828523820382191,
+        "std_lognormal": 3.348637903410033,
         "variable": "The average blood manganese level among adult (over 18) individuals in units of ug/L in the general US population",
         "base_variable": "BloodManganeseUgl",
         "conditions": [],
@@ -57,6 +69,8 @@
         "mean": 84.0178628441432,
         "std": 22.983028946160236,
         "se": 0.8037481791362647,
+        "mean_lognormal": 83.97503563547231,
+        "std_lognormal": 22.486120507156727,
         "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms",
         "base_variable": "WeightKg",
         "conditions": [],
@@ -159,6 +173,8 @@
         "mean": 0.4933923877996188,
         "std": 0.6111817521279215,
         "se": 0.025181705145661117,
+        "mean_lognormal": 0.4702505738993301,
+        "std_lognormal": 0.46728579389365166,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -174,6 +190,8 @@
         "mean": 0.3921815605445806,
         "std": 0.4423852470631248,
         "se": 0.016360072774284688,
+        "mean_lognormal": 0.37529622679561947,
+        "std_lognormal": 0.32981384202382885,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -189,6 +207,8 @@
         "mean": 78.91665124494659,
         "std": 21.345388598897305,
         "se": 1.0959663789997007,
+        "mean_lognormal": 78.86937814328277,
+        "std_lognormal": 20.736003404563913,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -204,6 +224,8 @@
         "mean": 0.39644849878648625,
         "std": 0.4385405351705116,
         "se": 0.01644723618592661,
+        "mean_lognormal": 0.3804246326801326,
+        "std_lognormal": 0.36538320220299475,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -219,6 +241,8 @@
         "mean": 1.0004345500593974,
         "std": 0.975057437260549,
         "se": 0.04160752712605065,
+        "mean_lognormal": 0.9747234975810827,
+        "std_lognormal": 0.7844554372151065,
         "base_variable": "BloodLeadUgdl",
         "conditions": [
             [
@@ -249,6 +273,8 @@
         "mean": 1.2372229538142916,
         "std": 1.8545063118261345,
         "se": 0.05739217060949119,
+        "mean_lognormal": 1.1865248006259606,
+        "std_lognormal": 0.8443210627561827,
         "base_variable": "BloodLeadUgdl",
         "conditions": [
             [
@@ -294,6 +320,8 @@
         "mean": 0.3792825416594003,
         "std": 0.5021475843490251,
         "se": 0.025483585699848512,
+        "mean_lognormal": 0.3504450854448846,
+        "std_lognormal": 0.3505203945185108,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -309,6 +337,8 @@
         "mean": 61.51678636747871,
         "std": 9.132957229083848,
         "se": 0.2803998873539618,
+        "mean_lognormal": 61.52357207004702,
+        "std_lognormal": 9.281022682010292,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -339,6 +369,8 @@
         "mean": 0.98985228364987,
         "std": 0.9751966829919886,
         "se": 0.05568130078991942,
+        "mean_lognormal": 0.9824311928570922,
+        "std_lognormal": 0.7929905850594654,
         "base_variable": "BloodLeadUgdl",
         "conditions": [
             [
@@ -354,6 +386,8 @@
         "mean": 111.1603034427047,
         "std": 14.930942571364218,
         "se": 1.8944899547712333,
+        "mean_lognormal": 111.16532952510579,
+        "std_lognormal": 15.042265182387629,
         "base_variable": "WaistCircumferenceCm",
         "conditions": [
             [
@@ -384,6 +418,8 @@
         "mean": 1.5030180967202629,
         "std": 2.0297123455957204,
         "se": 0.20654774339459342,
+        "mean_lognormal": 1.4205742524185183,
+        "std_lognormal": 1.7162548473374548,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -399,6 +435,8 @@
         "mean": 1.003168592665473,
         "std": 1.0929488166708057,
         "se": 0.1369816812043731,
+        "mean_lognormal": 0.9809799881045377,
+        "std_lognormal": 1.0505629458298729,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -414,6 +452,8 @@
         "mean": 111.17048561329548,
         "std": 16.870493129966103,
         "se": 1.562980301217157,
+        "mean_lognormal": 111.17846850912093,
+        "std_lognormal": 17.029537911590626,
         "base_variable": "WaistCircumferenceCm",
         "conditions": [
             [
@@ -429,6 +469,8 @@
         "mean": 99.35040588544162,
         "std": 27.30596706250136,
         "se": 3.7982483458703564,
+        "mean_lognormal": 99.33085370459965,
+        "std_lognormal": 27.020863914057898,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -486,6 +528,8 @@
         "mean": 0.8872222181617718,
         "std": 1.7988992396041201,
         "se": 0.13384734505178827,
+        "mean_lognormal": 0.7548870603514127,
+        "std_lognormal": 0.7414612879152253,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -505,6 +549,8 @@
         "mean": 93.66582391759269,
         "std": 24.035731076460944,
         "se": 2.623482349374957,
+        "mean_lognormal": 93.65282408899213,
+        "std_lognormal": 23.885191194720946,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -562,6 +608,8 @@
         "mean": 1.5167970001529811,
         "std": 2.0981874789527697,
         "se": 0.13143941469405582,
+        "mean_lognormal": 1.4310906767593345,
+        "std_lognormal": 1.9153912628262997,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -581,6 +629,8 @@
         "mean": 0.8164067112567804,
         "std": 0.8256447941644431,
         "se": 0.0840796427218404,
+        "mean_lognormal": 0.7976425549380814,
+        "std_lognormal": 0.784888955393518,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -638,6 +688,8 @@
         "mean": 165.96316136777656,
         "std": 37.905521494227386,
         "se": 5.237999924421688,
+        "mean_lognormal": 166.00225804558667,
+        "std_lognormal": 38.817942455515094,
         "base_variable": "TotalCholesterolMgdl",
         "conditions": [
             [
@@ -676,6 +728,8 @@
         "mean": 0.4640578958978977,
         "std": 0.5852148716842489,
         "se": 0.022684476811220558,
+        "mean_lognormal": 0.43859811174796115,
+        "std_lognormal": 0.46823465291559696,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -695,6 +749,8 @@
         "mean": 0.5068630511625142,
         "std": 0.5694310012000948,
         "se": 0.03025758464956577,
+        "mean_lognormal": 0.4808886369014076,
+        "std_lognormal": 0.4190665344471255,
         "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
@@ -714,6 +770,8 @@
         "mean": 78.83461705541391,
         "std": 20.215108329141724,
         "se": 3.5228662717955737,
+        "mean_lognormal": 78.80976080849034,
+        "std_lognormal": 19.804836505347584,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -790,6 +848,8 @@
         "mean": 1.5350766308733583,
         "std": 2.0674378856041544,
         "se": 0.21795453066832185,
+        "mean_lognormal": 1.4501826879511748,
+        "std_lognormal": 1.7553885051421143,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -809,6 +869,8 @@
         "mean": 0.8100218524873639,
         "std": 0.9500320959445013,
         "se": 0.08966627741417682,
+        "mean_lognormal": 0.7722528020217098,
+        "std_lognormal": 0.7683647397808727,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -832,6 +894,8 @@
         "mean": 61.41386595425482,
         "std": 9.914317258333229,
         "se": 0.6443878671044183,
+        "mean_lognormal": 61.417734832049106,
+        "std_lognormal": 10.011242576753565,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -855,6 +919,8 @@
         "mean": 1.014119080480835,
         "std": 1.6903542820353292,
         "se": 0.1398902851857858,
+        "mean_lognormal": 0.9104320816236909,
+        "std_lognormal": 1.196059988341232,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -947,6 +1013,8 @@
         "mean": 0.8974164936058019,
         "std": 0.955004894175912,
         "se": 0.08665274123943656,
+        "mean_lognormal": 0.8683388002360568,
+        "std_lognormal": 0.9086858160184266,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -970,6 +1038,8 @@
         "mean": 10.881872088685798,
         "std": 2.7909718998823707,
         "se": 0.32145723435276646,
+        "mean_lognormal": 10.951785042361715,
+        "std_lognormal": 3.4427815387405274,
         "base_variable": "BloodManganeseUgl",
         "conditions": [
             [
@@ -1016,6 +1086,8 @@
         "mean": 78.12107684632,
         "std": 16.945504078210437,
         "se": 1.311129632872655,
+        "mean_lognormal": 78.10330211566159,
+        "std_lognormal": 16.699643568992048,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -1039,6 +1111,8 @@
         "mean": 1.291427894718302,
         "std": 0.8423301310128966,
         "se": 0.09738386141911888,
+        "mean_lognormal": 1.3087233025295182,
+        "std_lognormal": 0.9981488857637255,
         "base_variable": "BloodLeadUgdl",
         "conditions": [
             [
@@ -1062,6 +1136,8 @@
         "mean": 1.6437127364315731,
         "std": 2.1041376440331794,
         "se": 0.1373014478494932,
+        "mean_lognormal": 1.6336473358355645,
+        "std_lognormal": 2.205751008193206,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -1085,6 +1161,8 @@
         "mean": 1.4837072564715934,
         "std": 2.1605202392127834,
         "se": 0.17976969753544425,
+        "mean_lognormal": 1.371120291454437,
+        "std_lognormal": 1.7967013909448295,
         "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
@@ -1108,6 +1186,8 @@
         "mean": 58.13594758245014,
         "std": 8.632698618502474,
         "se": 2.2690912537543833,
+        "mean_lognormal": 58.133944986337646,
+        "std_lognormal": 8.620808897038936,
         "base_variable": "WeightKg",
         "conditions": [
             [
@@ -1154,6 +1234,8 @@
         "mean": 203.11808217336528,
         "std": 43.95164629872479,
         "se": 3.7204654805652835,
+        "mean_lognormal": 203.30335914266524,
+        "std_lognormal": 46.53995649992157,
         "base_variable": "TotalCholesterolMgdl",
         "conditions": [
             [
@@ -1200,6 +1282,8 @@
         "mean": 113.15729834950707,
         "std": 12.70871297955681,
         "se": 1.945539586931558,
+        "mean_lognormal": 113.15601893951049,
+        "std_lognormal": 12.693155568207453,
         "base_variable": "WaistCircumferenceCm",
         "conditions": [
             [
