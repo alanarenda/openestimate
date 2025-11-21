@@ -1,8 +1,0 @@
-{
-  "experiment_name": "o4-mini_base_unified-lognormal_tempmedium",
-  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/nhanes/model_family_comparison/nhanes_o4-mini_base_tempmedium_experts.json",
-  "variables": "/home/ubuntu/alana/openestimate/data/variables/nhanes_variables.json",
-  "protocol_spec": {
-    "individual_elicitation_protocol": "unified-lognormal"
-  }
-}

@@ -84,7 +84,7 @@ def generate_experiment_specs(dataset):
     # Part 1 Evaluation
     for model, protocol in product(
         models_part1,
-        ["unified-lognormal"]
+        ["unified-lognormal-direct"]
     ):
         prompt_name = "base"
         experiment_name = "model_family_comparison"
@@ -126,10 +126,10 @@ def generate_experiment_specs(dataset):
 
             if protocol == "unified":
                 protocol_spec = {"individual_elicitation_protocol": "unified"}
-            elif protocol == "unified-lognormal":
-                protocol_spec = {"individual_elicitation_protocol": "unified-lognormal"}
+            elif protocol == "unified-lognormal-direct":
+                protocol_spec = {"individual_elicitation_protocol": "unified-lognormal-direct"}
             elif protocol == "unified-no-lognormal":
-                protocol_spec = {"individual_elicitation_protocol": "unified-no-lognormal"}
+                protocol_spec = {"individual_elicitation_protocol": "unified-no-lognormal-direct"}
             elif protocol == "direct":
                 protocol_spec = {"individual_elicitation_protocol": "direct"}
             else:
