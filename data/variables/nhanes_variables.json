@@ -140,70 +140,6 @@
         "ground_truth_distribution_type": "beta"
     },
     "easy_0": {
-        "mean": 0.1799854881791661,
-        "std": 0.38417536649826123,
-        "se": 0.03682755850156761,
-        "base_variable": "TakeMedicationForDepression",
-        "conditions": [
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population takes medication for depression, given they have ever had a heart attack that was confirmed by a doctor"
-    },
-    "easy_1": {
-        "mean": 0.9249930964813364,
-        "std": 0.2634024827962057,
-        "se": 0.030431502060777757,
-        "base_variable": "CoveredByHealthInsurance",
-        "conditions": [
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they have ever had a heart attack that was confirmed by a doctor"
-    },
-    "easy_2": {
-        "mean": 0.4933923877996188,
-        "std": 0.6111817521279215,
-        "se": 0.025181705145661117,
-        "mean_lognormal": 0.4702505738993301,
-        "std_lognormal": 0.46728579389365166,
-        "base_variable": "BloodCadmiumUgl",
-        "conditions": [
-            [
-                "BloodLeadUgdl",
-                2
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their blood lead level in ug/dL is greater than 0.92 and less than or equal to 1.48"
-    },
-    "easy_3": {
-        "mean": 0.3921815605445806,
-        "std": 0.4423852470631248,
-        "se": 0.016360072774284688,
-        "mean_lognormal": 0.37529622679561947,
-        "std_lognormal": 0.32981384202382885,
-        "base_variable": "BloodCadmiumUgl",
-        "conditions": [
-            [
-                "BloodMercuryTotalUgl",
-                3
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their blood mercury level in ug/L is greater than 1.46"
-    },
-    "easy_4": {
         "mean": 78.91665124494659,
         "std": 21.345388598897305,
         "se": 1.0959663789997007,
@@ -220,41 +156,52 @@
         "ground_truth_distribution_type": "normal",
         "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood cadmium level in ug/L is greater than 0.5425"
     },
-    "easy_5": {
-        "mean": 0.39644849878648625,
-        "std": 0.4385405351705116,
-        "se": 0.01644723618592661,
-        "mean_lognormal": 0.3804246326801326,
-        "std_lognormal": 0.36538320220299475,
-        "base_variable": "BloodCadmiumUgl",
+    "easy_1": {
+        "mean": 0.20563952491722504,
+        "std": 0.4041681713211012,
+        "se": 0.012389910259429577,
+        "base_variable": "DoctorToldYouHaveDiabetes",
         "conditions": [
             [
-                "BloodManganeseUgl",
-                2
+                "WeightKg",
+                3
             ]
         ],
         "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their blood manganese level in ug/L is greater than 9.38 and less than or equal to 11.7125"
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their weight in kilograms is greater than 94.5"
     },
-    "easy_6": {
-        "mean": 1.0004345500593974,
-        "std": 0.975057437260549,
-        "se": 0.04160752712605065,
-        "mean_lognormal": 0.9747234975810827,
-        "std_lognormal": 0.7844554372151065,
-        "base_variable": "BloodLeadUgdl",
+    "easy_2": {
+        "mean": 0.9629074863629776,
+        "std": 0.18898851570693306,
+        "se": 0.010400780565830544,
+        "base_variable": "CoveredByHealthInsurance",
         "conditions": [
             [
-                "WaistCircumferenceCm",
-                0
+                "EverToldYouHadCancerOrMalignancy",
+                1.0
             ]
         ],
         "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given their waist circumference in centimeters is less than or equal to 87.9"
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they have ever been diagnosed with cancer by a doctor"
     },
-    "easy_7": {
+    "easy_3": {
+        "mean": 0.12080705826647947,
+        "std": 0.3259029195013124,
+        "se": 0.019569323052746758,
+        "base_variable": "EverToldYouHadHeartAttack",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor"
+    },
+    "easy_4": {
         "mean": 0.9429069079428928,
         "std": 0.23202041051697556,
         "se": 0.0217253717593877,
@@ -269,54 +216,205 @@
         "ground_truth_distribution_type": "beta",
         "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they are currently taking insulin"
     },
-    "easy_8": {
-        "mean": 1.2372229538142916,
-        "std": 1.8545063118261345,
-        "se": 0.05739217060949119,
-        "mean_lognormal": 1.1865248006259606,
-        "std_lognormal": 0.8443210627561827,
-        "base_variable": "BloodLeadUgdl",
+    "easy_5": {
+        "mean": 0.4670938703859029,
+        "std": 0.49891601160297533,
+        "se": 0.06129899646508302,
+        "base_variable": "DoctorToldYouHaveDiabetes",
         "conditions": [
             [
-                "BloodMercuryTotalUgl",
+                "EverToldYouHadHeartAttack",
+                1.0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given they have ever had a heart attack that was confirmed by a doctor"
+    },
+    "easy_6": {
+        "mean": 111.22045302073236,
+        "std": 19.551377681411136,
+        "se": 0.7233142260494716,
+        "mean_lognormal": 111.17944413969536,
+        "std_lognormal": 18.80491689576284,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
                 3
             ]
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given their blood mercury level in ug/L is greater than 1.46"
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their waist circumference in centimeters is greater than 110.7"
+    },
+    "easy_7": {
+        "mean": 0.5053724557306462,
+        "std": 0.6161143491914564,
+        "se": 0.035919256595929885,
+        "mean_lognormal": 0.49058913316812985,
+        "std_lognormal": 0.6304196412268245,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "CoveredByHealthInsurance",
+                0.0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given they do not have health insurance"
+    },
+    "easy_8": {
+        "mean": 0.4828921744240734,
+        "std": 0.5703706922539146,
+        "se": 0.026448382439215903,
+        "mean_lognormal": 0.4662298674806449,
+        "std_lognormal": 0.5123057552185208,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
+                0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their waist circumference in centimeters is less than or equal to 87.9"
     },
     "easy_9": {
-        "mean": 0.08856772450252827,
-        "std": 0.2841187826930358,
-        "se": 0.015407858950907927,
+        "mean": 0.4752457587401407,
+        "std": 0.5994655954090049,
+        "se": 0.024024491134523436,
+        "mean_lognormal": 0.4499675730245055,
+        "std_lognormal": 0.4938725922200427,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "BloodMercuryTotalUgl",
+                0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their blood mercury level in ug/L is less than or equal to 0.35"
+    },
+    "easy_10": {
+        "mean": 8.953623162310114,
+        "std": 3.0596044141848324,
+        "se": 0.26306328042009514,
+        "mean_lognormal": 8.96534065869547,
+        "std_lognormal": 3.1150050936315807,
+        "base_variable": "BloodManganeseUgl",
+        "conditions": [
+            [
+                "TakingInsulinNow",
+                1.0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood manganese level among adult (over 18) individuals in units of ug/L in the general US population, given they are currently taking insulin"
+    },
+    "easy_11": {
+        "mean": 0.31548347836240065,
+        "std": 0.46470813769801933,
+        "se": 0.02807338506176614,
+        "base_variable": "HaveSeriousDifficultyConcentrating",
+        "conditions": [
+            [
+                "TakeMedicationForDepression",
+                1.0
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating, given they take medication for depression"
+    },
+    "easy_12": {
+        "mean": 1.4913598390479814,
+        "std": 1.3208953514921795,
+        "se": 0.05346062641858002,
+        "mean_lognormal": 1.4662139904153801,
+        "std_lognormal": 1.0844497024865363,
+        "base_variable": "BloodLeadUgdl",
+        "conditions": [
+            [
+                "BloodCadmiumUgl",
+                3
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given their blood cadmium level in ug/L is greater than 0.5425"
+    },
+    "easy_13": {
+        "mean": 1.1681689707618852,
+        "std": 1.8881245019251163,
+        "se": 0.11633996104526617,
+        "mean_lognormal": 1.0600759158414748,
+        "std_lognormal": 1.261723291262873,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
+                3
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their waist circumference in centimeters is greater than 110.7"
+    },
+    "easy_14": {
+        "mean": 0.1945755485708206,
+        "std": 0.3958735965800003,
+        "se": 0.03718976265465953,
         "base_variable": "EverToldYouHadHeartAttack",
         "conditions": [
             [
-                "HaveSeriousDifficultyConcentrating",
+                "TakingInsulinNow",
                 1.0
             ]
         ],
         "difficulty": "easy",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have serious difficulty concentrating"
+        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they are currently taking insulin"
     },
-    "easy_10": {
-        "mean": 0.19493128113615096,
-        "std": 0.39614779662490845,
-        "se": 0.022626052314231513,
-        "base_variable": "TakeMedicationForDepression",
+    "easy_15": {
+        "mean": 0.5771450839414995,
+        "std": 0.6371186674346546,
+        "se": 0.052019832230221524,
+        "mean_lognormal": 0.5587236860899829,
+        "std_lognormal": 0.5515018266867739,
+        "base_variable": "BloodCadmiumUgl",
         "conditions": [
             [
-                "EverToldYouHadCancerOrMalignancy",
+                "EverToldYouHadHeartAttack",
                 1.0
             ]
         ],
         "difficulty": "easy",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population takes medication for depression, given they have ever been diagnosed with cancer by a doctor"
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever had a heart attack that was confirmed by a doctor"
     },
-    "easy_11": {
+    "easy_16": {
+        "mean": 93.0924561680472,
+        "std": 24.88087719060656,
+        "se": 1.9900421505624035,
+        "mean_lognormal": 93.06529632451982,
+        "std_lognormal": 24.550221274568027,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given they have ever been diagnosed with diabetes by a doctor"
+    },
+    "easy_17": {
         "mean": 0.3792825416594003,
         "std": 0.5021475843490251,
         "se": 0.025483585699848512,
@@ -333,1012 +431,843 @@
         "ground_truth_distribution_type": "normal",
         "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their weight in kilograms is greater than 94.5"
     },
-    "easy_12": {
-        "mean": 61.51678636747871,
-        "std": 9.132957229083848,
-        "se": 0.2803998873539618,
-        "mean_lognormal": 61.52357207004702,
-        "std_lognormal": 9.281022682010292,
+    "easy_18": {
+        "mean": 1.2057819104724399,
+        "std": 1.724302016643224,
+        "se": 0.0644848032905103,
+        "mean_lognormal": 1.1415944722645008,
+        "std_lognormal": 1.3378783147565354,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "BloodLeadUgdl",
+                1
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their blood lead level in ug/dL is greater than 0.55 and less than or equal to 0.92"
+    },
+    "easy_19": {
+        "mean": 1.173479993955361,
+        "std": 0.9902777825110315,
+        "se": 0.02762920115861415,
+        "mean_lognormal": 1.1599748281665352,
+        "std_lognormal": 0.8596686871073068,
+        "base_variable": "BloodLeadUgdl",
+        "conditions": [
+            [
+                "WeightKg",
+                1
+            ]
+        ],
+        "difficulty": "easy",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given their weight in kilograms is greater than 66.5 and less than or equal to 78.9"
+    },
+    "medium_0": {
+        "mean": 0.9564345320915845,
+        "std": 0.7999744531248295,
+        "se": 0.050436042288058355,
+        "mean_lognormal": 0.9371081852418598,
+        "std_lognormal": 0.6809689572783463,
+        "base_variable": "BloodLeadUgdl",
+        "conditions": [
+            [
+                "BloodManganeseUgl",
+                1
+            ],
+            [
+                "WaistCircumferenceCm",
+                3
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given their blood manganese level in ug/L is greater than 7.48 and less than or equal to 9.38, and their waist circumference in centimeters is greater than 111.35"
+    },
+    "medium_1": {
+        "mean": 0.4904098642271446,
+        "std": 0.4680407895766368,
+        "se": 0.048182399385466736,
+        "mean_lognormal": 0.4765259025883663,
+        "std_lognormal": 0.3938538275952604,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "TotalCholesterolMgdl",
+                0
+            ],
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their total cholesterol in mg/dL is less than or equal to 158.0, and they have ever had a heart attack that was confirmed by a doctor"
+    },
+    "medium_2": {
+        "mean": 0.20737184898287045,
+        "std": 0.4054241793878308,
+        "se": 0.036581511793836695,
+        "base_variable": "DoctorToldYouHaveDiabetes",
+        "conditions": [
+            [
+                "WeightKg",
+                3
+            ],
+            [
+                "BloodLeadUgdl",
+                3
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their weight in kilograms is greater than 94.5, and their blood lead level in ug/dL is greater than 1.28"
+    },
+    "medium_3": {
+        "mean": 62.0260040698126,
+        "std": 9.242754083791347,
+        "se": 0.6812999443504658,
+        "mean_lognormal": 62.03787071530007,
+        "std_lognormal": 9.49103910359683,
         "base_variable": "WeightKg",
         "conditions": [
             [
                 "WaistCircumferenceCm",
                 0
+            ],
+            [
+                "TotalCholesterolMgdl",
+                1
             ]
         ],
-        "difficulty": "easy",
+        "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their waist circumference in centimeters is less than or equal to 87.9"
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their waist circumference in centimeters is less than or equal to 87.9, and their total cholesterol in mg/dL is greater than 153.0 and less than or equal to 176.0"
     },
-    "easy_13": {
-        "mean": 0.07249176492457206,
-        "std": 0.25930042217993526,
-        "se": 0.010112748319179493,
-        "base_variable": "DoctorToldYouHaveDiabetes",
+    "medium_4": {
+        "mean": 0.9636506667540135,
+        "std": 0.18715784573070557,
+        "se": 0.016202761564425846,
+        "base_variable": "CoveredByHealthInsurance",
         "conditions": [
             [
-                "WeightKg",
+                "BloodMercuryTotalUgl",
+                2
+            ],
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given their blood mercury level in ug/L is greater than 0.68 and less than or equal to 1.46, and they have ever had a heart attack that was confirmed by a doctor"
+    },
+    "medium_5": {
+        "mean": 0.9543303412910853,
+        "std": 0.20876767226351364,
+        "se": 0.019963150071291222,
+        "base_variable": "CoveredByHealthInsurance",
+        "conditions": [
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ],
+            [
+                "DoctorToldYouHaveDiabetes",
                 0
             ]
         ],
-        "difficulty": "easy",
+        "difficulty": "medium",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their weight in kilograms is less than or equal to 66.5"
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they have ever had a heart attack that was confirmed by a doctor, and they have not been diagnosed with diabetes by a doctor"
     },
-    "easy_14": {
-        "mean": 0.98985228364987,
-        "std": 0.9751966829919886,
-        "se": 0.05568130078991942,
-        "mean_lognormal": 0.9824311928570922,
-        "std_lognormal": 0.7929905850594654,
-        "base_variable": "BloodLeadUgdl",
+    "medium_6": {
+        "mean": 0.8824870495969428,
+        "std": 0.7737158267616056,
+        "se": 0.1448912852439349,
+        "mean_lognormal": 0.8788766289923906,
+        "std_lognormal": 0.8471983950619737,
+        "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
             [
                 "TakingInsulinNow",
                 1.0
+            ],
+            [
+                "BloodLeadUgdl",
+                1
             ]
         ],
-        "difficulty": "easy",
+        "difficulty": "medium",
         "ground_truth_distribution_type": "normal",
-        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given they are currently taking insulin"
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they are currently taking insulin, and their blood lead level in ug/dL is greater than 0.65 and less than or equal to 0.91"
     },
-    "easy_15": {
-        "mean": 111.1603034427047,
-        "std": 14.930942571364218,
-        "se": 1.8944899547712333,
-        "mean_lognormal": 111.16532952510579,
-        "std_lognormal": 15.042265182387629,
+    "medium_7": {
+        "mean": 0.9359800514233108,
+        "std": 0.24478846941987956,
+        "se": 0.06016164729479265,
+        "base_variable": "CoveredByHealthInsurance",
+        "conditions": [
+            [
+                "TakingInsulinNow",
+                1.0
+            ],
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they are currently taking insulin, and they have ever had a heart attack that was confirmed by a doctor"
+    },
+    "medium_8": {
+        "mean": 58.87203767014231,
+        "std": 7.663857006796819,
+        "se": 1.7306724015043802,
+        "mean_lognormal": 58.88044002244694,
+        "std_lognormal": 7.877073775250731,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
+                0
+            ],
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their waist circumference in centimeters is less than or equal to 87.9, and they have ever been diagnosed with diabetes by a doctor"
+    },
+    "medium_9": {
+        "mean": 1.1450301455094667,
+        "std": 1.6644289770569818,
+        "se": 0.10710807523158336,
+        "mean_lognormal": 1.0701931871132657,
+        "std_lognormal": 1.264040695899239,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "TotalCholesterolMgdl",
+                2
+            ],
+            [
+                "WaistCircumferenceCm",
+                2
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their total cholesterol in mg/dL is greater than 183.0 and less than or equal to 212.0, and their waist circumference in centimeters is greater than 99.8 and less than or equal to 111.75"
+    },
+    "medium_10": {
+        "mean": 0.05690332827911513,
+        "std": 0.2316578069262385,
+        "se": 0.019603667048029426,
+        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "conditions": [
+            [
+                "BloodLeadUgdl",
+                0
+            ],
+            [
+                "WaistCircumferenceCm",
+                3
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given their blood lead level in ug/dL is less than or equal to 0.55, and their waist circumference in centimeters is greater than 112.625"
+    },
+    "medium_11": {
+        "mean": 91.92952025985657,
+        "std": 21.966717755785492,
+        "se": 1.4800360080670847,
+        "mean_lognormal": 91.89190840139528,
+        "std_lognormal": 21.371194338456924,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ],
+            [
+                "BloodMercuryTotalUgl",
+                1
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given they have ever been diagnosed with diabetes by a doctor, and their blood mercury level in ug/L is greater than 0.35 and less than or equal to 0.69"
+    },
+    "medium_12": {
+        "mean": 61.79835737020217,
+        "std": 10.671159061059466,
+        "se": 1.4683673621872795,
+        "mean_lognormal": 61.80159567675504,
+        "std_lognormal": 10.72001623343042,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "HaveSeriousDifficultyConcentrating",
+                1.0
+            ],
+            [
+                "WaistCircumferenceCm",
+                0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given they have serious difficulty concentrating, and their waist circumference in centimeters is less than or equal to 89.5"
+    },
+    "medium_13": {
+        "mean": 0.8625691020801588,
+        "std": 1.4673137049229128,
+        "se": 0.1794000372717025,
+        "mean_lognormal": 0.7643201417819712,
+        "std_lognormal": 0.9257228749661904,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ],
+            [
+                "TotalCholesterolMgdl",
+                1
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever had a heart attack that was confirmed by a doctor, and their total cholesterol in mg/dL is greater than 139.0 and less than or equal to 164.0"
+    },
+    "medium_14": {
+        "mean": 0.27680896493756335,
+        "std": 0.39559847556086786,
+        "se": 0.026342531676699414,
+        "mean_lognormal": 0.2509524089811309,
+        "std_lognormal": 0.22111305044112262,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "WeightKg",
+                3
+            ],
+            [
+                "BloodLeadUgdl",
+                0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their weight in kilograms is greater than 94.5, and their blood lead level in ug/dL is less than or equal to 0.5"
+    },
+    "medium_15": {
+        "mean": 95.29855818510072,
+        "std": 17.295882767137446,
+        "se": 0.8637681465356527,
+        "mean_lognormal": 95.30645181326302,
+        "std_lognormal": 17.494158328005717,
         "base_variable": "WaistCircumferenceCm",
         "conditions": [
             [
+                "CoveredByHealthInsurance",
+                0.0
+            ],
+            [
+                "HaveSeriousDifficultyConcentrating",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population, given they do not have health insurance, and they have serious difficulty concentrating"
+    },
+    "medium_16": {
+        "mean": 0.027880153523766146,
+        "std": 0.16462943407318564,
+        "se": 0.0070929932673157794,
+        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                0
+            ],
+            [
+                "CoveredByHealthInsurance",
+                0.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given they have not been diagnosed with diabetes by a doctor, and they do not have health insurance"
+    },
+    "medium_17": {
+        "mean": 0.1567494318466903,
+        "std": 0.3635643649512835,
+        "se": 0.03945961377861039,
+        "base_variable": "EverToldYouHadHeartAttack",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ],
+            [
+                "EverToldYouHadCancerOrMalignancy",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor, and they have ever been diagnosed with cancer by a doctor"
+    },
+    "medium_18": {
+        "mean": 0.18401014973172802,
+        "std": 0.3874924702848238,
+        "se": 0.03993010098543455,
+        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "conditions": [
+            [
+                "TakeMedicationForDepression",
+                0.0
+            ],
+            [
+                "EverToldYouHadHeartAttack",
+                1.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given that they do not take medication for depression, and they have ever had a heart attack that was confirmed by a doctor"
+    },
+    "medium_19": {
+        "mean": 1.058118522918867,
+        "std": 2.072304094425967,
+        "se": 0.20639360396915818,
+        "mean_lognormal": 0.9575488518731877,
+        "std_lognormal": 1.0515249221918979,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ],
+            [
+                "CoveredByHealthInsurance",
+                0.0
+            ]
+        ],
+        "difficulty": "medium",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with diabetes by a doctor, and they do not have health insurance"
+    },
+    "hard_0": {
+        "mean": 0.9452232814622796,
+        "std": 0.22754390706841554,
+        "se": 0.025017759566395563,
+        "base_variable": "CoveredByHealthInsurance",
+        "conditions": [
+            [
+                "HaveSeriousDifficultyConcentrating",
+                0.0
+            ],
+            [
+                "EverToldYouHadCancerOrMalignancy",
+                0.0
+            ],
+            [
                 "TakingInsulinNow",
                 1.0
             ]
         ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population, given they are currently taking insulin"
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they do not have serious difficulty concentrating, and they have not been diagnosed with cancer by a doctor, and they are currently taking insulin"
     },
-    "easy_16": {
-        "mean": 0.9256086081908381,
-        "std": 0.2624067694131723,
-        "se": 0.02536767598893516,
+    "hard_1": {
+        "mean": 8.584791268887281,
+        "std": 1.9841146606104552,
+        "se": 0.32701777627498313,
+        "mean_lognormal": 8.586148405324186,
+        "std_lognormal": 2.0145519127157314,
+        "base_variable": "BloodManganeseUgl",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
+                2
+            ],
+            [
+                "HaveSeriousDifficultyConcentrating",
+                1.0
+            ],
+            [
+                "BloodMercuryTotalUgl",
+                2
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood manganese level among adult (over 18) individuals in units of ug/L in the general US population, given their waist circumference in centimeters is greater than 98.9 and less than or equal to 110.7, and they have serious difficulty concentrating, and their blood mercury level in ug/L is greater than 0.51 and less than or equal to 1.24"
+    },
+    "hard_2": {
+        "mean": 107.82536722842214,
+        "std": 9.300604264389765,
+        "se": 1.8104244186037695,
+        "mean_lognormal": 107.82766368716443,
+        "std_lognormal": 9.38783405524285,
+        "base_variable": "WaistCircumferenceCm",
+        "conditions": [
+            [
+                "BloodMercuryTotalUgl",
+                0
+            ],
+            [
+                "WeightKg",
+                2
+            ],
+            [
+                "TotalCholesterolMgdl",
+                3
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population, given their blood mercury level in ug/L is less than or equal to 0.35, and their weight in kilograms is greater than 79.3 and less than or equal to 97.25, and their total cholesterol in mg/dL is greater than 205.75"
+    },
+    "hard_3": {
+        "mean": 0.952168843323868,
+        "std": 0.2134088496926858,
+        "se": 0.02088947561288722,
         "base_variable": "CoveredByHealthInsurance",
         "conditions": [
             [
                 "TakeMedicationForDepression",
                 1.0
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they take medication for depression"
-    },
-    "easy_17": {
-        "mean": 1.5030180967202629,
-        "std": 2.0297123455957204,
-        "se": 0.20654774339459342,
-        "mean_lognormal": 1.4205742524185183,
-        "std_lognormal": 1.7162548473374548,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with cancer by a doctor"
-    },
-    "easy_18": {
-        "mean": 1.003168592665473,
-        "std": 1.0929488166708057,
-        "se": 0.1369816812043731,
-        "mean_lognormal": 0.9809799881045377,
-        "std_lognormal": 1.0505629458298729,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever had a heart attack that was confirmed by a doctor"
-    },
-    "easy_19": {
-        "mean": 111.17048561329548,
-        "std": 16.870493129966103,
-        "se": 1.562980301217157,
-        "mean_lognormal": 111.17846850912093,
-        "std_lognormal": 17.029537911590626,
-        "base_variable": "WaistCircumferenceCm",
-        "conditions": [
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ]
-        ],
-        "difficulty": "easy",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population, given they have ever been diagnosed with diabetes by a doctor"
-    },
-    "medium_0": {
-        "mean": 99.35040588544162,
-        "std": 27.30596706250136,
-        "se": 3.7982483458703564,
-        "mean_lognormal": 99.33085370459965,
-        "std_lognormal": 27.020863914057898,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "CoveredByHealthInsurance",
-                0.0
             ],
             [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given they do not have health insurance, and they have ever been diagnosed with diabetes by a doctor"
-    },
-    "medium_1": {
-        "mean": 0.2800408376597024,
-        "std": 0.4490188937033213,
-        "se": 0.09696739662637148,
-        "base_variable": "TakingInsulinNow",
-        "conditions": [
-            [
-                "TakeMedicationForDepression",
-                1.0
-            ],
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population is currently taking insulin, given they take medication for depression, and they have ever had a heart attack that was confirmed by a doctor"
-    },
-    "medium_2": {
-        "mean": 0.2552476614990333,
-        "std": 0.43600033577774705,
-        "se": 0.07150998646475522,
-        "base_variable": "EverToldYouHadCancerOrMalignancy",
-        "conditions": [
-            [
-                "TakeMedicationForDepression",
-                1.0
-            ],
-            [
-                "BloodManganeseUgl",
-                2
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given they take medication for depression, and their blood manganese level in ug/L is greater than 8.9 and less than or equal to 10.875"
-    },
-    "medium_3": {
-        "mean": 0.8872222181617718,
-        "std": 1.7988992396041201,
-        "se": 0.13384734505178827,
-        "mean_lognormal": 0.7548870603514127,
-        "std_lognormal": 0.7414612879152253,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "TotalCholesterolMgdl",
-                1
-            ],
-            [
-                "CoveredByHealthInsurance",
-                0.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their total cholesterol in mg/dL is greater than 158.0 and less than or equal to 183.0, and they do not have health insurance"
-    },
-    "medium_4": {
-        "mean": 93.66582391759269,
-        "std": 24.035731076460944,
-        "se": 2.623482349374957,
-        "mean_lognormal": 93.65282408899213,
-        "std_lognormal": 23.885191194720946,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "TotalCholesterolMgdl",
-                2
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their total cholesterol in mg/dL is greater than 183.0 and less than or equal to 212.0, and they have ever been diagnosed with diabetes by a doctor"
-    },
-    "medium_5": {
-        "mean": 0.19004008577621928,
-        "std": 0.3923325777632881,
-        "se": 0.024357601181903485,
-        "base_variable": "DoctorToldYouHaveDiabetes",
-        "conditions": [
-            [
-                "TotalCholesterolMgdl",
+                "BloodLeadUgdl",
                 1
             ],
             [
                 "WeightKg",
-                3
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their total cholesterol in mg/dL is greater than 158.0 and less than or equal to 183.0, and their weight in kilograms is greater than 94.2"
-    },
-    "medium_6": {
-        "mean": 0.17397821097242586,
-        "std": 0.37909074517753655,
-        "se": 0.024402961284222077,
-        "base_variable": "HaveSeriousDifficultyConcentrating",
-        "conditions": [
-            [
-                "WeightKg",
-                1
-            ],
-            [
-                "BloodManganeseUgl",
-                0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating, given their weight in kilograms is greater than 66.5 and less than or equal to 78.9, and their blood manganese level in ug/L is less than or equal to 7.44"
-    },
-    "medium_7": {
-        "mean": 1.5167970001529811,
-        "std": 2.0981874789527697,
-        "se": 0.13143941469405582,
-        "mean_lognormal": 1.4310906767593345,
-        "std_lognormal": 1.9153912628262997,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "TotalCholesterolMgdl",
-                2
-            ],
-            [
-                "BloodCadmiumUgl",
-                0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their total cholesterol in mg/dL is greater than 183.0 and less than or equal to 212.0, and their blood cadmium level in ug/L is less than or equal to 0.19"
-    },
-    "medium_8": {
-        "mean": 0.8164067112567804,
-        "std": 0.8256447941644431,
-        "se": 0.0840796427218404,
-        "mean_lognormal": 0.7976425549380814,
-        "std_lognormal": 0.784888955393518,
-        "base_variable": "BloodCadmiumUgl",
-        "conditions": [
-            [
-                "WaistCircumferenceCm",
-                0
-            ],
-            [
-                "BloodLeadUgdl",
-                3
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their waist circumference in centimeters is less than or equal to 87.9, and their blood lead level in ug/dL is greater than 1.4124999999999999"
-    },
-    "medium_9": {
-        "mean": 0.12122371674014276,
-        "std": 0.32638708191325283,
-        "se": 0.022454046462442517,
-        "base_variable": "EverToldYouHadHeartAttack",
-        "conditions": [
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ],
-            [
-                "TakeMedicationForDepression",
-                0.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor, and that they do not take medication for depression"
-    },
-    "medium_10": {
-        "mean": 0.05592530915622303,
-        "std": 0.2297774335133977,
-        "se": 0.012117851528939069,
-        "base_variable": "HaveSeriousDifficultyConcentrating",
-        "conditions": [
-            [
-                "TotalCholesterolMgdl",
-                2
-            ],
-            [
-                "BloodMercuryTotalUgl",
-                3
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating, given their total cholesterol in mg/dL is greater than 183.0 and less than or equal to 212.0, and their blood mercury level in ug/L is greater than 1.505"
-    },
-    "medium_11": {
-        "mean": 165.96316136777656,
-        "std": 37.905521494227386,
-        "se": 5.237999924421688,
-        "mean_lognormal": 166.00225804558667,
-        "std_lognormal": 38.817942455515094,
-        "base_variable": "TotalCholesterolMgdl",
-        "conditions": [
-            [
-                "TakingInsulinNow",
-                1.0
-            ],
-            [
-                "WeightKg",
-                3
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average total cholesterol among adult (over 18) individuals in units of mg/dL in the general US population, given they are currently taking insulin, and their weight in kilograms is greater than 102.6"
-    },
-    "medium_12": {
-        "mean": 0.9838656546177214,
-        "std": 0.1259921754767498,
-        "se": 0.012464506069161595,
-        "base_variable": "DoctorToldYouHaveDiabetes",
-        "conditions": [
-            [
-                "TakingInsulinNow",
-                1.0
-            ],
-            [
-                "WeightKg",
-                2
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given they are currently taking insulin, and their weight in kilograms is greater than 88.2 and less than or equal to 102.6"
-    },
-    "medium_13": {
-        "mean": 0.4640578958978977,
-        "std": 0.5852148716842489,
-        "se": 0.022684476811220558,
-        "mean_lognormal": 0.43859811174796115,
-        "std_lognormal": 0.46823465291559696,
-        "base_variable": "BloodCadmiumUgl",
-        "conditions": [
-            [
-                "BloodMercuryTotalUgl",
-                0
-            ],
-            [
-                "TakeMedicationForDepression",
-                0.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given their blood mercury level in ug/L is less than or equal to 0.35, and that they do not take medication for depression"
-    },
-    "medium_14": {
-        "mean": 0.5068630511625142,
-        "std": 0.5694310012000948,
-        "se": 0.03025758464956577,
-        "mean_lognormal": 0.4808886369014076,
-        "std_lognormal": 0.4190665344471255,
-        "base_variable": "BloodCadmiumUgl",
-        "conditions": [
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with cancer by a doctor, and they have not been diagnosed with diabetes by a doctor"
-    },
-    "medium_15": {
-        "mean": 78.83461705541391,
-        "std": 20.215108329141724,
-        "se": 3.5228662717955737,
-        "mean_lognormal": 78.80976080849034,
-        "std_lognormal": 19.804836505347584,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "BloodMercuryTotalUgl",
-                0
-            ],
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood mercury level in ug/L is less than or equal to 0.35, and they have ever been diagnosed with cancer by a doctor"
-    },
-    "medium_16": {
-        "mean": 0.0936190981100578,
-        "std": 0.2912980648392934,
-        "se": 0.031048020815551337,
-        "base_variable": "EverToldYouHadHeartAttack",
-        "conditions": [
-            [
-                "BloodMercuryTotalUgl",
-                0
-            ],
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given their blood mercury level in ug/L is less than or equal to 0.35, and they have ever been diagnosed with cancer by a doctor"
-    },
-    "medium_17": {
-        "mean": 0.3685141814339768,
-        "std": 0.48240178224797514,
-        "se": 0.03886043259009018,
-        "base_variable": "HaveSeriousDifficultyConcentrating",
-        "conditions": [
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ],
-            [
-                "BloodMercuryTotalUgl",
-                0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating, given they have ever had a heart attack that was confirmed by a doctor, and their blood mercury level in ug/L is less than or equal to 0.3525"
-    },
-    "medium_18": {
-        "mean": 0.3471136320968788,
-        "std": 0.4760522644724962,
-        "se": 0.09965007232906335,
-        "base_variable": "DoctorToldYouHaveDiabetes",
-        "conditions": [
-            [
-                "BloodLeadUgdl",
-                3
-            ],
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their blood lead level in ug/dL is greater than 1.48, and they have ever had a heart attack that was confirmed by a doctor"
-    },
-    "medium_19": {
-        "mean": 1.5350766308733583,
-        "std": 2.0674378856041544,
-        "se": 0.21795453066832185,
-        "mean_lognormal": 1.4501826879511748,
-        "std_lognormal": 1.7553885051421143,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ],
-            [
-                "TakingInsulinNow",
-                0.0
-            ]
-        ],
-        "difficulty": "medium",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with cancer by a doctor, and they are not currently taking insulin"
-    },
-    "hard_0": {
-        "mean": 0.8100218524873639,
-        "std": 0.9500320959445013,
-        "se": 0.08966627741417682,
-        "mean_lognormal": 0.7722528020217098,
-        "std_lognormal": 0.7683647397808727,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "BloodCadmiumUgl",
-                3
-            ],
-            [
-                "BloodLeadUgdl",
-                2
-            ],
-            [
-                "HaveSeriousDifficultyConcentrating",
-                1.0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their blood cadmium level in ug/L is greater than 0.5425, and their blood lead level in ug/dL is greater than 1.25 and less than or equal to 1.92, and they have serious difficulty concentrating"
-    },
-    "hard_1": {
-        "mean": 61.41386595425482,
-        "std": 9.914317258333229,
-        "se": 0.6443878671044183,
-        "mean_lognormal": 61.417734832049106,
-        "std_lognormal": 10.011242576753565,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "WaistCircumferenceCm",
-                0
-            ],
-            [
-                "TakeMedicationForDepression",
-                0.0
-            ],
-            [
-                "BloodLeadUgdl",
                 1
             ]
         ],
         "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their waist circumference in centimeters is less than or equal to 87.9, and that they do not take medication for depression, and their blood lead level in ug/dL is greater than 0.49 and less than or equal to 0.81"
-    },
-    "hard_2": {
-        "mean": 1.014119080480835,
-        "std": 1.6903542820353292,
-        "se": 0.1398902851857858,
-        "mean_lognormal": 0.9104320816236909,
-        "std_lognormal": 1.196059988341232,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "WeightKg",
-                1
-            ],
-            [
-                "BloodCadmiumUgl",
-                3
-            ],
-            [
-                "BloodLeadUgdl",
-                0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their weight in kilograms is greater than 66.5 and less than or equal to 78.9, and their blood cadmium level in ug/L is greater than 0.56, and their blood lead level in ug/dL is less than or equal to 0.84"
-    },
-    "hard_3": {
-        "mean": 0.04653997739895047,
-        "std": 0.2106513895103843,
-        "se": 0.015259331943984954,
-        "base_variable": "DoctorToldYouHaveDiabetes",
-        "conditions": [
-            [
-                "BloodLeadUgdl",
-                2
-            ],
-            [
-                "BloodMercuryTotalUgl",
-                1
-            ],
-            [
-                "TotalCholesterolMgdl",
-                3
-            ]
-        ],
-        "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their blood lead level in ug/dL is greater than 0.92 and less than or equal to 1.48, and their blood mercury level in ug/L is greater than 0.39 and less than or equal to 0.78, and their total cholesterol in mg/dL is greater than 214.0"
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they take medication for depression, and their blood lead level in ug/dL is greater than 0.56 and less than or equal to 0.91, and their weight in kilograms is greater than 73.85 and less than or equal to 84.0"
     },
     "hard_4": {
-        "mean": 0.2518923724324972,
-        "std": 0.43409976404373374,
-        "se": 0.05615695352706162,
-        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "mean": 0.402450416100377,
+        "std": 0.34672085459046387,
+        "se": 0.028822098200433716,
+        "mean_lognormal": 0.4040525596414516,
+        "std_lognormal": 0.3704466050999879,
+        "base_variable": "BloodCadmiumUgl",
         "conditions": [
+            [
+                "EverToldYouHadCancerOrMalignancy",
+                0.0
+            ],
             [
                 "TotalCholesterolMgdl",
                 2
             ],
             [
-                "TakeMedicationForDepression",
-                1.0
-            ],
-            [
-                "WeightKg",
-                2
+                "BloodManganeseUgl",
+                3
             ]
         ],
         "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given their total cholesterol in mg/dL is greater than 183.0 and less than or equal to 212.0, and they take medication for depression, and their weight in kilograms is greater than 84.6 and less than or equal to 98.275"
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given they have not been diagnosed with cancer by a doctor, and their total cholesterol in mg/dL is greater than 185.0 and less than or equal to 213.0, and their blood manganese level in ug/L is greater than 11.7225"
     },
     "hard_5": {
-        "mean": 0.013123049282539209,
-        "std": 0.11380173487283599,
-        "se": 0.009456424836844111,
+        "mean": 109.29520327705008,
+        "std": 19.460854072765084,
+        "se": 1.2104244701085143,
+        "mean_lognormal": 109.23920345347759,
+        "std_lognormal": 18.443923534100517,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "HaveSeriousDifficultyConcentrating",
+                0.0
+            ],
+            [
+                "WaistCircumferenceCm",
+                3
+            ],
+            [
+                "TotalCholesterolMgdl",
+                0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given they do not have serious difficulty concentrating, and their waist circumference in centimeters is greater than 110.3, and their total cholesterol in mg/dL is less than or equal to 155.0"
+    },
+    "hard_6": {
+        "mean": 0.18225744126534288,
+        "std": 0.3860565585102175,
+        "se": 0.052907561581162894,
         "base_variable": "EverToldYouHadCancerOrMalignancy",
         "conditions": [
             [
-                "BloodLeadUgdl",
-                0
-            ],
-            [
-                "TotalCholesterolMgdl",
-                1
-            ],
-            [
-                "WaistCircumferenceCm",
-                2
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given their blood lead level in ug/dL is less than or equal to 0.55, and their total cholesterol in mg/dL is greater than 152.0 and less than or equal to 176.0, and their waist circumference in centimeters is greater than 96.7 and less than or equal to 111.5"
-    },
-    "hard_6": {
-        "mean": 0.8974164936058019,
-        "std": 0.955004894175912,
-        "se": 0.08665274123943656,
-        "mean_lognormal": 0.8683388002360568,
-        "std_lognormal": 0.9086858160184266,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "WeightKg",
-                2
-            ],
-            [
-                "TakingInsulinNow",
-                0.0
-            ],
-            [
-                "HaveSeriousDifficultyConcentrating",
-                1.0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their weight in kilograms is greater than 78.9 and less than or equal to 94.5, and they are not currently taking insulin, and they have serious difficulty concentrating"
-    },
-    "hard_7": {
-        "mean": 10.881872088685798,
-        "std": 2.7909718998823707,
-        "se": 0.32145723435276646,
-        "mean_lognormal": 10.951785042361715,
-        "std_lognormal": 3.4427815387405274,
-        "base_variable": "BloodManganeseUgl",
-        "conditions": [
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ],
-            [
                 "BloodMercuryTotalUgl",
-                3
-            ],
-            [
-                "WeightKg",
-                1
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood manganese level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with cancer by a doctor, and their blood mercury level in ug/L is greater than 1.4575, and their weight in kilograms is greater than 68.25 and less than or equal to 79.69999999999999"
-    },
-    "hard_8": {
-        "mean": 0.22910110467817726,
-        "std": 0.4202544330681309,
-        "se": 0.02778159073908996,
-        "base_variable": "TakingInsulinNow",
-        "conditions": [
-            [
-                "WeightKg",
-                2
-            ],
-            [
-                "WaistCircumferenceCm",
-                3
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population is currently taking insulin, given their weight in kilograms is greater than 78.9 and less than or equal to 94.5, and their waist circumference in centimeters is greater than 109.2, and they have ever been diagnosed with diabetes by a doctor"
-    },
-    "hard_9": {
-        "mean": 78.12107684632,
-        "std": 16.945504078210437,
-        "se": 1.311129632872655,
-        "mean_lognormal": 78.10330211566159,
-        "std_lognormal": 16.699643568992048,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "BloodCadmiumUgl",
-                3
-            ],
-            [
-                "BloodManganeseUgl",
                 0
-            ],
-            [
-                "CoveredByHealthInsurance",
-                1.0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood cadmium level in ug/L is greater than 0.5425, and their blood manganese level in ug/L is less than or equal to 7.45, and they have health insurance"
-    },
-    "hard_10": {
-        "mean": 1.291427894718302,
-        "std": 0.8423301310128966,
-        "se": 0.09738386141911888,
-        "mean_lognormal": 1.3087233025295182,
-        "std_lognormal": 0.9981488857637255,
-        "base_variable": "BloodLeadUgdl",
-        "conditions": [
-            [
-                "EverToldYouHadCancerOrMalignancy",
-                1.0
-            ],
-            [
-                "TotalCholesterolMgdl",
-                1
             ],
             [
                 "TakingInsulinNow",
-                0.0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population, given they have ever been diagnosed with cancer by a doctor, and their total cholesterol in mg/dL is greater than 156.0 and less than or equal to 183.0, and they are not currently taking insulin"
-    },
-    "hard_11": {
-        "mean": 1.6437127364315731,
-        "std": 2.1041376440331794,
-        "se": 0.1373014478494932,
-        "mean_lognormal": 1.6336473358355645,
-        "std_lognormal": 2.205751008193206,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "BloodCadmiumUgl",
-                2
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                0
-            ],
-            [
-                "WaistCircumferenceCm",
-                0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their blood cadmium level in ug/L is greater than 0.31 and less than or equal to 0.5425, and they have not been diagnosed with diabetes by a doctor, and their waist circumference in centimeters is less than or equal to 87.4"
-    },
-    "hard_12": {
-        "mean": 1.4837072564715934,
-        "std": 2.1605202392127834,
-        "se": 0.17976969753544425,
-        "mean_lognormal": 1.371120291454437,
-        "std_lognormal": 1.7967013909448295,
-        "base_variable": "BloodMercuryTotalUgl",
-        "conditions": [
-            [
-                "WeightKg",
-                2
-            ],
-            [
-                "WaistCircumferenceCm",
-                1
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                0
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their weight in kilograms is greater than 78.9 and less than or equal to 94.5, and their waist circumference in centimeters is greater than 98.07499999999999 and less than or equal to 103.6, and they have not been diagnosed with diabetes by a doctor"
-    },
-    "hard_13": {
-        "mean": 58.13594758245014,
-        "std": 8.632698618502474,
-        "se": 2.2690912537543833,
-        "mean_lognormal": 58.133944986337646,
-        "std_lognormal": 8.620808897038936,
-        "base_variable": "WeightKg",
-        "conditions": [
-            [
-                "BloodCadmiumUgl",
-                3
+                1.0
             ],
             [
                 "TakeMedicationForDepression",
-                1.0
-            ],
-            [
-                "WaistCircumferenceCm",
-                0
+                0.0
             ]
         ],
         "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood cadmium level in ug/L is greater than 0.5425, and they take medication for depression, and their waist circumference in centimeters is less than or equal to 92.1"
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given their blood mercury level in ug/L is less than or equal to 0.35, and they are currently taking insulin, and that they do not take medication for depression"
     },
-    "hard_14": {
-        "mean": 0.2245985138620538,
-        "std": 0.41731765051697806,
-        "se": 0.0431878913893823,
-        "base_variable": "EverToldYouHadHeartAttack",
+    "hard_7": {
+        "mean": 1.6573774119444813,
+        "std": 2.8492676688837175,
+        "se": 0.184477521669785,
+        "mean_lognormal": 1.5276026947714172,
+        "std_lognormal": 2.0536268018347386,
+        "base_variable": "BloodMercuryTotalUgl",
         "conditions": [
-            [
-                "TakingInsulinNow",
-                1.0
-            ],
             [
                 "EverToldYouHadCancerOrMalignancy",
                 0.0
             ],
             [
                 "TotalCholesterolMgdl",
-                2
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they are currently taking insulin, and they have not been diagnosed with cancer by a doctor, and their total cholesterol in mg/dL is greater than 164.5 and less than or equal to 188.75"
-    },
-    "hard_15": {
-        "mean": 203.11808217336528,
-        "std": 43.95164629872479,
-        "se": 3.7204654805652835,
-        "mean_lognormal": 203.30335914266524,
-        "std_lognormal": 46.53995649992157,
-        "base_variable": "TotalCholesterolMgdl",
-        "conditions": [
-            [
-                "BloodMercuryTotalUgl",
-                2
-            ],
-            [
-                "HaveSeriousDifficultyConcentrating",
-                0.0
-            ],
-            [
-                "BloodLeadUgdl",
                 3
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average total cholesterol among adult (over 18) individuals in units of mg/dL in the general US population, given their blood mercury level in ug/L is greater than 0.68 and less than or equal to 1.46, and they do not have serious difficulty concentrating, and their blood lead level in ug/dL is greater than 1.43"
-    },
-    "hard_16": {
-        "mean": 0.17998865508938455,
-        "std": 0.38417800448294687,
-        "se": 0.037093194535378675,
-        "base_variable": "EverToldYouHadCancerOrMalignancy",
-        "conditions": [
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ],
-            [
-                "CoveredByHealthInsurance",
-                1.0
-            ],
-            [
-                "WeightKg",
-                2
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "beta",
-        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given they have ever been diagnosed with diabetes by a doctor, and they have health insurance, and their weight in kilograms is greater than 84.7 and less than or equal to 101.175"
-    },
-    "hard_17": {
-        "mean": 113.15729834950707,
-        "std": 12.70871297955681,
-        "se": 1.945539586931558,
-        "mean_lognormal": 113.15601893951049,
-        "std_lognormal": 12.693155568207453,
-        "base_variable": "WaistCircumferenceCm",
-        "conditions": [
-            [
-                "CoveredByHealthInsurance",
-                1.0
-            ],
-            [
-                "EverToldYouHadHeartAttack",
-                1.0
-            ],
-            [
-                "DoctorToldYouHaveDiabetes",
-                1
-            ]
-        ],
-        "difficulty": "hard",
-        "ground_truth_distribution_type": "normal",
-        "variable": "The average waist circumference among adult (over 18) individuals in cm in the general US population, given they have health insurance, and they have ever had a heart attack that was confirmed by a doctor, and they have ever been diagnosed with diabetes by a doctor"
-    },
-    "hard_18": {
-        "mean": 0.027431536440678386,
-        "std": 0.1633372194240557,
-        "se": 0.02344032656073892,
-        "base_variable": "TakeMedicationForDepression",
-        "conditions": [
-            [
-                "CoveredByHealthInsurance",
-                0.0
             ],
             [
                 "BloodManganeseUgl",
                 3
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given they have not been diagnosed with cancer by a doctor, and their total cholesterol in mg/dL is greater than 213.0, and their blood manganese level in ug/L is greater than 11.64"
+    },
+    "hard_8": {
+        "mean": 0.9446279350207057,
+        "std": 0.2287050489150232,
+        "se": 0.037547587119506724,
+        "base_variable": "CoveredByHealthInsurance",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
             ],
             [
-                "WeightKg",
-                2
+                "BloodLeadUgdl",
+                1
+            ],
+            [
+                "TotalCholesterolMgdl",
+                0
             ]
         ],
         "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population takes medication for depression, given they do not have health insurance, and their blood manganese level in ug/L is greater than 12.165, and their weight in kilograms is greater than 76.5 and less than or equal to 90.19999999999999"
+        "variable": "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they have ever been diagnosed with diabetes by a doctor, and their blood lead level in ug/dL is greater than 0.67 and less than or equal to 1.01, and their total cholesterol in mg/dL is less than or equal to 148.0"
     },
-    "hard_19": {
-        "mean": 0.08267806962910745,
-        "std": 0.27539500073805245,
-        "se": 0.041389532652529995,
+    "hard_9": {
+        "mean": 0.0839310105018213,
+        "std": 0.27728432335414216,
+        "se": 0.014345164759321556,
         "base_variable": "DoctorToldYouHaveDiabetes",
         "conditions": [
             [
+                "BloodCadmiumUgl",
+                3
+            ],
+            [
+                "TotalCholesterolMgdl",
+                1
+            ],
+            [
+                "HaveSeriousDifficultyConcentrating",
+                0.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their blood cadmium level in ug/L is greater than 0.5425, and their total cholesterol in mg/dL is greater than 161.0 and less than or equal to 185.0, and they do not have serious difficulty concentrating"
+    },
+    "hard_10": {
+        "mean": 0.19581405076107913,
+        "std": 0.39682604285204953,
+        "se": 0.07154316558521572,
+        "base_variable": "HaveSeriousDifficultyConcentrating",
+        "conditions": [
+            [
+                "TotalCholesterolMgdl",
+                3
+            ],
+            [
+                "WeightKg",
+                1
+            ],
+            [
+                "TakeMedicationForDepression",
+                1.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating, given their total cholesterol in mg/dL is greater than 212.0, and their weight in kilograms is greater than 66.825 and less than or equal to 78.75, and they take medication for depression"
+    },
+    "hard_11": {
+        "mean": 54.7005418325217,
+        "std": 6.485059275621635,
+        "se": 1.4472840728972274,
+        "mean_lognormal": 54.6993470092042,
+        "std_lognormal": 6.4634023695367455,
+        "base_variable": "WeightKg",
+        "conditions": [
+            [
+                "BloodMercuryTotalUgl",
+                3
+            ],
+            [
+                "WaistCircumferenceCm",
+                0
+            ],
+            [
+                "TotalCholesterolMgdl",
+                3
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood mercury level in ug/L is greater than 1.46, and their waist circumference in centimeters is less than or equal to 85.7, and their total cholesterol in mg/dL is greater than 215.0"
+    },
+    "hard_12": {
+        "mean": 0.5863376422595034,
+        "std": 0.6695366459495548,
+        "se": 0.08253021623558075,
+        "mean_lognormal": 0.6038412531372057,
+        "std_lognormal": 0.8795843564067738,
+        "base_variable": "BloodCadmiumUgl",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ],
+            [
+                "EverToldYouHadCancerOrMalignancy",
+                0.0
+            ],
+            [
+                "CoveredByHealthInsurance",
+                0.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population, given they have ever been diagnosed with diabetes by a doctor, and they have not been diagnosed with cancer by a doctor, and they do not have health insurance"
+    },
+    "hard_13": {
+        "mean": 0.22150112392296334,
+        "std": 0.41525699996969023,
+        "se": 0.061986343960915666,
+        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "conditions": [
+            [
+                "BloodCadmiumUgl",
+                2
+            ],
+            [
                 "BloodLeadUgdl",
                 0
             ],
             [
-                "BloodCadmiumUgl",
+                "WaistCircumferenceCm",
+                2
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given their blood cadmium level in ug/L is greater than 0.31 and less than or equal to 0.5425, and their blood lead level in ug/dL is less than or equal to 0.68, and their waist circumference in centimeters is greater than 99.85 and less than or equal to 113.47500000000001"
+    },
+    "hard_14": {
+        "mean": 1.072855943133188,
+        "std": 1.3066715965202933,
+        "se": 0.18355744163427273,
+        "mean_lognormal": 1.0762563487961774,
+        "std_lognormal": 1.2882978052718392,
+        "base_variable": "BloodMercuryTotalUgl",
+        "conditions": [
+            [
+                "TotalCholesterolMgdl",
                 0
+            ],
+            [
+                "CoveredByHealthInsurance",
+                1.0
+            ],
+            [
+                "WeightKg",
+                1
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population, given their total cholesterol in mg/dL is less than or equal to 158.0, and they have health insurance, and their weight in kilograms is greater than 65.3 and less than or equal to 79.5"
+    },
+    "hard_15": {
+        "mean": 0.24402122027726425,
+        "std": 0.42950537171455627,
+        "se": 0.035600261259267116,
+        "base_variable": "TakingInsulinNow",
+        "conditions": [
+            [
+                "DoctorToldYouHaveDiabetes",
+                1
+            ],
+            [
+                "HaveSeriousDifficultyConcentrating",
+                1.0
+            ],
+            [
+                "EverToldYouHadCancerOrMalignancy",
+                0.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population is currently taking insulin, given they have ever been diagnosed with diabetes by a doctor, and they have serious difficulty concentrating, and they have not been diagnosed with cancer by a doctor"
+    },
+    "hard_16": {
+        "mean": 207.94569038081056,
+        "std": 39.73314465402928,
+        "se": 7.475204033190196,
+        "mean_lognormal": 208.00570948399815,
+        "std_lognormal": 40.55815785219059,
+        "base_variable": "TotalCholesterolMgdl",
+        "conditions": [
+            [
+                "HaveSeriousDifficultyConcentrating",
+                1.0
+            ],
+            [
+                "BloodMercuryTotalUgl",
+                2
             ],
             [
                 "WaistCircumferenceCm",
@@ -1346,7 +1275,76 @@
             ]
         ],
         "difficulty": "hard",
+        "ground_truth_distribution_type": "normal",
+        "variable": "The average total cholesterol among adult (over 18) individuals in units of mg/dL in the general US population, given they have serious difficulty concentrating, and their blood mercury level in ug/L is greater than 0.54 and less than or equal to 1.1, and their waist circumference in centimeters is greater than 93.075 and less than or equal to 101.0"
+    },
+    "hard_17": {
+        "mean": 0.019812176402038494,
+        "std": 0.13935441890465117,
+        "se": 0.006746013683767524,
+        "base_variable": "DoctorToldYouHaveDiabetes",
+        "conditions": [
+            [
+                "WaistCircumferenceCm",
+                0
+            ],
+            [
+                "BloodLeadUgdl",
+                1
+            ],
+            [
+                "WeightKg",
+                3
+            ]
+        ],
+        "difficulty": "hard",
         "ground_truth_distribution_type": "beta",
-        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their blood lead level in ug/dL is less than or equal to 0.55, and their blood cadmium level in ug/L is less than or equal to 0.13, and their waist circumference in centimeters is greater than 86.0 and less than or equal to 99.0"
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their waist circumference in centimeters is less than or equal to 87.9, and their blood lead level in ug/dL is greater than 0.49 and less than or equal to 0.82, and their weight in kilograms is greater than 68.2"
+    },
+    "hard_18": {
+        "mean": 0.20145450709992602,
+        "std": 0.4010867595284739,
+        "se": 0.038688013776650126,
+        "base_variable": "DoctorToldYouHaveDiabetes",
+        "conditions": [
+            [
+                "BloodManganeseUgl",
+                1
+            ],
+            [
+                "BloodCadmiumUgl",
+                1
+            ],
+            [
+                "EverToldYouHadHeartAttack",
+                0.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their blood manganese level in ug/L is greater than 7.48 and less than or equal to 9.38, and their blood cadmium level in ug/L is greater than 0.17 and less than or equal to 0.29, and they have not had a heart attack that was confirmed by a doctor"
+    },
+    "hard_19": {
+        "mean": 0.010131394751378543,
+        "std": 0.10014364478972333,
+        "se": 0.0031329228179546734,
+        "base_variable": "EverToldYouHadCancerOrMalignancy",
+        "conditions": [
+            [
+                "CoveredByHealthInsurance",
+                0.0
+            ],
+            [
+                "WaistCircumferenceCm",
+                0
+            ],
+            [
+                "HaveSeriousDifficultyConcentrating",
+                0.0
+            ]
+        ],
+        "difficulty": "hard",
+        "ground_truth_distribution_type": "beta",
+        "variable": "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor, given they do not have health insurance, and their waist circumference in centimeters is less than or equal to 86.0, and they do not have serious difficulty concentrating"
     }
 }

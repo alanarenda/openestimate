@@ -157,15 +157,15 @@ def assign_prior_direct(elicited_priors, variables):
                 try:
                     info['fitted_prior'] = {
                         'type': 'gaussian',
-                        'mean': coerce_float(output['mean'], variable_name=var_name),
-                        'std': coerce_float(output['std'], variable_name=var_name)
+                        'mu': coerce_float(output['mu'], variable_name=var_name),
+                        'sigma': coerce_float(output['sigma'], variable_name=var_name)
                     }
                 except Exception as e:
                     print(f"Error extracting Normal parameters for {var_name}: {e}")
                     info['fitted_prior'] = {
                         'type': 'gaussian',
-                        'mean': None,
-                        'std': None
+                        'mu': None,
+                        'sigma': None
                     }
 
             elif chosen_type == 'lognormal':
@@ -212,14 +212,14 @@ def assign_prior_direct(elicited_priors, variables):
                 try:
                     info['fitted_prior'] = {
                         'type': 'gaussian',
-                        'mean': coerce_float(output['mean'], variable_name=var_name),
-                        'std': coerce_float(output['std'], variable_name=var_name)
+                        'mu': coerce_float(output['mu'], variable_name=var_name),
+                        'sigma': coerce_float(output['sigma'], variable_name=var_name)
                     }
                 except Exception as e:
                     info['fitted_prior'] = {
                         'type': 'gaussian',
-                        'mean': None,
-                        'std': None
+                        'mu': None,
+                        'sigma': None
                     }
             elif distr == 'beta' or distr == 'binomial':
                 try:
@@ -250,7 +250,6 @@ def process_priors(elicited_priors, variables):
 
     for var_name, info in elicited_priors.items():
         var = get_variable_name(var_name, variables)
-        ground_truth = get_variable_mean(var_name, variables)
         ground_truth_distr = variables[var]['ground_truth_distribution_type']
 
         # Get the fitted prior type (may differ from ground truth if using unified prompt)
@@ -260,7 +259,6 @@ def process_priors(elicited_priors, variables):
         processed_result = {
             'variable_name': var_name,
             'variable': var,
-            'ground_truth': ground_truth,
             'ground_truth_distribution_type': ground_truth_distr,
             'fitted_distribution_type': fitted_type,
         }
@@ -268,8 +266,6 @@ def process_priors(elicited_priors, variables):
         try:
             if fitted_type == 'gaussian':
                 processed_result.update({
-                    'mean': float(info['fitted_prior']['mean']),
-                    'std': float(info['fitted_prior']['std']),
                     'mu': None,
                     'sigma': None,
                     'a': None,
@@ -279,15 +275,10 @@ def process_priors(elicited_priors, variables):
             elif fitted_type == 'lognormal':
                 mu = float(info['fitted_prior']['mu'])
                 sigma = float(info['fitted_prior']['sigma'])
-                # Compute real-space mean and std for comparison
-                mean_realspace = np.exp(mu + sigma**2 / 2)
-                std_realspace = np.sqrt((np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2))
 
                 processed_result.update({
                     'mu': mu,
                     'sigma': sigma,
-                    'mean': mean_realspace,  # For comparison with ground truth
-                    'std': std_realspace,
                     'a': None,
                     'b': None
                 })
@@ -295,15 +286,9 @@ def process_priors(elicited_priors, variables):
             elif fitted_type == 'beta':
                 a = float(info['fitted_prior']['a'])
                 b = float(info['fitted_prior']['b'])
-                # Compute mean and std from Beta parameters
-                mean_beta = a / (a + b)
-                std_beta = np.sqrt(a * b / ((a + b)**2 * (a + b + 1)))
-
                 processed_result.update({
                     'a': a,
                     'b': b,
-                    'mean': mean_beta,
-                    'std': std_beta,
                     'mu': None,
                     'sigma': None
                 })
@@ -311,8 +296,6 @@ def process_priors(elicited_priors, variables):
             else:
                 # Unknown or failed extraction
                 processed_result.update({
-                    'mean': None,
-                    'std': None,
                     'mu': None,
                     'sigma': None,
                     'a': None,
@@ -322,8 +305,6 @@ def process_priors(elicited_priors, variables):
         except Exception as e:
             print(f"Error processing {fitted_type} prior for {var_name}: {e}")
             processed_result.update({
-                'mean': None,
-                'std': None,
                 'mu': None,
                 'sigma': None,
                 'a': None,

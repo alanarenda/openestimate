@@ -1,7 +1,7 @@
 {
   "experiment_name": "meta-llama-3-70b_base_unified-lognormal-direct_temp0.5",
-  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/glassdoor/model_family_comparison/glassdoor_meta-llama-3-70b_base_temp0.5_experts.json",
-  "variables": "/home/ubuntu/alana/openestimate/data/variables/glassdoor_variables.json",
+  "experts_spec": "/Users/marzoev/openestimate/experiments/glassdoor/model_family_comparison/glassdoor_meta-llama-3-70b_base_temp0.5_experts.json",
+  "variables": "/Users/marzoev/openestimate/data/variables/glassdoor_variables.json",
   "protocol_spec": {
     "individual_elicitation_protocol": "unified-lognormal-direct"
   }

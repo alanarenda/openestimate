@@ -30,8 +30,8 @@ You may choose from:
 
 ### If you choose Normal:
 <distribution_type>Normal</distribution_type>
-<mean>value</mean>
-<std>value</std>
+<mu>value</mu>
+<sigma>value</sigma>
 
 ### If you choose Lognormal:
 <distribution_type>Lognormal</distribution_type>

@@ -29,11 +29,6 @@ def get_variable_difficulty(var_name, variables):
                 return 'base'
 
 
-def get_variable_mean(var_name, variables):
-    for var in variables.values():
-        if var['variable'] == var_name:
-            return var.get('mean', None)
-
 
 def get_variable_name(var_name, variables):
     for name, var in variables.items():

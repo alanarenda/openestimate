@@ -638,12 +638,12 @@ def generate_glassdoor(generation_config):
                     log_values = np.log(samp[base_var] + 1e-6)  # avoid log(0)
                     mean_log_hat = float(log_values.mean())
                     pop_log_sd   = float(log_values.std())
-                    mu_n_log, sig_n_log = gaussian_posterior(MU0, SIGMA0, n_eff, mean_log_hat, pop_log_sd)
-                    mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
-                    sig_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
-
+                    # Use log-space priors (mean of log is ~log of median, use wide prior)
+                    MU0_LOG = 0.0
+                    SIGMA0_LOG = 100.0
+                    mu_n_log, sig_n_log = gaussian_posterior(MU0_LOG, SIGMA0_LOG, n_eff, mean_log_hat, pop_log_sd)
                     trials.append({"mu": mu_n, "sigma": sig_n})
-                    lognorm_trials.append({"mu": mu_n_exp, "sigma": sig_n_exp})
+                    lognorm_trials.append({"mu": mu_n_log, "sigma": sig_n_log})
 
             baselines[var_key][str(n)] = trials
             if len(lognorm_trials) > 0:
@@ -670,10 +670,11 @@ def generate_glassdoor(generation_config):
             log_values_all = np.log(subset[base_var] + 1e-6)  # avoid log(0)
             mean_log_all = float(log_values_all.mean())
             sd_log_all   = float(log_values_all.std())
-            mu_all_log, sig_all_log = gaussian_posterior(MU0, SIGMA0, n_eff_all, mean_log_all, sd_log_all)
-            mu_all_exp = np.exp(mu_all_log + 0.5 * sig_all_log ** 2)
-            sig_all_exp = np.sqrt((np.exp(sig_all_log ** 2) - 1) * np.exp(2 * mu_all_log + sig_all_log ** 2))
-            all_lognorm_trials.append({"mu": mu_all_exp, "sigma": sig_all_exp})
+            # Use log-space priors
+            MU0_LOG = 0.0
+            SIGMA0_LOG = 100.0
+            mu_all_log, sig_all_log = gaussian_posterior(MU0_LOG, SIGMA0_LOG, n_eff_all, mean_log_all, sd_log_all)
+            all_lognorm_trials.append({"mu": mu_all_log, "sigma": sig_all_log})
 
             all_trials.append({"mu": mu_all, "sigma": sig_all})
 

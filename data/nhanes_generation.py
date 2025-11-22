@@ -1015,12 +1015,13 @@ def generate_nhanes(generation_config):
                         dsw_log = DescrStatsW(np.log(samp[base_var] + 1e-6), weights=w, ddof=0)
                         mean_hat_log = float(dsw_log.mean)
                         pop_sd_log = float(dsw_log.std)  # population σ in log-scale
+                        # Use log-space priors (mean of log is ~log of median, use wide prior)
+                        MU0_LOG = 0.0
+                        SIGMA0_LOG = 100.0
                         mu_n_log, sig_n_log = gaussian_posterior(
-                            MU0, SIGMA0, n_eff, mean_hat_log, pop_sd_log
+                            MU0_LOG, SIGMA0_LOG, n_eff, mean_hat_log, pop_sd_log
                         )
-                        mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
-                        std_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
-                        lognorm_trials.append({"mu": mu_n_exp, "std": std_n_exp})
+                        lognorm_trials.append({"mu": mu_n_log, "sigma": sig_n_log})
                 
                 baselines[var_key]["all"] = trials
                 baselines[var_key]["all_lognorm"] = lognorm_trials
@@ -1079,12 +1080,13 @@ def generate_nhanes(generation_config):
                     dsw_log = DescrStatsW(np.log(samp[base_var] + 1e-6), weights=w, ddof=0)
                     mean_hat_log = float(dsw_log.mean)
                     pop_sd_log = float(dsw_log.std)  # population σ in log-scale
+                    # Use log-space priors
+                    MU0_LOG = 0.0
+                    SIGMA0_LOG = 100.0
                     mu_n_log, sig_n_log = gaussian_posterior(
-                        MU0, SIGMA0, n_eff, mean_hat_log, pop_sd_log
+                        MU0_LOG, SIGMA0_LOG, n_eff, mean_hat_log, pop_sd_log
                     )
-                    mu_n_exp = np.exp(mu_n_log + 0.5 * sig_n_log ** 2)
-                    std_n_exp = np.sqrt((np.exp(sig_n_log ** 2) - 1) * np.exp(2 * mu_n_log + sig_n_log ** 2))
-                    lognorm_trials.append({"mu": mu_n_exp, "std": std_n_exp})
+                    lognorm_trials.append({"mu": mu_n_log, "sigma": sig_n_log})
 
             baselines[var_key][str(n)] = trials
             baselines[var_key][f"{n}_lognorm"] = lognorm_trials

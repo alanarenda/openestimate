@@ -170,8 +170,6 @@ def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysi
             'posterior_helped': all_posterior_helped_percentages,
             'prior_helped': all_prior_helped_percentages
         }
-
-    print("HEREE")
     # Build combined table with all datasets
     build_combined_error_comparison_table(all_dataset_results, output_dir=output_dir)  
 

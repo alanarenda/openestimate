@@ -1,7 +1,7 @@
 {
   "experiment_name": "o4-mini_base_direct_temphigh",
-  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/nhanes/ablations/nhanes_o4-mini_base_temphigh_experts.json",
-  "variables": "/home/ubuntu/alana/openestimate/data/variables/nhanes_variables.json",
+  "experts_spec": "/Users/marzoev/openestimate/experiments/nhanes/ablations/nhanes_o4-mini_base_temphigh_experts.json",
+  "variables": "/Users/marzoev/openestimate/data/variables/nhanes_variables.json",
   "protocol_spec": {
     "individual_elicitation_protocol": "direct"
   }
