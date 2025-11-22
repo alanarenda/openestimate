@@ -20,8 +20,8 @@ def get_protocol_file_path(distribution_type):
         'binomial': f'{PROJECT_ROOT}/elicitation/prompts/beta-direct.txt',
         'beta': f'{PROJECT_ROOT}/elicitation/prompts/beta-direct.txt',
         'unified': f'{PROJECT_ROOT}/elicitation/prompts/unified-lognormal-direct.txt',
-        'unified-lognormal': f'{PROJECT_ROOT}/elicitation/prompts/unified-lognormal-direct.txt',
-        'unified-no-lognormal': f'{PROJECT_ROOT}/elicitation/prompts/unified-no-lognormal-direct.txt',
+        'unified-lognormal-direct': f'{PROJECT_ROOT}/elicitation/prompts/unified-lognormal-direct.txt',
+        'unified-no-lognormal-direct': f'{PROJECT_ROOT}/elicitation/prompts/unified-no-lognormal-direct.txt',
         'lognormal': f'{PROJECT_ROOT}/elicitation/prompts/unified-direct.txt'
     }
 

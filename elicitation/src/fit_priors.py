@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from scipy.stats import norm, beta
 from scipy.optimize import minimize
-from utils import get_variable_name, get_variable_mean, convert_number_to_float
+from utils import get_variable_name, convert_number_to_float
 
 
 def coerce_float(x, variable_name=None, enable_conversion=True):
