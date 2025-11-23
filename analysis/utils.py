@@ -160,46 +160,6 @@ def get_quartiles_from_beta(alpha, beta_param):
     return res
 
 
-def determine_quartile_of_gt(sorted_results):
-    # Initialize the 'quartile_of_gt' column with default values
-    sorted_results['quartile_of_gt'] = None
-
-    for index, row in sorted_results.iterrows():
-        if row['ground_truth_distribution_type'] == 'normal' or row['ground_truth_distribution_type'] == 'gaussian':
-            if row['mean'] is not None:
-                quartiles = get_quartiles_from_gaussian(row['mean'], row['std'])
-        elif row['ground_truth_distribution_type'] == 'beta' or row['ground_truth_distribution_type'] == 'binomial':
-            # print("Alpha: ", row['alpha'], "Beta: ", row['beta'])
-            try: 
-                alpha = row['alpha']
-                beta = row['beta']
-            except:
-                alpha = row['a']
-                beta = row['b']
-
-            if alpha == 0: 
-                alpha = 0.00001
-            if beta == 0:
-                beta = 0.00001
-            if alpha == 0:
-                alpha = 0.00001
-            quartiles = get_quartiles_from_beta(alpha, beta)
-        else:
-            raise ValueError("Unknown distribution type: ", row['ground_truth_distribution_type'])
-            
-        if row['ground_truth'] < quartiles[0]: 
-            quartile_of_gt = 1
-        elif row['ground_truth'] > quartiles[0] and row['ground_truth'] < quartiles[1]:
-            quartile_of_gt = 2
-        elif row['ground_truth'] > quartiles[1] and row['ground_truth'] < quartiles[2]:
-            quartile_of_gt = 3
-        elif row['ground_truth'] > quartiles[2]:
-            quartile_of_gt = 4
-        else: 
-            quartile_of_gt = None
-        sorted_results.at[index, 'quartile_of_gt'] = quartile_of_gt
-    return sorted_results
-
 
 def load_data(results_dir):
     """Load and process experimental results from multiple EXPERTS directories."""
@@ -332,8 +292,142 @@ def compute_error_ratios_and_std_ratios(results):
     return results 
 
 
+def compute_normal_mean_median_mode(mu, sigma):
+    return {'mean': mu, 'median': mu, 'mode': mu}
+
+
+def compute_beta_mean_median_mode(a, b): 
+    # Mean of Beta(a, b) = a / (a + b)
+    mean = a / (a + b)
+    
+    # Median - no closed form, use scipy
+    median = stats.beta.median(a, b)
+    
+    if a > 1 and b > 1:
+        mode = (a - 1) / (a + b - 2)
+    elif a == 1 and b == 1:
+        mode = np.nan  # uniform distribution
+    elif a <= 1 and b > 1:
+        mode = 0.0
+    elif a > 1 and b <= 1:
+        mode = 1.0
+    else:  # a < 1 and b < 1 (bimodal)
+        mode = np.nan  # or could return [0.0, 1.0
+
+    return {
+        'mean': mean,
+        'median': median,
+        'mode': mode  
+    }
+
+
+def compute_lognormal_mean_median_mode(mu, sigma):
+    """
+    Compute mean, median, and mode of a Lognormal distribution.
+    
+    Parameters:
+    -----------
+    mu : float
+        Mean of the underlying normal distribution
+    sigma : float
+        Standard deviation of the underlying normal distribution, must be > 0
+    
+    Returns:
+    --------
+    dict with keys 'mean', 'median', 'mode'
+    """
+    import numpy as np
+    
+    # Mean of Lognormal(mu, sigma) = exp(mu + sigma^2/2)
+    mean = np.exp(mu + sigma**2 / 2)
+    
+    # Median of Lognormal(mu, sigma) = exp(mu)
+    median = np.exp(mu)
+    
+    # Mode of Lognormal(mu, sigma) = exp(mu - sigma^2)
+    mode = np.exp(mu - sigma**2)
+    
+    return {
+        'mean': mean,
+        'median': median,
+        'mode': mode
+    }
+
+
+def get_quartiles_from_gaussian(mean, std):
+    return normal_dist.ppf([0.25, 0.5, 0.75], mean, std)
+
+
+def get_quartiles_from_beta(alpha, beta_param):
+    res = beta_dist.ppf([0.25, 0.5, 0.75], alpha, beta_param)
+    return res
+
+
+def get_quartiles_from_lognormal(mu, sigma):
+    return np.exp(stats.norm.ppf([0.25, 0.5, 0.75], mu, sigma))
+
+
+def determine_quartile_of_gt(results):
+    # Initialize the 'quartile_of_gt' column with default values
+    results['quartile_of_gt'] = np.nan 
+
+    for index, row in results.iterrows():
+        if row['fitted_distribution_type'] == 'normal' or row['fitted_distribution_type'] == 'gaussian':
+            if pd.notna(row['mu']) and pd.notna(row['sigma']):
+                quartiles = get_quartiles_from_gaussian(row['mu'], row['sigma'])
+        elif row['fitted_distribution_type'] == 'beta' or row['fitted_distribution_type'] == 'binomial':
+            try: 
+                alpha = row['alpha']
+                beta = row['beta']
+            except:
+                alpha = row['a']
+                beta = row['b']
+
+            if alpha == 0: 
+                alpha = 0.00001
+            if beta == 0:
+                beta = 0.00001
+            if alpha == 0:
+                alpha = 0.00001
+            quartiles = get_quartiles_from_beta(alpha, beta)
+        elif row['fitted_distribution_type'] == 'lognormal':
+            if 'sigma' in row:
+                quartiles = get_quartiles_from_lognormal(row['mu'], row['sigma'])
+            else: 
+                print(row)
+                quartiles = get_quartiles_from_lognormal(row['mu'], row['std']) 
+        else:
+            if row['ground_truth_distribution_type'] == 'gaussian':
+                quartiles = get_quartiles_from_gaussian(row['mu'], row['sigma'])
+            elif row['ground_truth_distribution_type'] == 'beta':
+                try: 
+                    alpha = row['alpha']
+                    beta = row['beta']
+                except:
+                    alpha = row['a']
+                    beta = row['b']
+
+                if alpha == 0: 
+                    alpha = 0.00001
+                if beta == 0:
+                    beta = 0.00001
+                quartiles = get_quartiles_from_beta(alpha, beta)
+            else:
+                raise ValueError("Unknown distribution type: ", row['ground_truth_distribution_type'])
+            
+        if row['ground_truth'] <= quartiles[0]:
+            quartile_of_gt = 1
+        elif row['ground_truth'] <= quartiles[1]:
+            quartile_of_gt = 2
+        elif row['ground_truth'] <= quartiles[2]:
+            quartile_of_gt = 3
+        else:
+            quartile_of_gt = 4
+        results.at[index, 'quartile_of_gt'] = quartile_of_gt
+    return results
+
+
 def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path):
-    print('hii')
     all_results = []
     variables = json.load(open(var_file_path, 'r'))
     for results_dir in results_dirs:
@@ -349,7 +443,8 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     else:
         results = all_results[0]
 
-    return results, variables 
+    stat_baselines = json.load(open(baselines_file_path, 'r'))
+
     stat_baselines_metrics_by_var = {}
     for var, info in stat_baselines.items():
         stat_baselines_metrics_by_var[var] = {}
@@ -368,16 +463,6 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
             trial = 0
             for baseline_info in baseline_infos:
                 var_type = 'beta' if 'alpha' in baseline_info else 'gaussian'
-                if var_type == 'beta':
-                    mean = beta_dist.mean(baseline_info['alpha'], baseline_info['beta'])
-                    std = beta_dist.std(baseline_info['alpha'], baseline_info['beta'])
-                elif var_type == 'gaussian':
-                    mean = baseline_info['mu']
-                    if 'sigma' in baseline_info:
-                        std = baseline_info['sigma']
-                    else: 
-                        std = baseline_info['std']
-
                 var_difficulty = 'easy' if 'easy' in var else 'medium' if 'medium' in var else 'hard' if 'hard' in var else 'base'
                 ground_truth = variables[var]['mean']
 
@@ -396,8 +481,6 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
                     'ground_truth': ground_truth,
                     'ground_truth_distribution_type': ground_truth_dist,
                     'fitted_distribution_type': ground_truth_dist,
-                    'mean': mean,
-                    'std': std,
                     'mu': baseline_info.get('mu') if var_type == 'gaussian' else None,
                     'sigma': baseline_info.get('sigma', baseline_info.get('std')) if var_type == 'gaussian' else None,
                     'a': baseline_info['alpha'] if 'alpha' in baseline_info else None,
@@ -425,85 +508,23 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
 
     results = pd.concat([results, results_df], ignore_index=True)
 
-    mask = results['fitted_distribution_type'] == 'gaussian'
-    results.loc[mask, 'mu'] = results.loc[mask, 'mean']
-    results.loc[mask, 'sigma'] = results.loc[mask, 'std']
-
-
-    results[(results['fitted_distribution_type'] == 'gaussian')].head()
-    results = results.drop('mean', axis=1)
-    results = results.drop('std', axis=1)
-
-    # Set ground truth based on fitted distribution type
-
-    mask = results['fitted_distribution_type'] == 'lognormal'
-
-    results.loc[mask, 'ground_truth'] = results.loc[mask].apply(
+    lognorm_mask = results['fitted_distribution_type'] == 'lognormal'
+    results.loc[lognorm_mask, 'ground_truth'] = results.loc[lognorm_mask].apply(
         lambda row: variables[row['variable']].get('mean_lognormal', variables[row['variable']]['mean']), 
         axis=1
     )
 
-    # Add mean, median, and mode columns for all rows 
+    beta_mask = results['fitted_distribution_type'] == 'beta'
+    results.loc[beta_mask, 'ground_truth'] = results.loc[beta_mask].apply(
+        lambda row: variables[row['variable']].get('mean'), 
+        axis=1
+    )
 
-    def compute_normal_mean_median_mode(mu, sigma):
-        return {'mean': mu, 'median': mu, 'mode': mu}
-
-
-    def compute_beta_mean_median_mode(a, b): 
-        # Mean of Beta(a, b) = a / (a + b)
-        mean = a / (a + b)
-        
-        # Median - no closed form, use scipy
-        median = stats.beta.median(a, b)
-        
-        if a > 1 and b > 1:
-            mode = (a - 1) / (a + b - 2)
-        elif a == 1 and b == 1:
-            mode = np.nan  # uniform distribution
-        elif a <= 1 and b > 1:
-            mode = 0.0
-        elif a > 1 and b <= 1:
-            mode = 1.0
-        else:  # a < 1 and b < 1 (bimodal)
-            mode = np.nan  # or could return [0.0, 1.0
-
-        return {
-            'mean': mean,
-            'median': median,
-            'mode': mode  
-        }
-
-
-    def compute_lognormal_mean_median_mode(mu, sigma):
-        """
-        Compute mean, median, and mode of a Lognormal distribution.
-        
-        Parameters:
-        -----------
-        mu : float
-            Mean of the underlying normal distribution
-        sigma : float
-            Standard deviation of the underlying normal distribution, must be > 0
-        
-        Returns:
-        --------
-        dict with keys 'mean', 'median', 'mode'
-        """
-        
-        # Mean of Lognormal(mu, sigma) = exp(mu + sigma^2/2)
-        mean = np.exp(mu + sigma**2 / 2)
-        
-        # Median of Lognormal(mu, sigma) = exp(mu)
-        median = np.exp(mu)
-        
-        # Mode of Lognormal(mu, sigma) = exp(mu - sigma^2)
-        mode = np.exp(mu - sigma**2)
-        
-        return {
-            'mean': mean,
-            'median': median,
-            'mode': mode
-        }
+    norm_mask = results['fitted_distribution_type'] == 'gaussian'
+    results.loc[norm_mask, 'ground_truth'] = results.loc[norm_mask].apply(
+        lambda row: variables[row['variable']].get('mean'), 
+        axis=1
+    )
 
     beta_vars = results['fitted_distribution_type'] == 'beta'
     lognorm_vars = results['fitted_distribution_type'] == 'lognormal'
@@ -522,251 +543,117 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     results.loc[norm_vars, ['mean', 'median', 'mode']] = results.loc[norm_vars].apply(
         lambda row: pd.Series(compute_normal_mean_median_mode(row['mu'], row['sigma'])), axis=1)
 
-    # Compute all abs errors 
-
     results['abs_error_from_mean'] = np.abs(results['ground_truth'] - results['mean'])
     results['abs_error_from_median'] = np.abs(results['ground_truth'] - results['median'])
     results['abs_error_from_mode'] = np.abs(results['ground_truth'] - results['mode'])
 
-
-    # Determine quartiles of ground truth 
-    def get_quartiles_from_gaussian(mean, std):
-        return normal_dist.ppf([0.25, 0.5, 0.75], mean, std)
-
-
-    def get_quartiles_from_beta(alpha, beta_param):
-        res = beta_dist.ppf([0.25, 0.5, 0.75], alpha, beta_param)
-        return res
-
-
-    def get_quartiles_from_lognormal(mu, sigma):
-        return np.exp(stats.norm.ppf([0.25, 0.5, 0.75], mu, sigma))
-
-
-    def determine_quartile_of_gt(results):
-        # Initialize the 'quartile_of_gt' column with default values
-        results['quartile_of_gt'] = np.nan 
-
-        for index, row in results.iterrows():
-            if row['fitted_distribution_type'] == 'normal' or row['fitted_distribution_type'] == 'gaussian':
-                if row['mean'] is not None:
-                    quartiles = get_quartiles_from_gaussian(row['mu'], row['sigma'])
-            elif row['fitted_distribution_type'] == 'beta' or row['fitted_distribution_type'] == 'binomial':
-                # print("Alpha: ", row['alpha'], "Beta: ", row['beta'])
-                try: 
-                    alpha = row['alpha']
-                    beta = row['beta']
-                except:
-                    alpha = row['a']
-                    beta = row['b']
-
-                if alpha == 0: 
-                    alpha = 0.00001
-                if beta == 0:
-                    beta = 0.00001
-                if alpha == 0:
-                    alpha = 0.00001
-                quartiles = get_quartiles_from_beta(alpha, beta)
-            elif row['fitted_distribution_type'] == 'lognormal':
-                if 'sigma' in row:
-                    quartiles = get_quartiles_from_lognormal(row['mu'], row['sigma'])
-                else: 
-                    print(row)
-                    quartiles = get_quartiles_from_lognormal(row['mu'], row['std']) 
-            else:
-                if row['ground_truth_distribution_type'] == 'gaussian':
-                    quartiles = get_quartiles_from_gaussian(row['mu'], row['sigma'])
-                elif row['ground_truth_distribution_type'] == 'beta':
-                    try: 
-                        alpha = row['alpha']
-                        beta = row['beta']
-                    except:
-                        alpha = row['a']
-                        beta = row['b']
-
-                    if alpha == 0: 
-                        alpha = 0.00001
-                    if beta == 0:
-                        beta = 0.00001
-                    quartiles = get_quartiles_from_beta(alpha, beta)
-                elif row['ground_truth_distribution_type'] == 'lognormal':
-                    if 'sigma' in row:
-                        quartiles = get_quartiles_from_lognormal(row['mu'], row['sigma'])
-                    else: 
-                        print(row)
-                        quartiles = get_quartiles_from_lognormal(row['mu'], row['std'])
-                else:
-                    raise ValueError("Unknown distribution type: ", row['ground_truth_distribution_type'])
-                
-            if row['ground_truth'] < quartiles[0]: 
-                quartile_of_gt = 1
-            elif row['ground_truth'] > quartiles[0] and row['ground_truth'] < quartiles[1]:
-                quartile_of_gt = 2
-            elif row['ground_truth'] > quartiles[1] and row['ground_truth'] < quartiles[2]:
-                quartile_of_gt = 3
-            elif row['ground_truth'] > quartiles[2]:
-                quartile_of_gt = 4
-            else: 
-                quartile_of_gt = None
-            results.at[index, 'quartile_of_gt'] = quartile_of_gt
-        return results
-
-
     results = determine_quartile_of_gt(results)
+    # Compute std for each distribution type
+    def compute_normal_std(mu, sigma):
+        return sigma
 
+    def compute_beta_std(a, b):
+        return stats.beta.std(a, b)
 
+    def compute_lognormal_std(mu, sigma):
+        """
+        Compute std of a Lognormal distribution.
+        
+        For Lognormal(mu, sigma):
+        Var(X) = (exp(sigma^2) - 1) * exp(2*mu + sigma^2)
+        Std(X) = sqrt(Var(X))
+        """
+        variance = (np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2)
+        return np.sqrt(variance)
 
+    # Compute std for all rows
+    results['std'] = np.nan
 
+    results.loc[beta_vars, 'std'] = results.loc[beta_vars].apply(
+        lambda row: compute_beta_std(row['a'], row['b']), axis=1)
 
+    results.loc[lognorm_vars, 'std'] = results.loc[lognorm_vars].apply(
+        lambda row: compute_lognormal_std(row['mu'], row['sigma']), axis=1)
 
-    # Process beta variables to compute normalized mean and std
-    beta_vars = results[results['ground_truth_distribution_type'] == 'beta'].copy()
+    results.loc[norm_vars, 'std'] = results.loc[norm_vars].apply(
+        lambda row: compute_normal_std(row['mu'], row['sigma']), axis=1)
 
-    for idx, row in beta_vars.iterrows():
-        alpha = row['a'] 
-        beta_param = row['b']  
+    fallback_count = 0
+    exact_match_count = 0
 
-        # Check for None or NaN values
-        if pd.isna(alpha) or pd.isna(beta_param) or alpha is None or beta_param is None:
-            mean = row['mean']
-            std = row['std']
-        else: 
-            alpha = float(alpha)
-            beta_param = float(beta_param)
-            mean = beta_dist.mean(alpha, beta_param)
-            std = beta_dist.std(alpha, beta_param)
-        beta_vars.loc[idx, 'mean'] = mean
-        beta_vars.loc[idx, 'std'] = std
+    results['error_ratio_mean'] = np.nan
+    results['error_ratio_median'] = np.nan
+    results['error_ratio_mode'] = np.nan
+    results['std_ratio'] = np.nan
+    results['associated_baseline_error_mean'] = np.nan
+    results['associated_baseline_error_median'] = np.nan
+    results['associated_baseline_error_mode'] = np.nan
+    results['associated_baseline_std'] = np.nan
 
-    output_dir = 'results'
-    os.makedirs(output_dir, exist_ok=True)
-    stat_baselines = json.load(open(baselines_file_path, 'r'))
-
-    stat_baselines_metrics_by_var = {}
-    for var, info in stat_baselines.items():
-        stat_baselines_metrics_by_var[var] = {}
-        for n, baseline_infos in info.items():
-            var_name = variables[var]['variable']
-
-            # Store each resampling's metrics separately
-            resampling_results = []
-
-            # Determine if this is a lognormal baseline
-            is_lognormal = 'lognorm' in str(n)
-            # Extract the numeric sample size (e.g., "5" from "5_lognorm" or "5" from "5")
-            n_numeric = str(n).replace('_lognorm', '')
-
-            # Process each resampling
-            trial = 0
-            for baseline_info in baseline_infos:
-                var_type = 'beta' if 'alpha' in baseline_info else 'gaussian'
-                if var_type == 'beta':
-                    mean = beta_dist.mean(baseline_info['alpha'], baseline_info['beta'])
-                    std = beta_dist.std(baseline_info['alpha'], baseline_info['beta'])
-                elif var_type == 'gaussian':
-                    mean = baseline_info['mu']
-                    std = baseline_info['sigma']
-
-                var_difficulty = 'easy' if 'easy' in var else 'medium' if 'medium' in var else 'hard' if 'hard' in var else 'base'
-                ground_truth = variables[var]['mean']
-
-                # Determine ground truth distribution type based on the baseline type
-                if is_lognormal:
-                    ground_truth_dist = 'lognormal'
-                elif var_type == 'gaussian':
-                    ground_truth_dist = 'gaussian'
-                else:
-                    ground_truth_dist = 'beta'
-
-                # Store each resampling's results separately
-                resampling_results.append({
-                    'variable_name': var_name,
-                    'variable': var,
-                    'ground_truth': ground_truth,
-                    'ground_truth_distribution_type': ground_truth_dist,
-                    'fitted_distribution_type': ground_truth_dist,
-                    'mean': mean,
-                    'std': std,
-                    'mu': baseline_info.get('mu') if var_type == 'gaussian' else None,
-                    'sigma': baseline_info.get('sigma', baseline_info.get('std')) if var_type == 'gaussian' else None,
-                    'a': baseline_info['alpha'] if 'alpha' in baseline_info else None,
-                    'b': baseline_info['beta'] if 'beta' in baseline_info else None,
-                    'trial': trial,
-                    'difficulty': var_difficulty,
-                    'sample_size': n_numeric
-                })
-                trial += 1
-            # Store all resampling results for this sample size
-            stat_baselines_metrics_by_var[var][n] = resampling_results
-
-    flattened_metrics = []
-    for var, baselines in stat_baselines_metrics_by_var.items():
-        for n, resamplings in baselines.items():
-            # Extract numeric sample size (works for both "5" and "5_lognorm")
-            n_numeric = str(n).replace('_lognorm', '')
-
-            for resampling in resamplings:
-                resampling_copy = resampling.copy()
-                resampling_copy['approach'] = f'statistical_baseline_n{n_numeric}'
-                flattened_metrics.append(resampling_copy)
-
-    results_df = pd.DataFrame(flattened_metrics)
-
-    combined_results = pd.concat([results, results_df], ignore_index=True)
-    combined_results = determine_quartile_of_gt(combined_results)
-
-    # Initialize the abs_error column first
-    combined_results['abs_error'] = 0.0
-
-    # Standardize all variables for the sake of downstream relative comparisons 
-    for idx, row in combined_results.iterrows():
-        var_info = variables[row['variable']]
-
-        if var_info['ground_truth_distribution_type'] == 'normal':
-            # For normal variables, use raw prediction
-            combined_results.loc[idx, 'abs_error'] = abs(row['mean'] - var_info['mean'])
+    for idx, row in results.iterrows():
+        if "statistical" not in row["approach"]:
+            # First try: Match baselines with same variable, sample_size=5, and distribution type
+            baselines = results[
+                (results["approach"].str.contains("statistical", na=False)) & 
+                (results["sample_size"] == "5") &
+                (results["variable"] == row["variable"]) & 
+                (results["ground_truth_distribution_type"] == row["fitted_distribution_type"])
+            ]
             
-        elif var_info['ground_truth_distribution_type'] == 'beta':
-            mean = beta_dist.mean(row['a'], row['b'])
-            std = beta_dist.std(row['a'], row['b'])
-            # write mean/std into the DataFrame so downstream code and the CSV have them
-            combined_results.loc[idx, 'mean'] = mean
-            combined_results.loc[idx, 'std'] = std
-            combined_results.loc[idx, 'abs_error'] = abs(mean - var_info['mean'])
+            # Fallback: If no exact match, use any available baseline for this variable
+            if len(baselines) == 0:
+                baselines = results[
+                    (results["approach"].str.contains("statistical", na=False)) & 
+                    (results["sample_size"] == "5") &
+                    (results["variable"] == row["variable"])
+                ]
+                if len(baselines) > 0:
+                    fallback_count += 1
+            else:
+                exact_match_count += 1
+            
+            if len(baselines) == 0:
+                continue
+                
+            baseline_avg_error_mean = baselines["abs_error_from_mean"].mean()
+            baseline_avg_error_median = baselines["abs_error_from_median"].mean()
+            baseline_avg_error_mode = baselines["abs_error_from_mode"].mean()
+            baseline_avg_std = baselines["std"].mean()
 
-    combined_results = compute_error_ratios_and_std_ratios(combined_results)    
-    combined_results.to_csv(os.path.expanduser(f"~/openestimate/experiments/{dataset}/{dataset}_combined_processed_results.csv"))
-    print(f"Results saved to: ~/openestimate/experiments/{dataset}/{dataset}_combined_processed_results.csv")
-    return combined_results
+            error_ratio_mean = row["abs_error_from_mean"] / baseline_avg_error_mean 
+            error_ratio_median = row["abs_error_from_median"] / baseline_avg_error_median
+            error_ratio_mode = row["abs_error_from_mode"] / baseline_avg_error_mode
+            std_ratio = row["std"] / baseline_avg_std
 
+            results.at[idx, 'associated_baseline_error_mean'] = baseline_avg_error_mean
+            results.at[idx, 'associated_baseline_error_median'] = baseline_avg_error_median
+            results.at[idx, 'associated_baseline_error_mode'] = baseline_avg_error_mode
+            results.at[idx, 'associated_baseline_std'] = baseline_avg_std
+            results.at[idx, 'error_ratio_mean'] = error_ratio_mean
+            results.at[idx, 'error_ratio_median'] = error_ratio_median
+            results.at[idx, 'error_ratio_mode'] = error_ratio_mode
+            results.at[idx, 'std_ratio'] = std_ratio
+        
+    print(f"\nExact distribution type matches: {exact_match_count}")
+    print(f"Fallback to any available baseline: {fallback_count}")
 
-# def load_experiment_results(dataset, experiment_name): 
-#     base_path = os.path.join(os.path.expanduser('~/openestimate/experiments'), dataset)
-#     results_dir = os.path.join(base_path, experiment_name)
-#     results_dir = os.path.join(results_dir, dataset) 
-#     results_dir = os.path.join(results_dir, experiment_name)
-#     results_dirs = list(Path(results_dir).glob('trial_*'))
-#     print('Number of trials found: ', len(results_dirs))
-#     var_file_path = os.path.expanduser('~/openestimate/data/variables/{}_variables.json'.format(dataset))
-#     baseline_file_path = os.path.expanduser("~/openestimate/data/baselines/{}_baselines.json".format(dataset))
-#     results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path) 
-#     return results, variables
+    results.to_csv(os.path.expanduser("{}experiments/{dataset}/{dataset}_combined_processed_results.csv".format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset)), index=False)
+    print(f"Results saved to: {os.path.expanduser('{}experiments/{dataset}/{dataset}_combined_processed_results.csv'.format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset))}")
+    return results, variables
 
 
 def load_experiment_results(dataset, experiment_name): 
     # Get project root (assuming this file is in openestimate/analysis/)
+    print("loading results for dataset: ", dataset)
     project_root = Path(__file__).parent.parent
-    
     base_path = project_root / 'experiments' / dataset
     results_dir = base_path / experiment_name / dataset / experiment_name
     results_dirs = list(results_dir.glob('trial_*'))
     print('Number of trials found: ', len(results_dirs))
-    
     var_file_path = project_root / 'data' / 'variables' / f'{dataset}_variables.json'
     baseline_file_path = project_root / 'data' / 'baselines' / f'{dataset}_baselines.json'
-    print('hi')
     results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path) 
-    return results, variables
+    return results
 
 
 def print_completion_stats(results): 

@@ -5,7 +5,7 @@ The average blood lead level among adult (over 18) individuals in units of ug/dL
 The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population,BloodCadmiumUgl,normal,lognormal,-1.2,0.35,,
 The average blood mercury level among adult (over 18) individuals in units of ug/L in the general US population,BloodMercuryTotalUgl,normal,lognormal,0.405,0.5,,
 The average blood manganese level among adult (over 18) individuals in units of ug/L in the general US population,BloodManganeseUgl,normal,lognormal,1.609,0.4,,
-The average weight among adult (over 18) individuals in the general US population in kilograms,WeightKg,normal,gaussian,,,,
+The average weight among adult (over 18) individuals in the general US population in kilograms,WeightKg,normal,gaussian,82.0,3.0,,
 The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor,DoctorToldYouHaveDiabetes,beta,beta,,,14.0,86.0
 The probability that the average adult (over 18) in the US population takes medication for depression,TakeMedicationForDepression,beta,beta,,,6.0,40.0
 The probability that the average adult (over 18) in the US population or their spouse has health insurance,CoveredByHealthInsurance,beta,beta,,,49.0,3.0
@@ -13,7 +13,7 @@ The probability that a member of the US population who is over 18 has ever been 
 The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor,EverToldYouHadHeartAttack,beta,beta,,,6.0,94.0
 The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating,HaveSeriousDifficultyConcentrating,beta,beta,,,5.0,45.0
 The probability that the average adult (over 18) in the US population is currently taking insulin,TakingInsulinNow,beta,beta,,,12.0,288.0
-"The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood cadmium level in ug/L is greater than 0.5425",easy_0,normal,gaussian,,,,
+"The average weight among adult (over 18) individuals in the general US population in kilograms, given their blood cadmium level in ug/L is greater than 0.5425",easy_0,normal,gaussian,80.0,10.0,,
 "The probability that the average adult (over 18) in the US population has ever been diagnosed with diabetes by a doctor, given their weight in kilograms is greater than 94.5",easy_1,beta,beta,,,8.0,24.0
 "The probability that the average adult (over 18) in the US population or their spouse has health insurance, given they have ever been diagnosed with cancer by a doctor",easy_2,beta,beta,,,27.0,3.0
 "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor",easy_3,beta,beta,,,2.0,22.0

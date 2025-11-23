@@ -1,5 +1,5 @@
 variable_name,variable,ground_truth_distribution_type,fitted_distribution_type,mu,sigma,a,b
-The average waist circumference among adult (over 18) individuals in cm in the general US population,WaistCircumferenceCm,normal,gaussian,,,,
+The average waist circumference among adult (over 18) individuals in cm in the general US population,WaistCircumferenceCm,normal,gaussian,4.499,0.2,,
 The average total cholesterol among adult (over 18) individuals in units of mg/dL in the general US population,TotalCholesterolMgdl,normal,lognormal,4.7,0.3,,
 The average blood lead level among adult (over 18) individuals in units of ug/dL in the general US population,BloodLeadUgdl,normal,lognormal,1.5,0.5,,
 The average blood cadmium level among adult (over 18) individuals in units of ug/L in the general US population,BloodCadmiumUgl,normal,lognormal,0.0,0.5,,

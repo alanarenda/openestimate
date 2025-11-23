@@ -7,6 +7,97 @@ import matplotlib.pyplot as plt
 from matplotlib.colors import Normalize
 
 
+def plot_ground_truth_quartile_distribution_heatmap(results_sets, output_dir="analysis_results"):
+    """
+    Create heatmaps showing the count of ground truths in each quartile for each model.
+
+    Args:
+        results_sets: List of DataFrames containing results for each domain
+        output_dir: Directory to save the output plot
+    """
+    titles = {'nhanes': 'NHANES', 'glassdoor': 'Glassdoor', 'pitchbook': 'Pitchbook'}
+
+    # Model name mapping for pretty printing
+    model_name_mapping = {
+        'gpt-4o_base_direct_temp0.5': 'GPT 4o',
+        'meta-llama-3-70b_base_direct_temp0.5': 'Llama 3 70B',
+        'meta-llama-3-8b_base_direct_temp0.5': 'Llama 3 8B',
+        'o3-mini_base_direct_tempmedium': 'o3 Mini',
+        'o4-mini_base_direct_tempmedium': 'o4 Mini',
+        'qwen3-235b-a22b-fp8-tput_base_direct_temp0.6': 'Qwen3 235B',
+    }
+
+    # Create figure with subplots for each domain
+    num_datasets = len(results_sets)
+    fig, axes = plt.subplots(1, num_datasets, figsize=(6 * num_datasets, 6))
+
+    # Ensure axes is always iterable
+    if num_datasets == 1:
+        axes = [axes]
+
+    for idx, results in enumerate(results_sets):
+        # Filter out statistical baselines
+        filtered_results = results[~results['approach'].str.contains('statistical_baseline', case=False, na=False)]
+
+        # Build counts by approach × quartile (1..4)
+        counts = (
+            filtered_results.groupby(["approach", "quartile_of_gt"])
+            .size()
+            .unstack(fill_value=0)
+            .reindex(columns=[1, 2, 3, 4], fill_value=0)
+        )
+
+        # Map approach names to display names
+        counts.index = [model_name_mapping.get(approach, approach) for approach in counts.index]
+
+        # Sort by model name for consistency
+        counts = counts.sort_index()
+
+        # Create heatmap
+        ax = axes[idx]
+        import seaborn as sns
+
+        sns.heatmap(
+            counts,
+            ax=ax,
+            cmap='YlOrRd',
+            annot=True,
+            fmt='g',
+            linewidths=0.5,
+            cbar_kws={"label": "Count of Ground Truths"},
+            square=False,
+            annot_kws={'fontsize': 12}
+        )
+
+        # Get dataset name
+        dataset_name = results['dataset'].iloc[0]
+
+        # Labels and title
+        ax.set_xlabel("Quartile", fontsize=14)
+        if idx == 0:
+            ax.set_ylabel("Model", fontsize=14)
+        else:
+            ax.set_ylabel("")
+        ax.set_title(titles.get(dataset_name, dataset_name.capitalize()), fontsize=16, fontweight='bold')
+
+        # Tick formatting
+        ax.set_xticklabels(ax.get_xticklabels(), rotation=0, ha='center', fontsize=12)
+        ax.set_yticklabels(ax.get_yticklabels(), rotation=0, fontsize=12)
+
+        # Remove colorbar from individual subplots except the last one
+        if idx < num_datasets - 1:
+            ax.collections[0].colorbar.remove()
+
+    plt.suptitle('Distribution of Ground Truths Across Quartiles by Model',
+                 fontsize=18, fontweight='bold', y=1.02)
+    plt.tight_layout()
+
+    os.makedirs(output_dir, exist_ok=True)
+    with open(f"{output_dir}/ground_truth_quartile_distribution_heatmap.png", "wb") as f:
+        plt.savefig(f, dpi=300, bbox_inches='tight')
+    plt.close(fig)
+
+
 def plot_ece_by_domain(result_sets, output_dir="analysis_results"):
     titles = {'nhanes': 'NHANES', 'glassdoor': 'Glassdoor', 'pitchbook': 'Pitchbook'}
     # Model name mapping for pretty printing
@@ -337,9 +428,13 @@ def plot_uncertainty_accuracy_scatterplots(all_unc_acc_results, output_dir="anal
                 arrowprops=dict(arrowstyle='-', color='gray', alpha=0.5, linewidth=0.8)
             )
 
-        # Set labels and title
-        ax.set_xlim(0.4, 2.1)
-        ax.set_ylim(0.75, 2.5)
+        # Set labels and title - use dynamic limits based on data with some padding
+        x_min, x_max = min(mean_stds), max(mean_stds)
+        y_min, y_max = min(mean_errors), max(mean_errors)
+        x_padding = (x_max - x_min) * 0.15
+        y_padding = (y_max - y_min) * 0.15
+        ax.set_xlim(max(0, x_min - x_padding), x_max + x_padding)
+        ax.set_ylim(max(0, y_min - y_padding), y_max + y_padding)
         # Only add x-label to the middle subplot
         if idx == num_datasets // 2:
             ax.set_xlabel('Mean Standard Deviation Ratio (relative to N=5)', fontsize=12)
@@ -414,24 +509,24 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
 
         # Calculate error statistics
         error_stats = llm_results.groupby('approach').agg({
-            'error_ratio': ['mean', 'std', 'count']
+            'error_ratio_mean': ['mean', 'std', 'count']
         }).round(4)
 
-        error_stats.columns = ['mean_error_ratio', 'std_error_ratio', 'n']
+        error_stats.columns = ['mean_error_ratio_mean', 'std_error_ratio_mean', 'n']
 
         # Calculate 95% confidence interval using t-distribution
         error_stats['ci_lower'] = error_stats.apply(
-            lambda row: row['mean_error_ratio'] - stats.t.ppf(0.975, row['n']-1) * row['std_error_ratio'] / np.sqrt(row['n'])
-            if row['n'] > 1 else row['mean_error_ratio'],
+            lambda row: row['mean_error_ratio_mean'] - stats.t.ppf(0.975, row['n']-1) * row['std_error_ratio_mean'] / np.sqrt(row['n'])
+            if row['n'] > 1 else row['mean_error_ratio_mean'],
             axis=1
         )
         error_stats['ci_upper'] = error_stats.apply(
-            lambda row: row['mean_error_ratio'] + stats.t.ppf(0.975, row['n']-1) * row['std_error_ratio'] / np.sqrt(row['n'])
-            if row['n'] > 1 else row['mean_error_ratio'],
+            lambda row: row['mean_error_ratio_mean'] + stats.t.ppf(0.975, row['n']-1) * row['std_error_ratio_mean'] / np.sqrt(row['n'])
+            if row['n'] > 1 else row['mean_error_ratio_mean'],
             axis=1
         )
 
-        error_stats = error_stats.sort_values('mean_error_ratio')
+        error_stats = error_stats.sort_values('mean_error_ratio_mean')
         all_error_stats.append(error_stats)
         all_ci_lowers.extend(error_stats['ci_lower'].tolist())
         all_ci_uppers.extend(error_stats['ci_upper'].tolist())
@@ -458,11 +553,11 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
         x_pos = np.arange(len(display_names))
         
         # Calculate error bar values (asymmetric)
-        yerr_lower = error_stats['mean_error_ratio'] - error_stats['ci_lower']
-        yerr_upper = error_stats['ci_upper'] - error_stats['mean_error_ratio']
+        yerr_lower = error_stats['mean_error_ratio_mean'] - error_stats['ci_lower']
+        yerr_upper = error_stats['ci_upper'] - error_stats['mean_error_ratio_mean']
         yerr = np.array([yerr_lower, yerr_upper])
         
-        bars = ax.bar(x_pos, error_stats['mean_error_ratio'],
+        bars = ax.bar(x_pos, error_stats['mean_error_ratio_mean'],
                       yerr=yerr,
                       capsize=5,
                       alpha=0.8,
@@ -471,7 +566,7 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
                       error_kw={'elinewidth': 2, 'capthick': 2})
 
         # Add value labels on bars
-        for i, (bar, val) in enumerate(zip(bars, error_stats['mean_error_ratio'])):
+        for i, (bar, val) in enumerate(zip(bars, error_stats['mean_error_ratio_mean'])):
             height = bar.get_height()
             # Position label above error bar
             label_height = height + yerr_upper.iloc[i]
@@ -496,7 +591,6 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
     plt.tight_layout()
     with open(f"{output_dir}/error_ratios_by_domain.png", "wb") as f:
         plt.savefig(f, dpi=300, bbox_inches='tight')
-
 
 
 def calibration_heat_map(results_sets, output_dir='analysis_results'): 

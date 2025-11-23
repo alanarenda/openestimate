@@ -4,7 +4,8 @@ import numpy as np
 import pandas as pd
 from utils import load_experiment_results, print_completion_stats
 from plotting import (plot_uncertainty_accuracy_scatterplots,
-                plot_error_ratio_by_domain, calibration_heat_map, z_score_cdf_plot, plot_ece_by_domain)
+                plot_error_ratio_by_domain, calibration_heat_map, z_score_cdf_plot, plot_ece_by_domain, 
+                plot_ground_truth_quartile_distribution_heatmap)
 
 
 def build_error_comparison_table(posterior_helped_percentages, prior_helped_percentages, dataset, output_dir="analysis_results"):
@@ -104,19 +105,24 @@ def uncertainty_accuracy_correlation_analysis(results_sets, output_dir="analysis
     all_acc_unc_results = {}
     for results in results_sets:
         dataset_name = results['dataset'].iloc[0]
+        
         uncertainty_accuracy_analysis = {}
         # Compute the correlation between accuracy and uncertainty for each LLM-based approach 
         for approach in results['approach'].unique(): 
             if 'stat' not in approach:
                 datapoints = results[results['approach'] == approach]
-                spearman_corr = datapoints['error_ratio'].corr(datapoints['std'], method='spearman')
-                pearson_corr = datapoints['error_ratio'].corr(datapoints['std'], method='pearson')
+                spearman_corr = datapoints['error_ratio_mean'].corr(datapoints['std'], method='spearman')
+                pearson_corr = datapoints['error_ratio_mean'].corr(datapoints['std'], method='pearson')
                 uncertainty_accuracy_analysis[approach] = {
                     'spearman_corr': spearman_corr,
                     'pearson_corr': pearson_corr, 
-                    'mean_error_ratio': datapoints['error_ratio'].mean(), 
+                    'mean_error_ratio': datapoints['error_ratio_mean'].mean(), 
                     'mean_std_ratio': datapoints['std_ratio'].mean()
             }
+        # if dataset_name == 'glassdoor': 
+        #     print("Uncertainty-Accuracy Analysis for Glassdoor:") 
+        #     print(uncertainty_accuracy_analysis)
+            # import pdb; pdb.set_trace()
         all_acc_unc_results[dataset_name] = uncertainty_accuracy_analysis
     plot_uncertainty_accuracy_scatterplots(all_acc_unc_results, output_dir="analysis_results")
     return uncertainty_accuracy_analysis
@@ -176,14 +182,16 @@ def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysi
 
 def compare_models(datasets, output_dir): 
     experiment_name = 'model_family_comparison'
+    print("Datasets: {}".format(datasets))
     results_sets = [load_experiment_results(dataset, experiment_name) for dataset in datasets]
     for results in results_sets: 
         print_completion_stats(results)
-    compute_error_ratios_and_helped_percentages(results_sets, output_dir)
+    # compute_error_ratios_and_helped_percentages(results_sets, output_dir)
     plot_error_ratio_by_domain(results_sets, output_dir)
+    plot_ground_truth_quartile_distribution_heatmap(results_sets, output_dir)
     plot_ece_by_domain(results_sets, output_dir)
     uncertainty_accuracy_correlation_analysis(results_sets)
-    calibration_heat_map(results_sets, output_dir)
-    z_score_cdf_plot(results_sets, output_dir)
+    # calibration_heat_map(results_sets, output_dir)
+    # z_score_cdf_plot(results_sets, output_dir)
 
 

@@ -265,9 +265,12 @@ def process_priors(elicited_priors, variables):
 
         try:
             if fitted_type == 'gaussian':
+                mu = float(info['fitted_prior']['mu'])
+                sigma = float(info['fitted_prior']['sigma'])
+
                 processed_result.update({
-                    'mu': None,
-                    'sigma': None,
+                    'mu': mu,
+                    'sigma': sigma,
                     'a': None,
                     'b': None
                 })
