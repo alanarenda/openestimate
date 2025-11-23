@@ -1,8 +1,8 @@
 {
   "experiment_name": "gpt-4o_base_quantile_temp0.5",
-  "experts_spec": "/Users/marzoev/openestimate/experiments/glassdoor/ablations/glassdoor_gpt-4o_base_temp0.5_experts.json",
-  "variables": "/Users/marzoev/openestimate/data/variables/glassdoor_variables.json",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/glassdoor/ablations/glassdoor_gpt-4o_base_temp0.5_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/glassdoor_variables.json",
   "protocol_spec": {
-    "individual_elicitation_protocol": "/Users/marzoev/openestimate/elicitation/prompts/quantile.txt"
+    "individual_elicitation_protocol": "/home/ubuntu/alana/openestimate/elicitation/prompts/quantile.txt"
   }
 }

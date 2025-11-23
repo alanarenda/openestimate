@@ -1,8 +1,0 @@
-{
-  "experiment_name": "gpt-4o_base_quantile_temp0.5",
-  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/nhanes/ablations/nhanes_gpt-4o_base_temp0.5_experts.json",
-  "variables": "/home/ubuntu/alana/openestimate/data/variables/nhanes_variables.json",
-  "protocol_spec": {
-    "individual_elicitation_protocol": "/home/ubuntu/alana/openestimate/elicitation/prompts/quantile.txt"
-  }
-}

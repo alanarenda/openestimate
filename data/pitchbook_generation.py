@@ -789,7 +789,7 @@ def generate_pitchbook(generation_config):
                     mean_hat = float(samp[base_var].mean())
                     pop_sd   = float(samp[base_var].std())          # sample σ
                     mu_n, sig_n = gaussian_posterior(
-                        MU0, SIGMA0, n_eff, mean_hat, pop_sd
+                        MU0, SIGMA0 * pop_sd, n_eff, mean_hat, pop_sd
                     )
 
                     # Lognormal update
@@ -798,7 +798,7 @@ def generate_pitchbook(generation_config):
                     pop_log_sd   = float(log_values.std())
                     # Use log-space priors (mean of log is ~log of median, use wide prior)
                     MU0_LOG = 0.0
-                    SIGMA0_LOG = 100.0
+                    SIGMA0_LOG = 10.0 * pop_log_sd
                     mu_n_log, sig_n_log = gaussian_posterior(MU0_LOG, SIGMA0_LOG, n_eff, mean_log_hat, pop_log_sd)
 
                     trials.append({"mu": mu_n, "sigma": sig_n})

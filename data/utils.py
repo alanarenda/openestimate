@@ -5,7 +5,7 @@ from pathlib import Path
 SUBSAMPLE_SIZES = [5, 10, 20, 30]   
 RESAMPLES_PER_N = 25                     
 ALPHA0, BETA0 = 1.0, 1.0
-MU0, SIGMA0   = 0.0, 100_000.0     
+MU0, SIGMA0   = 0.0, 10.0     
 
 
 def check_difference_threshold_proportion(a, b, se, difference_threshold):

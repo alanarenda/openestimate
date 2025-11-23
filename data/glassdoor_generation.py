@@ -631,7 +631,7 @@ def generate_glassdoor(generation_config):
                     mean_hat = float(samp[base_var].mean())
                     pop_sd   = float(samp[base_var].std())
                     mu_n, sig_n = gaussian_posterior(
-                        MU0, SIGMA0, n_eff, mean_hat, pop_sd
+                        MU0, SIGMA0 * pop_sd, n_eff, mean_hat, pop_sd
                     )
 
                     # Lognormal update
@@ -640,7 +640,7 @@ def generate_glassdoor(generation_config):
                     pop_log_sd   = float(log_values.std())
                     # Use log-space priors (mean of log is ~log of median, use wide prior)
                     MU0_LOG = 0.0
-                    SIGMA0_LOG = 100.0
+                    SIGMA0_LOG = 10.0 * pop_log_sd
                     mu_n_log, sig_n_log = gaussian_posterior(MU0_LOG, SIGMA0_LOG, n_eff, mean_log_hat, pop_log_sd)
                     trials.append({"mu": mu_n, "sigma": sig_n})
                     lognorm_trials.append({"mu": mu_n_log, "sigma": sig_n_log})
@@ -664,7 +664,7 @@ def generate_glassdoor(generation_config):
         else:
             mean_all = float(subset[base_var].mean())
             sd_all   = float(subset[base_var].std())
-            mu_all, sig_all = gaussian_posterior(MU0, SIGMA0, n_eff_all, mean_all, sd_all)
+            mu_all, sig_all = gaussian_posterior(MU0, SIGMA0 * sd_all, n_eff_all, mean_all, sd_all)
 
             # Lognormal update for ALL
             log_values_all = np.log(subset[base_var] + 1e-6)  # avoid log(0)
@@ -672,7 +672,7 @@ def generate_glassdoor(generation_config):
             sd_log_all   = float(log_values_all.std())
             # Use log-space priors
             MU0_LOG = 0.0
-            SIGMA0_LOG = 100.0
+            SIGMA0_LOG = 10.0 * sd_log_all 
             mu_all_log, sig_all_log = gaussian_posterior(MU0_LOG, SIGMA0_LOG, n_eff_all, mean_log_all, sd_log_all)
             all_lognorm_trials.append({"mu": mu_all_log, "sigma": sig_all_log})
 

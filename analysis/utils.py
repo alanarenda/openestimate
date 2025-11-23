@@ -289,8 +289,8 @@ def load_data(results_dir):
     sorted_results = expanded_results.sort_values(by=['variable', 'variable_name', 'elicitation_protocol', 'model'])
 
     # Add derived columns
-    sorted_results = determine_quartile_of_gt(sorted_results)
-    sorted_results = compute_ground_truth_percentile(sorted_results)
+    # sorted_results = determine_quartile_of_gt(sorted_results)
+    # sorted_results = compute_ground_truth_percentile(sorted_results)
     
     sorted_results['approach'] = sorted_results[['model', 'sysprompt_type', 'elicitation_protocol', 'temperature']].apply(
         lambda row: f"{row['model']}_{row['sysprompt_type']}_{row['elicitation_protocol']}_temp{row['temperature']}", 
@@ -333,6 +333,7 @@ def compute_error_ratios_and_std_ratios(results):
 
 
 def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path):
+    print('hii')
     all_results = []
     variables = json.load(open(var_file_path, 'r'))
     for results_dir in results_dirs:
@@ -739,22 +740,38 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     return combined_results
 
 
+# def load_experiment_results(dataset, experiment_name): 
+#     base_path = os.path.join(os.path.expanduser('~/openestimate/experiments'), dataset)
+#     results_dir = os.path.join(base_path, experiment_name)
+#     results_dir = os.path.join(results_dir, dataset) 
+#     results_dir = os.path.join(results_dir, experiment_name)
+#     results_dirs = list(Path(results_dir).glob('trial_*'))
+#     print('Number of trials found: ', len(results_dirs))
+#     var_file_path = os.path.expanduser('~/openestimate/data/variables/{}_variables.json'.format(dataset))
+#     baseline_file_path = os.path.expanduser("~/openestimate/data/baselines/{}_baselines.json".format(dataset))
+#     results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path) 
+#     return results, variables
+
+
 def load_experiment_results(dataset, experiment_name): 
-    base_path = os.path.join(os.path.expanduser('~/openestimate/experiments'), dataset)
-    results_dir = os.path.join(base_path, experiment_name)
-    results_dir = os.path.join(results_dir, dataset) 
-    results_dir = os.path.join(results_dir, experiment_name)
-    results_dirs = list(Path(results_dir).glob('trial_*'))
+    # Get project root (assuming this file is in openestimate/analysis/)
+    project_root = Path(__file__).parent.parent
+    
+    base_path = project_root / 'experiments' / dataset
+    results_dir = base_path / experiment_name / dataset / experiment_name
+    results_dirs = list(results_dir.glob('trial_*'))
     print('Number of trials found: ', len(results_dirs))
-    var_file_path = os.path.expanduser('~/openestimate/data/variables/{}_variables.json'.format(dataset))
-    baseline_file_path = os.path.expanduser("~/openestimate/data/baselines/{}_baselines.json".format(dataset))
+    
+    var_file_path = project_root / 'data' / 'variables' / f'{dataset}_variables.json'
+    baseline_file_path = project_root / 'data' / 'baselines' / f'{dataset}_baselines.json'
+    print('hi')
     results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path) 
     return results, variables
 
 
 def print_completion_stats(results): 
     print("Completion Statistics")
-    signal_col = 'mean'          
+    signal_col = 'fitted_distribution_type'  # Column indicating if a response was given 
     completion_stats = (
         results
             .assign(answered=results[signal_col].notna())   # True / False per row

@@ -1,7 +1,7 @@
 {
   "experiment_name": "gpt-4o_superforecaster_direct_temp0.5",
-  "experts_spec": "/Users/marzoev/openestimate/experiments/pitchbook/ablations/pitchbook_gpt-4o_superforecaster_temp0.5_experts.json",
-  "variables": "/Users/marzoev/openestimate/data/variables/pitchbook_variables.json",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/pitchbook/ablations/pitchbook_gpt-4o_superforecaster_temp0.5_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/pitchbook_variables.json",
   "protocol_spec": {
     "individual_elicitation_protocol": "direct"
   }

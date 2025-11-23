@@ -1008,7 +1008,7 @@ def generate_nhanes(generation_config):
                         mean_hat = float(dsw.mean)
                         pop_sd = float(dsw.std)  # population σ
                         mu_n, sig_n = gaussian_posterior(
-                            MU0, SIGMA0, n_eff, mean_hat, pop_sd
+                            MU0, SIGMA0 * pop_sd, n_eff, mean_hat, pop_sd
                         )
                         trials.append({"mu": mu_n, "sigma": sig_n})
 
@@ -1017,7 +1017,7 @@ def generate_nhanes(generation_config):
                         pop_sd_log = float(dsw_log.std)  # population σ in log-scale
                         # Use log-space priors (mean of log is ~log of median, use wide prior)
                         MU0_LOG = 0.0
-                        SIGMA0_LOG = 100.0
+                        SIGMA0_LOG = 10.0 + pop_sd_log
                         mu_n_log, sig_n_log = gaussian_posterior(
                             MU0_LOG, SIGMA0_LOG, n_eff, mean_hat_log, pop_sd_log
                         )
@@ -1073,7 +1073,7 @@ def generate_nhanes(generation_config):
                     mean_hat = float(dsw.mean)
                     pop_sd = float(dsw.std)  # population σ
                     mu_n, sig_n = gaussian_posterior(
-                        MU0, SIGMA0, n_eff, mean_hat, pop_sd
+                        MU0, SIGMA0 * pop_sd_log, n_eff, mean_hat, pop_sd
                     )
                     trials.append({"mu": mu_n, "sigma": sig_n})
 
@@ -1082,7 +1082,7 @@ def generate_nhanes(generation_config):
                     pop_sd_log = float(dsw_log.std)  # population σ in log-scale
                     # Use log-space priors
                     MU0_LOG = 0.0
-                    SIGMA0_LOG = 100.0
+                    SIGMA0_LOG = 10.0 + pop_sd_log
                     mu_n_log, sig_n_log = gaussian_posterior(
                         MU0_LOG, SIGMA0_LOG, n_eff, mean_hat_log, pop_sd_log
                     )
