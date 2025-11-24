@@ -16,7 +16,7 @@ _SAMPLE_RE = re.compile(r"n(?P<n>ALL|\d+)_trial(?P<trial>\d+)\.csv")
 
 
 def load_priors_and_variables(dataset, variables_path):     
-    results_file_path = os.path.expanduser("~/openestimate/experiments/{dataset}/{dataset}_combined_processed_results.csv".format(dataset=dataset))
+    results_file_path = os.path.expanduser("{}experiments/{}/{}_combined_processed_results.csv".format(os.environ['OPENESTIMATE_ROOT'], dataset, dataset))
     results = pd.read_csv(results_file_path)
     llm_df = load_llm_rows(results)
 
@@ -51,30 +51,21 @@ def compute_llm_posteriors_complex(dataset, variables_path, baseline_samples_dir
     baseline_samples_dir = Path(baseline_samples_dir)
     results, llm_df, var_specs = load_priors_and_variables(dataset, variables_path)
 
-    # Pre-compute baseline MAE for each variable for error_ratio calculation
-    baseline_mae_by_var = {}
-    for var in results['variable'].unique():
-        baseline_data = results[
-            (results['variable'] == var) &
-            (results['approach'].str.contains('statistical_baseline_n5', na=False))
-        ]
-        if len(baseline_data) > 0:
-            baseline_mae_by_var[var] = baseline_data['abs_error'].mean()
-
     new_rows: List[pd.Series] = []
     for row in llm_df.itertuples(index=False):
         var_key: str = getattr(row, "variable")
         base_var = var_specs.get(var_key, {}).get("base_variable", var_key)
-        dist_type: str = getattr(row, "ground_truth_distribution_type")
+        ground_truth_dist: str = getattr(row, "ground_truth_distribution_type")
+        fitted_dist: str = getattr(row, "fitted_distribution_type", ground_truth_dist)
         approach_orig: str = getattr(row, "approach")
         var_sample_dir = baseline_samples_dir / var_key
-      
+
         # ------------------------------------------------------------------
         # Prior parameters from the LLM row
         # ------------------------------------------------------------------
-        if dist_type == "normal":
-            mu0 = float(getattr(row, "mean"))
-            sigma0 = float(getattr(row, "std"))
+        if ground_truth_dist == "normal":
+            mu0 = float(getattr(row, "mu"))
+            sigma0 = float(getattr(row, "sigma"))
             if np.isnan(sigma0) or sigma0 <= 0:
                 sigma0 = 100_000.0
         else:  # beta
@@ -98,40 +89,56 @@ def compute_llm_posteriors_complex(dataset, variables_path, baseline_samples_dir
             y = samp[base_var]
             n_eff = kish_effn(w)
 
-            # Posterior update
-            if dist_type == "normal":
-                dsw = DescrStatsW(y, weights=w, ddof=0)
-                mean_hat = float(dsw.mean)
-                pop_sd = float(dsw.std)
-                mu_n, sig_n = complex_gaussian_posterior(mu0, sigma0, n_eff, mean_hat, pop_sd)
-            else:
-                p_hat = float(np.average(y, weights=w))
-                s_eff = p_hat * n_eff
-                alpha_n, beta_n = complex_beta_posterior(alpha0, beta0, s_eff, n_eff)
-
             # Create new row based on original
             row_dict = row._asdict()
             row_dict["trial"] = trial_idx
             row_dict["approach"] = f"{approach_orig}_posterior_N{N_label}"
-            # Update distribution parameters
-            if dist_type == "normal":
-                row_dict["mean"] = mu_n
-                row_dict["std"] = sig_n
+            row_dict["sample_size"] = N_label
+
+            # Clear stale computed columns (will be recomputed from new mu/sigma/a/b)
+            for col in ['mean', 'median', 'mode', 'std', 'abs_error_from_mean',
+                        'abs_error_from_median', 'abs_error_from_mode', 'error_ratio_mean',
+                        'error_ratio_median', 'error_ratio_mode', 'std_ratio',
+                        'associated_baseline_error_mean', 'associated_baseline_error_median',
+                        'associated_baseline_error_mode', 'associated_baseline_std']:
+                if col in row_dict:
+                    row_dict[col] = np.nan
+
+            # Posterior update based on fitted distribution type
+            if ground_truth_dist == "normal":
+                if fitted_dist == "lognormal":
+                    # Lognormal prior: mu0 and sigma0 are already in log-space
+                    # Transform data to log-space
+                    y_positive = y[y > 0]
+                    w_positive = w[y > 0]
+                    if len(y_positive) == 0:
+                        continue
+                    log_values = np.log(y_positive)
+                    n_eff = kish_effn(w_positive)
+                    dsw_log = DescrStatsW(log_values, weights=w_positive, ddof=0)
+                    mean_hat_log = float(dsw_log.mean)
+                    pop_sd_log = float(dsw_log.std)
+                    if pop_sd_log == 0 or np.isnan(pop_sd_log):
+                        pop_sd_log = 1e-6
+                    mu_n, sig_n = complex_gaussian_posterior(mu0, sigma0, n_eff, mean_hat_log, pop_sd_log)
+                else:
+                    # Normal prior: standard Gaussian update
+                    dsw = DescrStatsW(y, weights=w, ddof=0)
+                    mean_hat = float(dsw.mean)
+                    pop_sd = float(dsw.std)
+                    if pop_sd == 0 or np.isnan(pop_sd):
+                        pop_sd = 1e-6
+                    mu_n, sig_n = complex_gaussian_posterior(mu0, sigma0, n_eff, mean_hat, pop_sd)
+
+                row_dict["mu"] = mu_n
+                row_dict["sigma"] = sig_n
             else:
+                # Beta posterior
+                p_hat = float(np.average(y, weights=w))
+                s_eff = p_hat * n_eff
+                alpha_n, beta_n = complex_beta_posterior(alpha0, beta0, s_eff, n_eff)
                 row_dict["a"] = alpha_n
                 row_dict["b"] = beta_n
-
-            # Recompute abs_error based on updated distribution parameters
-            gt_value = float(getattr(row, "ground_truth"))
-            if dist_type == "normal":
-                row_dict["abs_error"] = abs(mu_n - gt_value)
-            else:
-                # For beta distribution, compute mean from updated alpha/beta
-                mean_beta = alpha_n / (alpha_n + beta_n)
-                row_dict["abs_error"] = abs(mean_beta - gt_value)
-
-            # Compute error_ratio relative to n=5 baseline
-            row_dict["error_ratio"] = row_dict["abs_error"] / baseline_mae_by_var[var_key]
 
             new_rows.append(pd.Series(row_dict))
 
@@ -164,23 +171,14 @@ def compute_llm_posteriors_regular(dataset, variables_path, baseline_samples_dir
     baseline_samples_dir = Path(baseline_samples_dir)
     results, llm_df, var_specs = load_priors_and_variables(dataset, variables_path)
 
-    # Pre-compute baseline MAE for each variable for error_ratio calculation
-    baseline_mae_by_var = {}
-    for var in results['variable'].unique():
-        baseline_data = results[
-            (results['variable'] == var) &
-            (results['approach'].str.contains('statistical_baseline_n5', na=False))
-        ]
-        if len(baseline_data) > 0:
-            baseline_mae_by_var[var] = baseline_data['abs_error'].mean()
-
     new_rows: List[pd.Series] = []
 
     for row in llm_df.itertuples(index=False):
         var_key: str = getattr(row, "variable")
         var_info = var_specs.get(var_key, {})
         base_var = var_info.get("base_variable", var_key)
-        dist_type: str = getattr(row, "ground_truth_distribution_type")
+        ground_truth_dist: str = getattr(row, "ground_truth_distribution_type")
+        fitted_dist: str = getattr(row, "fitted_distribution_type", ground_truth_dist)
         approach_orig: str = getattr(row, "approach")
 
         var_sample_dir = baseline_samples_dir / var_key
@@ -188,9 +186,9 @@ def compute_llm_posteriors_regular(dataset, variables_path, baseline_samples_dir
         # ------------------------------------------------------------------
         # Prior parameters from the LLM row
         # ------------------------------------------------------------------
-        if dist_type == "normal":
-            mu0 = float(getattr(row, "mean"))
-            sigma0 = float(getattr(row, "std"))
+        if ground_truth_dist == "normal":
+            mu0 = float(getattr(row, "mu"))
+            sigma0 = float(getattr(row, "sigma"))
             if np.isnan(sigma0) or sigma0 <= 0:
                 sigma0 = 100_000.0
         else:  # beta
@@ -216,39 +214,53 @@ def compute_llm_posteriors_regular(dataset, variables_path, baseline_samples_dir
             if n_eff <= 0:
                 continue
 
-            # Posterior update
-            if dist_type == "normal":
-                mean_hat = float(y.mean())
-                sd_hat = float(y.std())
-                mu_n, sig_n = gaussian_posterior(mu0, sigma0, n_eff, mean_hat, sd_hat)
-            else:
-                p_hat = float(y.mean())
-                s_eff = p_hat * n_eff
-                alpha_n, beta_n = beta_posterior(alpha0, beta0, s_eff, n_eff)
-
             # Create new row based on original
             row_dict = row._asdict()
             row_dict["trial"] = trial_idx
             row_dict["approach"] = f"{approach_orig}_posterior_N{N_label}"
-            # Update distribution parameters
-            if dist_type == "normal":
-                row_dict["mean"] = mu_n
-                row_dict["std"] = sig_n
+            row_dict["sample_size"] = N_label
+
+            # Clear stale computed columns (will be recomputed from new mu/sigma/a/b)
+            for col in ['mean', 'median', 'mode', 'std', 'abs_error_from_mean',
+                        'abs_error_from_median', 'abs_error_from_mode', 'error_ratio_mean',
+                        'error_ratio_median', 'error_ratio_mode', 'std_ratio',
+                        'associated_baseline_error_mean', 'associated_baseline_error_median',
+                        'associated_baseline_error_mode', 'associated_baseline_std']:
+                if col in row_dict:
+                    row_dict[col] = np.nan
+
+            # Posterior update based on fitted distribution type
+            if ground_truth_dist == "normal":
+                if fitted_dist == "lognormal":
+                    # Lognormal prior: mu0 and sigma0 are already in log-space
+                    # Transform data to log-space
+                    y_positive = y[y > 0]
+                    if len(y_positive) == 0:
+                        continue
+                    log_values = np.log(y_positive)
+                    n_eff = int(len(y_positive))
+                    mean_hat_log = float(log_values.mean())
+                    pop_sd_log = float(log_values.std())
+                    if pop_sd_log == 0 or np.isnan(pop_sd_log):
+                        pop_sd_log = 1e-6
+                    mu_n, sig_n = gaussian_posterior(mu0, sigma0, n_eff, mean_hat_log, pop_sd_log)
+                else:
+                    # Normal prior: standard Gaussian update
+                    mean_hat = float(y.mean())
+                    pop_sd = float(y.std())
+                    if pop_sd == 0 or np.isnan(pop_sd):
+                        pop_sd = 1e-6
+                    mu_n, sig_n = gaussian_posterior(mu0, sigma0, n_eff, mean_hat, pop_sd)
+
+                row_dict["mu"] = mu_n
+                row_dict["sigma"] = sig_n
             else:
+                # Beta posterior
+                p_hat = float(y.mean())
+                s_eff = p_hat * n_eff
+                alpha_n, beta_n = beta_posterior(alpha0, beta0, s_eff, n_eff)
                 row_dict["a"] = alpha_n
                 row_dict["b"] = beta_n
-
-            # Recompute abs_error based on updated distribution parameters
-            gt_value = float(getattr(row, "ground_truth"))
-            if dist_type == "normal":
-                row_dict["abs_error"] = abs(mu_n - gt_value)
-            else:
-                # For beta distribution, compute mean from updated alpha/beta
-                mean_beta = alpha_n / (alpha_n + beta_n)
-                row_dict["abs_error"] = abs(mean_beta - gt_value)
-
-            # Compute error_ratio relative to n=5 baseline
-            row_dict["error_ratio"] = row_dict["abs_error"] / baseline_mae_by_var[var_key]
 
             new_rows.append(pd.Series(row_dict))
 
@@ -280,9 +292,9 @@ def main(datasets):
     # Take a set of dataset names as input and compute posteriors for each. We assume we have elicited priors for all of the datasets passed in. 
     # Store functions to compute posteriors for each dataset in a dictionary since the methodology may differ between them. 
     for dataset in datasets:
-        var_file_path = os.path.expanduser('~/openestimate/data/variables/{dataset}_variables.json'.format(dataset=dataset))
-        baseline_samples_dir = os.path.expanduser('~/openestimate/data/baselines/{dataset}/baseline_data_samples'.format(dataset=dataset))
-        posterior_file_path = os.path.expanduser('~/openestimate/experiments/{dataset}/results_with_posteriors.csv'.format(dataset=dataset))
+        var_file_path = os.path.expanduser('{}data/variables/{}_variables.json'.format(os.environ['OPENESTIMATE_ROOT'], dataset))
+        baseline_samples_dir = os.path.expanduser('{}data/baselines/{}/baseline_data_samples'.format(os.environ['OPENESTIMATE_ROOT'], dataset))
+        posterior_file_path = os.path.expanduser('{}experiments/{}/{}_combined_processed_results_with_posteriors.csv'.format(os.environ['OPENESTIMATE_ROOT'], dataset, dataset))
         compute_posteriors = posterior_functions.get(dataset)
         if compute_posteriors is None:
             raise ValueError(f"No posterior computation function defined for dataset: {dataset}")

@@ -427,6 +427,26 @@ def determine_quartile_of_gt(results):
     return results
 
 
+def compute_normal_std(mu, sigma):
+    return sigma
+
+
+def compute_beta_std(a, b):
+    return stats.beta.std(a, b)
+
+
+def compute_lognormal_std(mu, sigma):
+    """
+    Compute std of a Lognormal distribution.
+    
+    For Lognormal(mu, sigma):
+    Var(X) = (exp(sigma^2) - 1) * exp(2*mu + sigma^2)
+    Std(X) = sqrt(Var(X))
+    """
+    variance = (np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2)
+    return np.sqrt(variance)
+
+
 def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path):
     all_results = []
     variables = json.load(open(var_file_path, 'r'))
@@ -548,23 +568,125 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     results['abs_error_from_mode'] = np.abs(results['ground_truth'] - results['mode'])
 
     results = determine_quartile_of_gt(results)
-    # Compute std for each distribution type
-    def compute_normal_std(mu, sigma):
-        return sigma
 
-    def compute_beta_std(a, b):
-        return stats.beta.std(a, b)
+    # Compute std for all rows
+    results['std'] = np.nan
 
-    def compute_lognormal_std(mu, sigma):
-        """
-        Compute std of a Lognormal distribution.
+    results.loc[beta_vars, 'std'] = results.loc[beta_vars].apply(
+        lambda row: compute_beta_std(row['a'], row['b']), axis=1)
+
+    results.loc[lognorm_vars, 'std'] = results.loc[lognorm_vars].apply(
+        lambda row: compute_lognormal_std(row['mu'], row['sigma']), axis=1)
+
+    results.loc[norm_vars, 'std'] = results.loc[norm_vars].apply(
+        lambda row: compute_normal_std(row['mu'], row['sigma']), axis=1)
+
+    fallback_count = 0
+    exact_match_count = 0
+
+    results['error_ratio_mean'] = np.nan
+    results['error_ratio_median'] = np.nan
+    results['error_ratio_mode'] = np.nan
+    results['std_ratio'] = np.nan
+    results['associated_baseline_error_mean'] = np.nan
+    results['associated_baseline_error_median'] = np.nan
+    results['associated_baseline_error_mode'] = np.nan
+    results['associated_baseline_std'] = np.nan
+
+    for idx, row in results.iterrows():
+        if "statistical" not in row["approach"]:
+            # First try: Match baselines with same variable, sample_size=5, and distribution type
+            baselines = results[
+                (results["approach"].str.contains("statistical", na=False)) & 
+                (results["sample_size"] == "5") &
+                (results["variable"] == row["variable"]) & 
+                (results["ground_truth_distribution_type"] == row["fitted_distribution_type"])
+            ]
+            
+            # Fallback: If no exact match, use any available baseline for this variable
+            if len(baselines) == 0:
+                baselines = results[
+                    (results["approach"].str.contains("statistical", na=False)) & 
+                    (results["sample_size"] == "5") &
+                    (results["variable"] == row["variable"])
+                ]
+                if len(baselines) > 0:
+                    fallback_count += 1
+            else:
+                exact_match_count += 1
+            
+            if len(baselines) == 0:
+                continue
+                
+            baseline_avg_error_mean = baselines["abs_error_from_mean"].mean()
+            baseline_avg_error_median = baselines["abs_error_from_median"].mean()
+            baseline_avg_error_mode = baselines["abs_error_from_mode"].mean()
+            baseline_avg_std = baselines["std"].mean()
+
+            error_ratio_mean = row["abs_error_from_mean"] / baseline_avg_error_mean 
+            error_ratio_median = row["abs_error_from_median"] / baseline_avg_error_median
+            error_ratio_mode = row["abs_error_from_mode"] / baseline_avg_error_mode
+            std_ratio = row["std"] / baseline_avg_std
+
+            results.at[idx, 'associated_baseline_error_mean'] = baseline_avg_error_mean
+            results.at[idx, 'associated_baseline_error_median'] = baseline_avg_error_median
+            results.at[idx, 'associated_baseline_error_mode'] = baseline_avg_error_mode
+            results.at[idx, 'associated_baseline_std'] = baseline_avg_std
+            results.at[idx, 'error_ratio_mean'] = error_ratio_mean
+            results.at[idx, 'error_ratio_median'] = error_ratio_median
+            results.at[idx, 'error_ratio_mode'] = error_ratio_mode
+            results.at[idx, 'std_ratio'] = std_ratio
         
-        For Lognormal(mu, sigma):
-        Var(X) = (exp(sigma^2) - 1) * exp(2*mu + sigma^2)
-        Std(X) = sqrt(Var(X))
-        """
-        variance = (np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2)
-        return np.sqrt(variance)
+    print(f"\nExact distribution type matches: {exact_match_count}")
+    print(f"Fallback to any available baseline: {fallback_count}")
+
+
+    results.to_csv(os.path.expanduser("{}experiments/{dataset}/{dataset}_combined_processed_results.csv".format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset)), index=False)
+    print(f"Results saved to: {os.path.expanduser('{}experiments/{dataset}/{dataset}_combined_processed_results.csv'.format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset))}")
+    return results, variables
+
+
+def preprocess_posteriors(results, variables): 
+    lognorm_mask = results['fitted_distribution_type'] == 'lognormal'
+    results.loc[lognorm_mask, 'ground_truth'] = results.loc[lognorm_mask].apply(
+        lambda row: variables[row['variable']].get('mean_lognormal', variables[row['variable']]['mean']), 
+        axis=1
+    )
+
+    beta_mask = results['fitted_distribution_type'] == 'beta'
+    results.loc[beta_mask, 'ground_truth'] = results.loc[beta_mask].apply(
+        lambda row: variables[row['variable']].get('mean'), 
+        axis=1
+    )
+
+    norm_mask = results['fitted_distribution_type'] == 'gaussian'
+    results.loc[norm_mask, 'ground_truth'] = results.loc[norm_mask].apply(
+        lambda row: variables[row['variable']].get('mean'), 
+        axis=1
+    )
+
+    beta_vars = results['fitted_distribution_type'] == 'beta'
+    lognorm_vars = results['fitted_distribution_type'] == 'lognormal'
+    norm_vars = results['fitted_distribution_type'] == 'gaussian'
+
+    results['mean'] = np.nan
+    results['median'] = np.nan 
+    results['mode'] = np.nan 
+
+    results.loc[beta_vars, ['mean', 'median', 'mode']] = results.loc[beta_vars].apply(
+        lambda row: pd.Series(compute_beta_mean_median_mode(row['a'], row['b'])), axis=1)
+
+    results.loc[lognorm_vars, ['mean', 'median', 'mode']] = results.loc[lognorm_vars].apply(
+        lambda row: pd.Series(compute_lognormal_mean_median_mode(row['mu'], row['sigma'])), axis=1)
+
+    results.loc[norm_vars, ['mean', 'median', 'mode']] = results.loc[norm_vars].apply(
+        lambda row: pd.Series(compute_normal_mean_median_mode(row['mu'], row['sigma'])), axis=1)
+
+    results['abs_error_from_mean'] = np.abs(results['ground_truth'] - results['mean'])
+    results['abs_error_from_median'] = np.abs(results['ground_truth'] - results['median'])
+    results['abs_error_from_mode'] = np.abs(results['ground_truth'] - results['mode'])
+
+    results = determine_quartile_of_gt(results)
 
     # Compute std for all rows
     results['std'] = np.nan

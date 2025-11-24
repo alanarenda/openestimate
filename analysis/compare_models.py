@@ -102,6 +102,11 @@ def build_combined_error_comparison_table(all_dataset_results, output_dir="analy
 
 def uncertainty_accuracy_correlation_analysis(results_sets, output_dir="analysis_results"): 
     results_sets = [results.copy() for results in results_sets]
+    # Only keep non-posterior LLM results (filter out statistical baselines, posteriors) 
+    for i in range(len(results_sets)):
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('stat', case=False, na=False)]
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('posterior', case=False, na=False)]
+    
     all_acc_unc_results = {}
     for results in results_sets:
         dataset_name = results['dataset'].iloc[0]
@@ -128,56 +133,269 @@ def uncertainty_accuracy_correlation_analysis(results_sets, output_dir="analysis
     return uncertainty_accuracy_analysis
 
 
+def compute_llm_prior_win_rates_over_n_sample_baselines(results):
+    """
+    Compute the percentage of times LLM prior outperforms statistical baseline across different sample sizes.
+    Dynamically selects the appropriate baseline (normal or lognormal) based on the fitted distribution type.
+    """
+    llm_priors = results[results['approach'].str.contains('o4-mini') & ~results['approach'].str.contains('posterior')]
+    sample_sizes = [5, 10, 20, 30]
+    llm_prior_helped_percentages = {}
+    for sample_size in sample_sizes:
+        llm_priors_with_n = llm_priors[llm_priors['approach'].str.contains(f'N{sample_size}') | llm_priors['approach'].str.contains(f'n{sample_size}')]
+        num_skipped = 0
+        llm_prior_helped = 0
+        num_processed = 0
+        for var in llm_priors_with_n['variable'].unique():
+            llm_prior_with_n = llm_priors_with_n[llm_priors_with_n['variable'] == var]
+
+            # Determine the fitted distribution type for this variable
+            fitted_dist_types = llm_prior_with_n['fitted_distribution_type'].dropna().unique()
+            is_lognormal = len(fitted_dist_types) > 0 and fitted_dist_types[0] == 'lognormal'
+
+            # Select the appropriate statistical baseline based on distribution type
+            if is_lognormal:
+                # For lognormal, prefer lognormal baseline if available
+                stat_baseline = results[
+                    (results['variable'] == var) &
+                    (results['approach'].str.contains('statistical')) &
+                    (results['fitted_distribution_type'] == 'lognormal')
+                ]
+                # Fallback to any statistical baseline if lognormal not available
+                if stat_baseline.empty:
+                    stat_baseline = results[(results['variable'] == var) & (results['approach'].str.contains('statistical'))]
+            else:
+                # For normal/beta, use standard baseline (exclude lognormal)
+                stat_baseline = results[
+                    (results['variable'] == var) &
+                    (results['approach'].str.contains('statistical')) &
+                    (results['fitted_distribution_type'] != 'lognormal')
+                ]
+                # Fallback to any statistical baseline if needed
+                if stat_baseline.empty:
+                    stat_baseline = results[(results['variable'] == var) & (results['approach'].str.contains('statistical'))]
+
+            llm_means = llm_prior_with_n['abs_error'].dropna()
+            stat_means = stat_baseline['abs_error'].dropna()
+            if stat_means.empty or llm_means.empty:
+                num_skipped += 1
+                continue
+            num_processed += 1
+            llm_prior_mae = llm_means.mean()
+            stat_mae = stat_means.mean()
+            if llm_prior_mae < stat_mae:
+                llm_prior_helped += 1
+        llm_prior_helped_percentage = float(llm_prior_helped) / float(num_processed) if num_processed > 0 else 0.0
+        llm_prior_helped_percentages[sample_size] = llm_prior_helped_percentage
+    return llm_prior_helped_percentages
+
+
+def preprocess_posteriors(posteriors, results, variables):
+    """
+    Preprocess posteriors to compute mean, std, abs_error, error_ratio, and std_ratio.
+    Follows the same logic as aggregate_results function.
+    """
+    from scipy import stats
+
+    # Helper functions to compute mean, median, mode for different distributions
+    def compute_beta_mean_median_mode(a, b):
+        mean = stats.beta.mean(a, b)
+        median = stats.beta.median(a, b)
+        # Mode exists only if a > 1 and b > 1
+        if a > 1 and b > 1:
+            mode = (a - 1) / (a + b - 2)
+        else:
+            mode = np.nan
+        return mean, median, mode
+
+    def compute_lognormal_mean_median_mode(row, mu, sigma):
+        # Add overflow protection for very large values
+        try:
+            with warnings.catch_warnings():
+                warnings.filterwarnings('error')
+                mean = np.exp(mu + sigma**2 / 2)
+                median = np.exp(mu)
+                mode = np.exp(mu - sigma**2)
+        except (RuntimeWarning, OverflowError):
+            # If overflow occurs, return NaN value
+            print('row: {}'.format(row))
+            print('mu: ', mu, 'sigma: ', sigma)
+            import pdb; pdb.set_trace()
+            mean = np.nan
+            median = np.nan
+            mode = np.nan
+        return mean, median, mode
+
+    def compute_normal_mean_median_mode(mu, sigma):
+        return mu, mu, mu
+
+    # Helper functions to compute std for different distributions
+    def compute_normal_std(mu, sigma):
+        return sigma
+
+    def compute_beta_std(a, b):
+        return stats.beta.std(a, b)
+
+    def compute_lognormal_std(mu, sigma):
+        variance = (np.exp(sigma**2) - 1) * np.exp(2*mu + sigma**2)
+        return np.sqrt(variance)
+
+    # Extract sample_size from approach name for posteriors (e.g., "posterior_N10" -> "10")
+    import re
+    def extract_sample_size(approach):
+        match = re.search(r'_N(\d+|ALL)', approach)
+        if match:
+            return match.group(1)
+        return np.nan
+
+    posteriors.loc[:, 'sample_size'] = posteriors['approach'].apply(extract_sample_size)
+
+    # Identify distribution types
+    beta_vars = posteriors['fitted_distribution_type'] == 'beta'
+    lognorm_vars = posteriors['fitted_distribution_type'] == 'lognormal'
+    norm_vars = posteriors['fitted_distribution_type'] == 'gaussian'
+
+    # Compute mean, median, mode (use .values to avoid index alignment issues)
+    if beta_vars.any():
+        beta_results = posteriors.loc[beta_vars].apply(
+            lambda row: pd.Series(compute_beta_mean_median_mode(row['a'], row['b'])), axis=1).values
+        posteriors.loc[beta_vars, ['mean', 'median', 'mode']] = beta_results
+
+    if lognorm_vars.any():
+        lognorm_results = posteriors.loc[lognorm_vars].apply(
+            lambda row: pd.Series(compute_lognormal_mean_median_mode(row, row['mu'], row['sigma'])), axis=1).values
+        posteriors.loc[lognorm_vars, ['mean', 'median', 'mode']] = lognorm_results
+
+    if norm_vars.any():
+        norm_results = posteriors.loc[norm_vars].apply(
+            lambda row: pd.Series(compute_normal_mean_median_mode(row['mu'], row['sigma'])), axis=1).values
+        posteriors.loc[norm_vars, ['mean', 'median', 'mode']] = norm_results
+
+    # Compute std
+    if beta_vars.any():
+        posteriors.loc[beta_vars, 'std'] = posteriors.loc[beta_vars].apply(
+            lambda row: compute_beta_std(row['a'], row['b']), axis=1).values
+
+    if lognorm_vars.any():
+        posteriors.loc[lognorm_vars, 'std'] = posteriors.loc[lognorm_vars].apply(
+            lambda row: compute_lognormal_std(row['mu'], row['sigma']), axis=1).values
+
+    if norm_vars.any():
+        posteriors.loc[norm_vars, 'std'] = posteriors.loc[norm_vars].apply(
+            lambda row: compute_normal_std(row['mu'], row['sigma']), axis=1).values
+
+    # Compute absolute errors
+    posteriors.loc[:, 'abs_error_from_mean'] = np.abs(posteriors['ground_truth'] - posteriors['mean'])
+    posteriors.loc[:, 'abs_error_from_median'] = np.abs(posteriors['ground_truth'] - posteriors['median'])
+    posteriors.loc[:, 'abs_error_from_mode'] = np.abs(posteriors['ground_truth'] - posteriors['mode'])
+
+    # Initialize ratio columns
+    posteriors.loc[:, 'error_ratio_mean'] = np.nan
+    posteriors.loc[:, 'error_ratio_median'] = np.nan
+    posteriors.loc[:, 'error_ratio_mode'] = np.nan
+    posteriors.loc[:, 'std_ratio'] = np.nan
+
+    # Compute error ratios by comparing to statistical baselines (match by variable, sample_size, trial, and distribution type)
+    for idx, row in posteriors.iterrows():
+        if "statistical" in row["approach"]:
+            continue
+
+        # Match baseline by variable, sample_size, trial, and distribution type (lognormal vs normal)
+        baselines = results[
+            (results["approach"].str.contains("statistical", na=False)) &
+            (results["sample_size"] == row["sample_size"]) &
+            (results["variable"] == row["variable"]) &
+            (results["trial"] == row["trial"]) &
+            (results["fitted_distribution_type"] == row["fitted_distribution_type"])
+        ]
+
+        if len(baselines) == 0:
+            raise ValueError(
+                f"No matching baseline found for var={row['variable']}, "
+                f"sample_size={row['sample_size']}, trial={row['trial']}, "
+                f"fitted_dist={row['fitted_distribution_type']}"
+            )
+
+        baseline = baselines.iloc[0]
+        baseline_error = baseline["abs_error_from_mean"]
+        posterior_error = row["abs_error_from_mean"]
+
+        if baseline_error > 0:
+            posteriors.at[idx, 'error_ratio_mean'] = posterior_error / baseline_error
+        if baseline["abs_error_from_median"] > 0:
+            posteriors.at[idx, 'error_ratio_median'] = row["abs_error_from_median"] / baseline["abs_error_from_median"]
+        if baseline["abs_error_from_mode"] > 0:
+            posteriors.at[idx, 'error_ratio_mode'] = row["abs_error_from_mode"] / baseline["abs_error_from_mode"]
+        if baseline["std"] > 0:
+            posteriors.at[idx, 'std_ratio'] = row["std"] / baseline["std"]
+
+    return posteriors
+
+
 def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysis_results"):
-    result_sets = [results.copy() for results in result_sets]
-    all_dataset_results = {}
+    """
+    Compare LLM prior and LLM posterior vs statistical baseline.
+    Creates a combined table showing win rates for each sample size.
+    """
+    import json
+
+    all_rows = []
 
     for results in result_sets:
         dataset_name = results['dataset'].iloc[0]
-        results = pd.read_csv(os.path.expanduser(f"~/openestimate/experiments/{dataset_name}/results_with_posteriors.csv"))
-        posteriors = results[results['approach'].str.contains('posterior') | results['approach'].str.contains('statistical')]
-        print(f"Dataset: {dataset_name}, Total rows in posteriors: {len(posteriors[posteriors['approach'].str.contains('posterior')])}")
-        o4_mini_posteriors = posteriors[posteriors['approach'].str.contains('o4-mini') | posteriors['approach'].str.contains('statistical')]
-        sample_sizes = [5, 10, 20, 30]
-        all_posterior_helped_percentages = {}
-        all_prior_helped_percentages = {}
-        o4_mini_priors = results[results['approach'].str.contains('o4-mini') & ~results['approach'].str.contains('posterior')]
-        for sample_size in sample_sizes:
-            posteriors_with_N = o4_mini_posteriors[o4_mini_posteriors['approach'].str.contains(f'N{sample_size}') | o4_mini_posteriors['approach'].str.contains(f'n{sample_size}')]
-            num_skipped = 0
-            llm_posterior_helped = 0
-            llm_prior_helped = 0
-            num_processed = 0
-            for var in posteriors_with_N['variable'].unique():
-                posteriors_with_n = posteriors_with_N[posteriors_with_N['variable'] == var]
-                stat_baseline = posteriors_with_n[posteriors_with_n['approach'].str.contains('statistical')]
-                llm_baseline = posteriors_with_n[posteriors_with_n['approach'].str.contains('o4-mini')]
-                llm_prior = o4_mini_priors[o4_mini_priors['variable'] == var]
-                stat_means = stat_baseline['abs_error'].dropna()
-                llm_means = llm_baseline['abs_error'].dropna()
-                if stat_means.empty or llm_means.empty:
-                    num_skipped += 1
-                    continue
-                num_processed += 1
-                llm_posterior_mae = llm_means.mean()
-                llm_prior_mae = llm_prior['abs_error'].mean()
-                stat_mae = stat_means.mean()
-                if llm_posterior_mae < stat_mae:
-                    llm_posterior_helped += 1
-                if llm_prior_mae < stat_mae:
-                    llm_prior_helped += 1
-            llm_prior_helped_percentage = float(llm_prior_helped) / float(num_processed) if num_processed > 0 else 0.0
-            llm_posterior_helped_percentage = float(llm_posterior_helped) / float(num_processed) if num_processed > 0 else 0.0
-            all_posterior_helped_percentages[sample_size] = llm_posterior_helped_percentage
-            all_prior_helped_percentages[sample_size] = llm_prior_helped_percentage
+        var_file_path = "{}data/variables/{}_variables.json".format(os.environ['OPENESTIMATE_ROOT'], dataset_name)
+        variables = json.load(open(var_file_path, 'r'))
 
-        # Store results for this dataset
-        all_dataset_results[dataset_name] = {
-            'posterior_helped': all_posterior_helped_percentages,
-            'prior_helped': all_prior_helped_percentages
-        }
-    # Build combined table with all datasets
-    build_combined_error_comparison_table(all_dataset_results, output_dir=output_dir)  
+        # Load posteriors file
+        posterior_file = "{}experiments/{}/{}_combined_processed_results_with_posteriors.csv".format(
+            os.environ['OPENESTIMATE_ROOT'], dataset_name, dataset_name)
+        posterior_results = pd.read_csv(os.path.expanduser(posterior_file), low_memory=False)
+
+        # Get o4-mini posteriors only
+        posteriors_only = posterior_results[
+            posterior_results['approach'].str.contains('posterior') &
+            posterior_results['approach'].str.contains('o4-mini')
+        ].copy()
+
+        # Preprocess posteriors to compute mean, abs_error, and error_ratio
+        posteriors_processed = preprocess_posteriors(posteriors_only, results, variables)
+
+        # Compute LLM prior win rates (compares prior against each baseline sample size)
+        llm_prior_win_rates = compute_llm_prior_win_rates_over_n_sample_baselines(results)
+
+        sample_sizes = ['5', '10', '20', '30']
+        for sample_size in sample_sizes:
+            # Prior win rate (from the function that compares against each sample size)
+            prior_win_pct = llm_prior_win_rates.get(int(sample_size), np.nan) * 100
+
+            # Posterior win rate
+            posteriors_for_n = posteriors_processed[posteriors_processed['sample_size'] == sample_size]
+            posterior_win_pct = (posteriors_for_n['error_ratio_mean'] < 1).sum() / len(posteriors_for_n) * 100 if len(posteriors_for_n) > 0 else np.nan
+
+            all_rows.append({
+                'Domain': dataset_name.capitalize(),
+                'Sample Size': int(sample_size),
+                'LLM Prior > Stat. Baseline': f"{prior_win_pct:.1f}%",
+                'LLM Posterior > Stat. Baseline': f"{posterior_win_pct:.1f}%"
+            })
+
+    # Create DataFrame and save
+    combined_df = pd.DataFrame(all_rows)
+
+    # Print table
+    print(f"\n{'='*80}")
+    print("Combined LLM Prior and Posterior Win Rates vs Statistical Baseline")
+    print(f"{'='*80}")
+    print(combined_df.to_string(index=False))
+
+    # Save to CSV
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_path = os.path.join(output_dir, "llm_vs_baseline_win_rates.csv")
+    combined_df.to_csv(output_path, index=False)
+    print(f"\nSaved to: {output_path}")
+
+    return combined_df
 
 
 def compare_models(datasets, output_dir): 
@@ -186,12 +404,11 @@ def compare_models(datasets, output_dir):
     results_sets = [load_experiment_results(dataset, experiment_name) for dataset in datasets]
     for results in results_sets: 
         print_completion_stats(results)
-    # compute_error_ratios_and_helped_percentages(results_sets, output_dir)
-    plot_error_ratio_by_domain(results_sets, output_dir)
-    plot_ground_truth_quartile_distribution_heatmap(results_sets, output_dir)
-    plot_ece_by_domain(results_sets, output_dir)
-    uncertainty_accuracy_correlation_analysis(results_sets)
-    calibration_heat_map(results_sets, output_dir)
-    z_score_cdf_plot(results_sets, output_dir)
+    compute_error_ratios_and_helped_percentages(results_sets, output_dir)
+    # plot_error_ratio_by_domain(results_sets, output_dir)
+    # plot_ece_by_domain(results_sets, output_dir)
+    # uncertainty_accuracy_correlation_analysis(results_sets)
+    # calibration_heat_map(results_sets, output_dir)
+    # z_score_cdf_plot(results_sets, output_dir)
 
 

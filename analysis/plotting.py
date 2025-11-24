@@ -110,6 +110,13 @@ def plot_ece_by_domain(result_sets, output_dir="analysis_results"):
         'qwen3-235b-a22b-fp8-tput_base_direct_temp0.6': 'Qwen3 235B',
     }
 
+    result_sets = [results.copy() for results in result_sets]
+    # Only keep non-posterior LLM results (filter out statistical baselines, posteriors) 
+    for i in range(len(result_sets)):
+        result_sets[i] = result_sets[i][~result_sets[i]['approach'].str.contains('stat', case=False, na=False)]
+        result_sets[i] = result_sets[i][~result_sets[i]['approach'].str.contains('posterior', case=False, na=False)]
+    
+
     def compute_ece_scores_per_trial(results):
         """Compute ECE scores per trial for each approach, returning mean and std."""
         # Filter out statistical baselines
@@ -228,6 +235,11 @@ def plot_ece_by_domain(result_sets, output_dir="analysis_results"):
 
 def z_score_cdf_plot(results_sets, output_dir="analysis_results"):
     results_sets = [results.copy() for results in results_sets]
+    # Only keep non-posterior LLM results (filter out statistical baselines, posteriors) 
+    for i in range(len(results_sets)):
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('stat', case=False, na=False)]
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('posterior', case=False, na=False)]
+    
     def plot_z_score_subplot(df, ax, max_sigma: float = 10.0, n_points: int = 300, show_legend=False, title="", show_xlabel=False):
         """
         Modified version of plot_uncertainty_accuracy that works with subplots.
@@ -469,6 +481,12 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
     Each domain gets its own subplot.
     """
     results_sets = [results.copy() for results in results_sets]
+
+    # Only keep non-posterior LLM results (filter out statistical baselines, posteriors) 
+    for i in range(len(results_sets)):
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('stat', case=False, na=False)]
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('posterior', case=False, na=False)]
+    
     # Color scheme
     colors = {
         # LLM models - vibrant colors
@@ -602,6 +620,12 @@ def plot_error_ratio_by_domain(results_sets, output_dir='analysis_results'):
 
 def calibration_heat_map(results_sets, output_dir='analysis_results'): 
     results_sets = [results.copy() for results in results_sets]
+    # Only keep non-posterior LLM results (filter out statistical baselines, posteriors) 
+    for i in range(len(results_sets)):
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('stat', case=False, na=False)]
+        results_sets[i] = results_sets[i][~results_sets[i]['approach'].str.contains('posterior', case=False, na=False)]
+    
+
     titles = {'nhanes': 'NHANES', 'pitchbook': 'Pitchbook', 'glassdoor': 'Glassdoor'}
     def plot_quartile_heatmap(
         results,
