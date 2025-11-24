@@ -191,7 +191,7 @@ def compare_models(datasets, output_dir):
     plot_ground_truth_quartile_distribution_heatmap(results_sets, output_dir)
     plot_ece_by_domain(results_sets, output_dir)
     uncertainty_accuracy_correlation_analysis(results_sets)
-    # calibration_heat_map(results_sets, output_dir)
-    # z_score_cdf_plot(results_sets, output_dir)
+    calibration_heat_map(results_sets, output_dir)
+    z_score_cdf_plot(results_sets, output_dir)
 
 

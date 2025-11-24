@@ -253,7 +253,7 @@ def process_priors(elicited_priors, variables):
         ground_truth_distr = variables[var]['ground_truth_distribution_type']
 
         # Get the fitted prior type (may differ from ground truth if using unified prompt)
-        fitted_type = info['fitted_prior'].get('type', 'unknown')
+        fitted_type = info['fitted_prior'].get('type', 'unknown').lower()
 
         # Build processed result based on fitted distribution type
         processed_result = {
@@ -264,7 +264,7 @@ def process_priors(elicited_priors, variables):
         }
 
         try:
-            if fitted_type == 'gaussian':
+            if fitted_type == 'gaussian' or fitted_type == 'normal':
                 mu = float(info['fitted_prior']['mu'])
                 sigma = float(info['fitted_prior']['sigma'])
 

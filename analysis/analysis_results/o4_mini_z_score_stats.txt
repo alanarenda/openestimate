@@ -1,0 +1,10 @@
+O4 Mini Z-Score Statistics:
+count    74.000000
+mean      1.235582
+std       1.261719
+min       0.021600
+25%       0.392971
+50%       0.791620
+75%       1.837613
+max       7.038362
+Name: z, dtype: float64
