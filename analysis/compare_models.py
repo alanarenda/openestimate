@@ -136,57 +136,56 @@ def uncertainty_accuracy_correlation_analysis(results_sets, output_dir="analysis
 def compute_llm_prior_win_rates_over_n_sample_baselines(results):
     """
     Compute the percentage of times LLM prior outperforms statistical baseline across different sample sizes.
-    Dynamically selects the appropriate baseline (normal or lognormal) based on the fitted distribution type.
+    The LLM prior is compared against each sample-size baseline separately.
     """
     llm_priors = results[results['approach'].str.contains('o4-mini') & ~results['approach'].str.contains('posterior')]
     sample_sizes = [5, 10, 20, 30]
     llm_prior_helped_percentages = {}
+
     for sample_size in sample_sizes:
-        llm_priors_with_n = llm_priors[llm_priors['approach'].str.contains(f'N{sample_size}') | llm_priors['approach'].str.contains(f'n{sample_size}')]
-        num_skipped = 0
         llm_prior_helped = 0
         num_processed = 0
-        for var in llm_priors_with_n['variable'].unique():
-            llm_prior_with_n = llm_priors_with_n[llm_priors_with_n['variable'] == var]
+
+        for var in llm_priors['variable'].unique():
+            llm_prior_for_var = llm_priors[llm_priors['variable'] == var]
 
             # Determine the fitted distribution type for this variable
-            fitted_dist_types = llm_prior_with_n['fitted_distribution_type'].dropna().unique()
+            fitted_dist_types = llm_prior_for_var['fitted_distribution_type'].dropna().unique()
             is_lognormal = len(fitted_dist_types) > 0 and fitted_dist_types[0] == 'lognormal'
 
-            # Select the appropriate statistical baseline based on distribution type
-            if is_lognormal:
-                # For lognormal, prefer lognormal baseline if available
-                stat_baseline = results[
-                    (results['variable'] == var) &
-                    (results['approach'].str.contains('statistical')) &
-                    (results['fitted_distribution_type'] == 'lognormal')
-                ]
-                # Fallback to any statistical baseline if lognormal not available
-                if stat_baseline.empty:
-                    stat_baseline = results[(results['variable'] == var) & (results['approach'].str.contains('statistical'))]
-            else:
-                # For normal/beta, use standard baseline (exclude lognormal)
-                stat_baseline = results[
-                    (results['variable'] == var) &
-                    (results['approach'].str.contains('statistical')) &
-                    (results['fitted_distribution_type'] != 'lognormal')
-                ]
-                # Fallback to any statistical baseline if needed
-                if stat_baseline.empty:
-                    stat_baseline = results[(results['variable'] == var) & (results['approach'].str.contains('statistical'))]
+            # Select the appropriate statistical baseline for this sample size and distribution type
+            stat_baseline = results[
+                (results['variable'] == var) &
+                (results['approach'].str.contains('statistical')) &
+                (results['sample_size'] == str(sample_size))
+            ]
 
-            llm_means = llm_prior_with_n['abs_error'].dropna()
-            stat_means = stat_baseline['abs_error'].dropna()
-            if stat_means.empty or llm_means.empty:
-                num_skipped += 1
+            # Filter by distribution type
+            if is_lognormal:
+                stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] == 'lognormal']
+                if not stat_baseline_typed.empty:
+                    stat_baseline = stat_baseline_typed
+            else:
+                stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] != 'lognormal']
+                if not stat_baseline_typed.empty:
+                    stat_baseline = stat_baseline_typed
+
+            llm_errors = llm_prior_for_var['abs_error_from_mean'].dropna()
+            stat_errors = stat_baseline['abs_error_from_mean'].dropna()
+
+            if stat_errors.empty or llm_errors.empty:
                 continue
+
             num_processed += 1
-            llm_prior_mae = llm_means.mean()
-            stat_mae = stat_means.mean()
+            llm_prior_mae = llm_errors.mean()
+            stat_mae = stat_errors.mean()
+
             if llm_prior_mae < stat_mae:
                 llm_prior_helped += 1
+
         llm_prior_helped_percentage = float(llm_prior_helped) / float(num_processed) if num_processed > 0 else 0.0
         llm_prior_helped_percentages[sample_size] = llm_prior_helped_percentage
+
     return llm_prior_helped_percentages
 
 

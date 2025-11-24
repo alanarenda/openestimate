@@ -1,13 +1,13 @@
 Domain,Sample Size,LLM Prior > Stat. Baseline,LLM Posterior > Stat. Baseline
-Glassdoor,5,0.0%,71.4%
-Glassdoor,10,0.0%,69.0%
-Glassdoor,20,0.0%,68.1%
-Glassdoor,30,0.0%,70.5%
-Nhanes,5,0.0%,70.4%
-Nhanes,10,0.0%,65.1%
-Nhanes,20,0.0%,56.6%
-Nhanes,30,0.0%,50.4%
-Pitchbook,5,0.0%,69.6%
-Pitchbook,10,0.0%,76.5%
-Pitchbook,20,0.0%,80.1%
-Pitchbook,30,0.0%,81.6%
+Glassdoor,5,43.5%,71.4%
+Glassdoor,10,30.4%,69.0%
+Glassdoor,20,28.3%,68.1%
+Glassdoor,30,26.1%,70.5%
+Nhanes,5,77.0%,70.4%
+Nhanes,10,59.5%,65.1%
+Nhanes,20,48.6%,56.6%
+Nhanes,30,41.9%,50.4%
+Pitchbook,5,52.5%,69.6%
+Pitchbook,10,55.7%,76.5%
+Pitchbook,20,57.4%,80.1%
+Pitchbook,30,57.4%,81.6%
