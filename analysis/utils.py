@@ -4,11 +4,12 @@ import tqdm
 import glob
 import json
 import warnings
-import numpy as np
+import numpy as np 
 import pandas as pd
 from scipy import stats
 from pathlib import Path
 from typing import Dict, List
+from scipy.integrate import quad, IntegrationWarning
 from scipy.stats import beta as beta_dist, norm as normal_dist
 
 
@@ -367,6 +368,152 @@ def get_quartiles_from_lognormal(mu, sigma):
     return np.exp(stats.norm.ppf([0.25, 0.5, 0.75], mu, sigma))
 
 
+
+def compute_crps_score_gaussian(mu, sigma, y):    
+    z = (y - mu) / sigma
+    phi_z = stats.norm.cdf(z) - 1
+    first_term = z * (2 * phi_z - 1) 
+    second_term = 2 * stats.norm.pdf(z)
+    third_term = 1 / np.sqrt(np.pi)
+    crps = sigma * (first_term + second_term - third_term)
+    return crps 
+
+
+def compute_crps_score_beta(a, b, y):
+    """
+    Compute the Continuous Ranked Probability Score (CRPS) for a beta forecast 
+    using numerical integration.
+
+    Parameters
+    ----------
+    a, b : float
+        Shape parameters for the beta distribution.
+    y : float
+        Observed value (must be between 0 and 1).
+
+    Returns
+    -------
+    crps : float
+        The CRPS value.
+    """
+    if not (0 <= y <= 1):
+        raise ValueError("y_true must be between 0 and 1 for the standard beta distribution.")
+            
+    from scipy.stats import beta
+    
+    # To handle the discontinuity in the Heaviside function at y,
+    # we split the integral into two parts: from 0 to y, and from y to 1.
+    
+    # Integrand for the interval [0, y], where H(x) = 0
+    def integrand1(x, a, b):
+        return beta.cdf(x, a, b)**2
+    
+    # Integrand for the interval [y, 1], where H(x) = 1
+    def integrand2(x, a, b):
+        return (beta.cdf(x, a, b) - 1)**2
+        
+    # Use warnings context manager to catch IntegrationWarning
+    with warnings.catch_warnings():
+        warnings.simplefilter("error", IntegrationWarning)
+        try:
+            integral1, _ = quad(integrand1, 0, y, args=(a, b), epsabs=1e-6, epsrel=1e-6, limit=500)
+            integral2, _ = quad(integrand2, y, 1, args=(a, b), epsabs=1e-6, epsrel=1e-6, limit=500)
+            result = integral1 + integral2
+        except IntegrationWarning as e:
+            print(f"Caught IntegrationWarning for a={a}, b={b}, y={y}: {e}")
+            result = np.nan  # Assign NaN and continue
+
+    return result
+
+
+# def compute_crps_score_lognormal(mu, sigma, y):
+#     """
+#     Computes the Continuous Ranked Probability Score (CRPS)
+#     for a Lognormal distribution analytically.
+
+#     Parameters:
+#     mu (float): The mean of the underlying normal distribution (log-mean).
+#     sigma (float): The standard deviation of the underlying normal distribution (log-std).
+#     y (float): The observed value (on the natural scale).
+
+#     Returns:
+#     float: The CRPS score.
+#     """
+#     from scipy.stats import norm
+    
+#     # 1. Standard Normal CDF (Phi)
+#     Phi = norm.cdf
+
+#     # 2. Key components based on the standard transformation
+#     # The Lognormal CDF uses the log of the observation y
+#     z = (np.log(y) - mu) / sigma
+    
+#     # Lognormal mean (E[Y])
+#     exp_term_mu = np.exp(mu + (sigma**2) / 2)
+    
+#     # Helper term used in the formula
+#     sigma_over_sqrt_2 = sigma / np.sqrt(2.0)
+
+#     # 3. Apply the full analytic formula
+#     # CRPS(F, y) = y * (2*Phi(z) - 1) + 2*E[Y] * (Phi(sigma/sqrt(2)) - Phi(z - sigma))
+
+#     term1 = y * (2 * Phi(z) - 1)
+
+#     term2 = 2 * exp_term_mu * (Phi(sigma_over_sqrt_2) - Phi(z - sigma))
+
+#     crps_score = term1 + term2
+    
+#     return crps_score
+
+
+from scipy.stats import norm, lognorm
+from scipy.integrate import quad
+import numpy as np
+
+Phi = norm.cdf
+
+def E_abs_diff_same_dist_lognorm(mu, sigma):
+    # X ~ Lognormal(mu, sigma^2) in the *usual* parameterization
+    dist = lognorm(s=sigma, scale=np.exp(mu))
+
+    def integrand(x):
+        F = dist.cdf(x)
+        return 2 * F * (1 - F)  # this integrates to E|X - X'|
+
+    val, _ = quad(integrand, 0.0, np.inf)
+    return val  # = E|X - X'|
+
+
+def compute_crps_score_lognormal(mu, sigma, y):
+    # 1. E|X - y|
+    z = (np.log(y) - mu) / sigma
+    m1 = np.exp(mu + 0.5 * sigma**2)
+    Ey = y * (2 * Phi(z) - 1) - 2 * m1 * Phi(z - sigma) + m1
+
+    # 2. E|X - X'|
+    Eabs_diff = E_abs_diff_same_dist_lognorm(mu, sigma)
+
+    # 3. CRPS
+    return Ey - 0.5 * Eabs_diff
+
+
+def compute_crps_scores(results): 
+    lognorm_mask = results['fitted_distribution_type'] == 'lognormal'
+    beta_mask = results['fitted_distribution_type'] == 'beta'
+    normal_mask = results['fitted_distribution_type'] == 'gaussian'
+    results['crps'] = np.nan
+    if lognorm_mask.any():
+        results.loc[lognorm_mask, 'crps'] = results.loc[lognorm_mask].apply(
+            lambda row: compute_crps_score_lognormal(row['mu'], row['sigma'], row['ground_truth']), axis=1).values
+    if beta_mask.any():
+        results.loc[beta_mask, 'crps'] = results.loc[beta_mask].apply(
+            lambda row: compute_crps_score_beta(row['a'], row['b'], row['ground_truth']), axis=1).values
+    if normal_mask.any():
+        results.loc[normal_mask, 'crps'] = results.loc[normal_mask].apply(
+            lambda row: compute_crps_score_gaussian(row['mu'], row['sigma'], row['ground_truth']), axis=1).values
+    return results
+
+
 def determine_quartile_of_gt(results):
     # Initialize the 'quartile_of_gt' column with default values
     results['quartile_of_gt'] = np.nan 
@@ -640,6 +787,8 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     print(f"\nExact distribution type matches: {exact_match_count}")
     print(f"Fallback to any available baseline: {fallback_count}")
 
+    
+    results = compute_crps_scores(results)
 
     results.to_csv(os.path.expanduser("{}experiments/{dataset}/{dataset}_combined_processed_results.csv".format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset)), index=False)
     print(f"Results saved to: {os.path.expanduser('{}experiments/{dataset}/{dataset}_combined_processed_results.csv'.format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset))}")

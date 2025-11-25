@@ -1,0 +1,27 @@
+{
+  "The probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating": {
+    "var_output": {
+      "variable": "the probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "distribution_type": "Beta",
+      "alpha": "3",
+      "beta": "17"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about human health."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.\n\nYour estimates should reflect **uncertainty about the population-level parameter** \u2014 not the variation across individual observations.\n\nHere is the variable you need to model:\n\nthe probability that the average adult (over 18) in the US population has ever had serious difficulty concentrating\n\n\n---\n\n## Available Distribution Types\n\nYou may choose from:\n- **Normal** (Gaussian)\n- **Lognormal**\n- **Beta**\n\n---\n\n## Instructions\n\n1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:\n   - What range do you expect the population parameter to fall in and why?\n   - How certain/uncertain are you about this parameter?\n   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?\n   - Why is this distribution type appropriate for this variable?\n\n2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:\n\n### If you choose Normal:\n<distribution_type>Normal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\n### If you choose Lognormal:\n<distribution_type>Lognormal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\nCRITICAL: \u03bc (mu) and \u03c3 (sigma) are parameters in LOG-SPACE, not real-space!\n\nKey relationships to real-space values:\n- MEDIAN (real-space) = exp(\u03bc)\n- MEAN (real-space) = exp(\u03bc + \u03c3\u00b2/2)\n- MODE (real-space) = exp(\u03bc - \u03c3\u00b2)\n\nHOW TO SET \u03bc:\n1. First decide what you think the MEDIAN value should be (in the original units)\n2. Then set \u03bc = log(median)\n3. Examples:\n   - If median should be $30, then \u03bc = log(30) \u2248 3.4\n   - If median should be 100 employees, then \u03bc = log(100) \u2248 4.6\n   - If median should be $1000, then \u03bc = log(1000) \u2248 6.9\n\nHOW TO SET \u03c3:\n- \u03c3 controls the spread in log-space (typical values: 0.2 to 1.0)\n- \u03c3 = 0.3 gives roughly a 95% credible interval of [exp(\u03bc-0.6), exp(\u03bc+0.6)]\n- \u03c3 = 0.5 gives roughly a 95% credible interval of [exp(\u03bc-1.0), exp(\u03bc+1.0)]\n\nCOMMON MISTAKE TO AVOID:\n\u274c WRONG: Setting \u03bc = 30 when you mean the value is $30\n   (This gives median = exp(30) = $10 trillion!)\n\u2713 CORRECT: Setting \u03bc = log(30) \u2248 3.4 when you mean the value is $30\n   (This gives median = exp(3.4) = $30)\n\nALWAYS VERIFY YOUR ANSWER:\n- Calculate exp(\u03bc) - does this match your expected median?\n- Calculate exp(\u03bc + \u03c3\u00b2/2) - does this match your expected mean?\n- If these are wildly different from what you expect, you've made an error!\n\n### If you choose Beta:\n<distribution_type>Beta</distribution_type>\n<alpha>value</alpha>\n<beta>value</beta>\n\n---\n\nCRITICAL UNIT CHECK: Pay close attention to units. If the variable says \"in millions USD\", you need to work in millions!\n\nE.g. \n- I think the typical company has raised about $3.5 million\n- In millions, this is: 3.5\n- NOT 3500000!\n\nNow, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I\u2019m modeling a probability (bounded 0\u20131), so a Beta prior is most appropriate.\n\nReasoning  \n1. Expected range:  \n   - Current \u201cserious difficulty concentrating\u201d (cognitive disability) in US adults is reported around 6 % (ACS data), but \u201cever had\u201d could be somewhat higher\u2014perhaps in the 5 %\u201330 % range.  \n2. Central value & uncertainty:  \n   - I center the prior at a mean of 0.15 (15 %).  \n   - I\u2019m fairly uncertain \u2013 I want a prior 95 % credible interval roughly spanning 3 % to 33 %.  \n3. Beta parameterization:  \n   - For a Beta(\u03b1, \u03b2), mean = \u03b1/(\u03b1+\u03b2).  \n   - Choose an \u201ceffective sample size\u201d \u03b1+\u03b2 \u2248 20 to keep the prior fairly diffuse.  \n   - Solving \u03b1/(\u03b1+\u03b2)=0.15 with \u03b1+\u03b2=20 gives \u03b1=3, \u03b2=17.  \n4. Implied quantities:  \n   - Mean = 3/20 = 0.15.  \n   - Variance = (\u03b1\u03b2)/[(\u03b1+\u03b2)\u00b2(\u03b1+\u03b2+1)] \u2248 0.15\u00b70.85/21 \u2248 0.006, so SD \u22480.078.  \n   - Approximate 95 % interval \u2248 mean \u00b11.96\u00b7SD \u2248 [\u20130.004, 0.304], truncated to [0.00, 0.30], closely matching my target.  \n\nThus, Beta(3, 17) captures my uncertainty about the US adult lifetime probability of serious difficulty concentrating.\n\n<distribution_type>Beta</distribution_type>\n<alpha>3</alpha>\n<beta>17</beta>"
+      }
+    ]
+  }
+}

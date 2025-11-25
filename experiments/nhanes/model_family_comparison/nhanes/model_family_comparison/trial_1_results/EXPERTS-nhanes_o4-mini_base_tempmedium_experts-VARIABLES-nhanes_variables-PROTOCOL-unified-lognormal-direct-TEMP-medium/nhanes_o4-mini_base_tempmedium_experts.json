@@ -1,0 +1,8 @@
+{
+  "model_type": "openai/o4-mini",
+  "model_kwargs": {
+    "temperature": "medium",
+    "max_tokens": 4096
+  },
+  "system_prompt": "You are a helpful assistant that can answer questions about human health."
+}

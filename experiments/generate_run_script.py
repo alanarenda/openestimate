@@ -13,7 +13,7 @@ PROJECT_ROOT = str(Path(__file__).parent.parent.resolve())
 
 def generate_run_script(dataset, output_dir='results'):
     """Generate a shell script to run all experiment specs in parallel."""
-    num_trials = 1
+    num_trials = 5
 
     exp_names = ['model_family_comparison', 'ablations']
     

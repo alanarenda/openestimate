@@ -394,7 +394,143 @@ def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysi
     combined_df.to_csv(output_path, index=False)
     print(f"\nSaved to: {output_path}")
 
+    # Save to LaTeX
+    latex_lines = []
+    latex_lines.append(r"\begin{table}[h]")
+    latex_lines.append(r"\centering")
+    latex_lines.append(r"\caption{LLM Prior and Posterior Win Rates vs Statistical Baseline}")
+    latex_lines.append(r"\label{tab:llm_vs_baseline_win_rates}")
+    latex_lines.append(r"\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}l c c}")
+    latex_lines.append(r"\hline")
+    latex_lines.append(r"Sample Size & \% Prior Better & \% Posterior Better \\")
+    latex_lines.append(r"\hline")
+
+    first_domain = True
+    current_domain = None
+    for row in all_rows:
+        if row['Domain'] != current_domain:
+            if not first_domain:
+                latex_lines.append(r"[0.5em]")
+            first_domain = False
+            current_domain = row['Domain']
+            latex_lines.append(r"\multicolumn{3}{l}{\textbf{\large " + current_domain + r"}} \\[0.3em]")
+
+        prior_val = row['LLM Prior > Stat. Baseline'].replace('%', r'\%')
+        posterior_val = row['LLM Posterior > Stat. Baseline'].replace('%', r'\%')
+        latex_lines.append(f"{row['Sample Size']} & {prior_val} & {posterior_val} \\\\")
+
+    latex_lines.append(r"\hline")
+    latex_lines.append(r"\end{tabular*}")
+    latex_lines.append(r"\end{table}")
+
+    latex_table = "\n".join(latex_lines)
+    latex_path = os.path.join(output_dir, "llm_vs_baseline_win_rates.tex")
+    with open(latex_path, 'w') as f:
+        f.write(latex_table)
+    print(f"Saved LaTeX table to: {latex_path}")
+
     return combined_df
+
+
+def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"):
+    """
+    Build a LaTeX table showing CRPS scores by model family across domains.
+    """
+    # Dataset name mapping for pretty printing
+    dataset_name_mapping = {
+        'nhanes': 'NHANES',
+        'pitchbook': 'Pitchbook',
+        'glassdoor': 'Glassdoor'
+    }
+
+    # Collect CRPS data by model and dataset
+    model_crps = {}
+
+    for results in results_sets:
+        dataset_name = results['dataset'].iloc[0]
+
+        # Group by model family (extract base model name)
+        for approach in results['approach'].unique():
+            if 'stat' in approach:  # Skip statistical baselines
+                continue
+
+            # Extract model name (e.g., "gpt-4o" from "gpt-4o_base_unified_temp0.5")
+            model_parts = approach.split('_')
+            if len(model_parts) > 0:
+                model = model_parts[0]
+
+                # Normalize model names for display
+                if 'meta-llama-3-70b' in model.lower():
+                    model_display = 'Llama-3-70B'
+                elif 'meta-llama-3-8b' in model.lower():
+                    model_display = 'Llama-3-8B'
+                elif 'qwen3' in model.lower():
+                    model_display = 'Qwen3-235B'
+                elif 'gpt-4o' in model.lower():
+                    model_display = 'GPT-4o'
+                elif 'o4-mini' in model.lower():
+                    model_display = 'o4-mini'
+                elif 'o3-mini' in model.lower():
+                    model_display = 'o3-mini'
+                else:
+                    model_display = model
+
+                if model_display not in model_crps:
+                    model_crps[model_display] = {}
+
+                # Compute mean CRPS for this model on this dataset
+                model_data = results[results['approach'] == approach]
+                mean_crps = model_data['crps'].mean()
+
+                model_crps[model_display][dataset_name] = mean_crps
+
+    # Build the LaTeX table
+    latex_lines = []
+    latex_lines.append(r"\begin{table}[h]")
+    latex_lines.append(r"\centering")
+    latex_lines.append(r"\caption{CRPS Scores by Model Family Across Domains}")
+    latex_lines.append(r"\label{tab:crps_by_model}")
+
+    # Get all datasets and sort them
+    all_datasets = sorted(set(results['dataset'].iloc[0] for results in results_sets))
+    dataset_headers = [dataset_name_mapping.get(ds, ds.capitalize()) for ds in all_datasets]
+
+    # Build header
+    header = "Model & " + " & ".join(dataset_headers) + r" \\"
+    latex_lines.append(r"\begin{tabular}{l" + "c" * len(all_datasets) + "}")
+    latex_lines.append(r"\hline")
+    latex_lines.append(header)
+    latex_lines.append(r"\hline")
+
+    # Add rows for each model
+    for model in sorted(model_crps.keys()):
+        row_values = [model]
+        for dataset in all_datasets:
+            if dataset in model_crps[model]:
+                crps_val = model_crps[model][dataset]
+                if pd.notna(crps_val):
+                    row_values.append(f"{crps_val:.2f}")
+                else:
+                    row_values.append("--")
+            else:
+                row_values.append("--")
+
+        latex_lines.append(" & ".join(row_values) + r" \\")
+
+    latex_lines.append(r"\hline")
+    latex_lines.append(r"\end{tabular}")
+    latex_lines.append(r"\end{table}")
+
+    latex_table = "\n".join(latex_lines)
+
+    # Write to file
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    with open(f"{output_dir}/crps_by_model_family.tex", "w") as f:
+        f.write(latex_table)
+
+    print(f"CRPS table saved to: {output_dir}/crps_by_model_family.tex")
+    return latex_table
 
 
 def compare_models(datasets, output_dir): 
@@ -402,8 +538,10 @@ def compare_models(datasets, output_dir):
     print("Datasets: {}".format(datasets))
     results_sets = [load_experiment_results(dataset, experiment_name) for dataset in datasets]
     for results in results_sets: 
-        print_completion_stats(results)
+        print_completion_stats(results)    
+    
     compute_error_ratios_and_helped_percentages(results_sets, output_dir)
+    build_crps_by_model_family_table(results_sets, output_dir)
     # plot_error_ratio_by_domain(results_sets, output_dir)
     # plot_ece_by_domain(results_sets, output_dir)
     # uncertainty_accuracy_correlation_analysis(results_sets)
