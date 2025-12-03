@@ -133,14 +133,18 @@ def uncertainty_accuracy_correlation_analysis(results_sets, output_dir="analysis
     return uncertainty_accuracy_analysis
 
 
-def compute_llm_prior_win_rates_over_n_sample_baselines(results):
+def compute_llm_prior_win_rates_over_n_sample_baselines(results, output_dir="analysis_results", dataset_name=None):
     """
     Compute the percentage of times LLM prior outperforms statistical baseline across different sample sizes.
     The LLM prior is compared against each sample-size baseline separately.
+    Also saves a CSV comparing LLM MAE vs statistical baseline MAE for each variable.
     """
     llm_priors = results[results['approach'].str.contains('o4-mini') & ~results['approach'].str.contains('posterior')]
     sample_sizes = [5, 10, 20, 30]
     llm_prior_helped_percentages = {}
+
+    # For storing per-variable MAE data
+    variable_mae_rows = []
 
     for sample_size in sample_sizes:
         llm_prior_helped = 0
@@ -185,6 +189,64 @@ def compute_llm_prior_win_rates_over_n_sample_baselines(results):
 
         llm_prior_helped_percentage = float(llm_prior_helped) / float(num_processed) if num_processed > 0 else 0.0
         llm_prior_helped_percentages[sample_size] = llm_prior_helped_percentage
+
+    # Now create the per-variable MAE comparison CSV
+    for var in llm_priors['variable'].unique():
+        llm_prior_for_var = llm_priors[llm_priors['variable'] == var]
+
+        # Determine the fitted distribution type for this variable
+        fitted_dist_types = llm_prior_for_var['fitted_distribution_type'].dropna().unique()
+        is_lognormal = len(fitted_dist_types) > 0 and fitted_dist_types[0] == 'lognormal'
+
+        # Compute LLM MAE
+        llm_errors = llm_prior_for_var['abs_error_from_mean'].dropna()
+        if llm_errors.empty:
+            continue
+        llm_mae = llm_errors.mean()
+
+        # Initialize row with variable name and LLM MAE
+        row = {'Variable': var, 'LLM MAE': llm_mae}
+
+        # Compute statistical baseline MAE for each sample size
+        for sample_size in sample_sizes:
+            stat_baseline = results[
+                (results['variable'] == var) &
+                (results['approach'].str.contains('statistical')) &
+                (results['sample_size'] == str(sample_size))
+            ]
+
+            # Filter by distribution type
+            if is_lognormal:
+                stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] == 'lognormal']
+                if not stat_baseline_typed.empty:
+                    stat_baseline = stat_baseline_typed
+            else:
+                stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] != 'lognormal']
+                if not stat_baseline_typed.empty:
+                    stat_baseline = stat_baseline_typed
+
+            stat_errors = stat_baseline['abs_error_from_mean'].dropna()
+
+            if not stat_errors.empty:
+                stat_mae = stat_errors.mean()
+                row[f'Stat N{sample_size} MAE'] = stat_mae
+            else:
+                row[f'Stat N{sample_size} MAE'] = np.nan
+
+        variable_mae_rows.append(row)
+
+    # Create DataFrame and save to CSV
+    if variable_mae_rows:
+        df = pd.DataFrame(variable_mae_rows)
+        df = df.sort_values('Variable')
+
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+
+        filename_prefix = f"{dataset_name}_" if dataset_name else ""
+        output_path = os.path.join(output_dir, f"{filename_prefix}llm_vs_baseline_mae_by_variable.csv")
+        df.to_csv(output_path, index=False)
+        print(f"\nSaved LLM vs Baseline MAE comparison to: {output_path}")
 
     return llm_prior_helped_percentages
 
@@ -360,7 +422,7 @@ def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysi
         posteriors_processed = preprocess_posteriors(posteriors_only, results, variables)
 
         # Compute LLM prior win rates (compares prior against each baseline sample size)
-        llm_prior_win_rates = compute_llm_prior_win_rates_over_n_sample_baselines(results)
+        llm_prior_win_rates = compute_llm_prior_win_rates_over_n_sample_baselines(results, output_dir, dataset_name)
 
         sample_sizes = ['5', '10', '20', '30']
         for sample_size in sample_sizes:
@@ -432,9 +494,11 @@ def compute_error_ratios_and_helped_percentages(result_sets, output_dir="analysi
     return combined_df
 
 
-def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"):
+def build_crps_ratio_by_model_family_table(results_sets, output_dir="analysis_results"):
     """
-    Build a LaTeX table showing CRPS scores by model family across domains.
+    Build a LaTeX table showing CRPS ratios by model family across domains.
+    CRPS ratio is computed relative to the 5-sample statistical baseline,
+    matched by fitted distribution type (lognormal vs normal).
     """
     # Dataset name mapping for pretty printing
     dataset_name_mapping = {
@@ -443,8 +507,8 @@ def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"
         'glassdoor': 'Glassdoor'
     }
 
-    # Collect CRPS data by model and dataset
-    model_crps = {}
+    # Collect CRPS ratio data by model and dataset
+    model_crps_ratios = {}
 
     for results in results_sets:
         dataset_name = results['dataset'].iloc[0]
@@ -475,21 +539,56 @@ def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"
                 else:
                     model_display = model
 
-                if model_display not in model_crps:
-                    model_crps[model_display] = {}
+                if model_display not in model_crps_ratios:
+                    model_crps_ratios[model_display] = {}
 
-                # Compute mean CRPS for this model on this dataset
+                # Compute CRPS ratio for this model on this dataset
                 model_data = results[results['approach'] == approach]
-                mean_crps = model_data['crps'].mean()
 
-                model_crps[model_display][dataset_name] = mean_crps
+                # Compute per-variable CRPS ratios relative to 5-sample baseline
+                crps_ratios = []
+                for var in model_data['variable'].unique():
+                    var_data = model_data[model_data['variable'] == var]
+
+                    # Determine the fitted distribution type for this variable
+                    fitted_dist_types = var_data['fitted_distribution_type'].dropna().unique()
+                    is_lognormal = len(fitted_dist_types) > 0 and fitted_dist_types[0] == 'lognormal'
+
+                    # Get the 5-sample statistical baseline for this variable
+                    stat_baseline = results[
+                        (results['variable'] == var) &
+                        (results['approach'].str.contains('statistical')) &
+                        (results['sample_size'] == '5')
+                    ]
+
+                    # Filter by distribution type
+                    if is_lognormal:
+                        stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] == 'lognormal']
+                        if not stat_baseline_typed.empty:
+                            stat_baseline = stat_baseline_typed
+                    else:
+                        stat_baseline_typed = stat_baseline[stat_baseline['fitted_distribution_type'] != 'lognormal']
+                        if not stat_baseline_typed.empty:
+                            stat_baseline = stat_baseline_typed
+
+                    # Compute CRPS ratio
+                    model_crps = var_data['crps'].mean()
+                    baseline_crps = stat_baseline['crps'].mean()
+
+                    if pd.notna(model_crps) and pd.notna(baseline_crps) and baseline_crps > 0:
+                        crps_ratios.append(model_crps / baseline_crps)
+
+                # Store mean CRPS ratio across all variables
+                if crps_ratios:
+                    mean_crps_ratio = np.mean(crps_ratios)
+                    model_crps_ratios[model_display][dataset_name] = mean_crps_ratio
 
     # Build the LaTeX table
     latex_lines = []
     latex_lines.append(r"\begin{table}[h]")
     latex_lines.append(r"\centering")
-    latex_lines.append(r"\caption{CRPS Scores by Model Family Across Domains}")
-    latex_lines.append(r"\label{tab:crps_by_model}")
+    latex_lines.append(r"\caption{CRPS Ratio by Model Family Across Domains (vs. 5-Sample Baseline)}")
+    latex_lines.append(r"\label{tab:crps_ratio_by_model}")
 
     # Get all datasets and sort them
     all_datasets = sorted(set(results['dataset'].iloc[0] for results in results_sets))
@@ -503,13 +602,13 @@ def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"
     latex_lines.append(r"\hline")
 
     # Add rows for each model
-    for model in sorted(model_crps.keys()):
+    for model in sorted(model_crps_ratios.keys()):
         row_values = [model]
         for dataset in all_datasets:
-            if dataset in model_crps[model]:
-                crps_val = model_crps[model][dataset]
-                if pd.notna(crps_val):
-                    row_values.append(f"{crps_val:.2f}")
+            if dataset in model_crps_ratios[model]:
+                crps_ratio_val = model_crps_ratios[model][dataset]
+                if pd.notna(crps_ratio_val):
+                    row_values.append(f"{crps_ratio_val:.2f}")
                 else:
                     row_values.append("--")
             else:
@@ -526,10 +625,10 @@ def build_crps_by_model_family_table(results_sets, output_dir="analysis_results"
     # Write to file
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
-    with open(f"{output_dir}/crps_by_model_family.tex", "w") as f:
+    with open(f"{output_dir}/crps_ratio_by_model_family.tex", "w") as f:
         f.write(latex_table)
 
-    print(f"CRPS table saved to: {output_dir}/crps_by_model_family.tex")
+    print(f"CRPS ratio table saved to: {output_dir}/crps_ratio_by_model_family.tex")
     return latex_table
 
 
@@ -541,11 +640,11 @@ def compare_models(datasets, output_dir):
         print_completion_stats(results)    
     
     compute_error_ratios_and_helped_percentages(results_sets, output_dir)
-    build_crps_by_model_family_table(results_sets, output_dir)
-    # plot_error_ratio_by_domain(results_sets, output_dir)
-    # plot_ece_by_domain(results_sets, output_dir)
-    # uncertainty_accuracy_correlation_analysis(results_sets)
-    # calibration_heat_map(results_sets, output_dir)
-    # z_score_cdf_plot(results_sets, output_dir)
+    build_crps_ratio_by_model_family_table(results_sets, output_dir)
+    plot_error_ratio_by_domain(results_sets, output_dir)
+    plot_ece_by_domain(results_sets, output_dir)
+    uncertainty_accuracy_correlation_analysis(results_sets)
+    calibration_heat_map(results_sets, output_dir)
+    z_score_cdf_plot(results_sets, output_dir)
 
 

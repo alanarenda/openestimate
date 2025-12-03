@@ -1,0 +1,62 @@
+variable_name,variable,ground_truth_distribution_type,fitted_distribution_type,a,b,mu,sigma
+The probability that a venture-backed company is based in the US,IsUSBased,beta,beta,12.0,8.0,,
+The probability that a venture-backed company is a technology company,IsTechCompany,beta,beta,14.0,6.0,,
+The average total raised in millions USD for venture-backed companies,TotalRaised,normal,lognormal,,,3.0,0.7
+The average number of employees for venture-backed companies,Employees,normal,lognormal,,,3.912,0.6
+The average number of employees for venture-backed companies that do not operate in the technology sector.,easy_0,normal,lognormal,,,3.69,0.8
+The average total raised in millions USD for venture-backed companies with more than 17 and at most 45 employees.,easy_1,normal,lognormal,,,3.0,0.8
+The average number of employees for venture-backed companies that have raised more than 1 million USD but no more than 4 million USD.,easy_2,normal,lognormal,,,2.9957,0.5
+The average total raised in millions USD for venture-backed companies with at most 8 employees.,easy_3,normal,lognormal,,,1.1,0.6
+The average number of employees for venture-backed companies that are headquartered outside the United States.,easy_4,normal,lognormal,,,4.32,0.5
+The average number of employees for venture-backed companies that operate in the technology sector.,easy_5,normal,lognormal,,,3.4,0.6
+The average number of employees for venture-backed companies that have raised no more than 1 million USD.,easy_6,normal,lognormal,,,2.3,0.5
+"The probability that a venture-backed company is based in the US, given that it has raised at most 1 million USD.",easy_7,beta,beta,6.0,4.0,,
+The average number of employees for venture-backed companies that have raised more than 14 million USD in total funding.,easy_8,normal,lognormal,,,4.605,0.5
+The average total raised in millions USD for venture-backed companies headquartered outside the US.,easy_9,normal,lognormal,,,2.48,0.5
+The average number of employees for venture-backed companies headquartered in the United States.,easy_10,normal,lognormal,,,4.38,0.5
+"The probability that a venture-backed company is based in the US, conditional on having raised more than 14 million USD.",easy_11,beta,beta,16.0,4.0,,
+The average total raised in millions USD for venture-backed companies headquartered in the United States.,easy_12,normal,lognormal,,,2.708,0.5
+The average total raised in millions USD for venture-backed companies that operate in the technology sector.,easy_13,normal,lognormal,,,2.708,0.6
+The average total raised in millions USD for venture-backed companies with more than 8 but no more than 17 employees.,easy_14,normal,lognormal,,,2.3,0.5
+The average total raised in millions USD for venture-backed companies with more than 45 employees.,easy_15,normal,lognormal,,,4.317,0.7
+The average number of employees for venture-backed companies that have raised more than 4 million USD but no more than 14 million USD.,easy_16,normal,lognormal,,,3.91,0.5
+The average number of employees for venture-backed companies that are headquartered in the United States and do not operate in the technology industry.,medium_0,normal,lognormal,,,4.09,0.6
+The average total raised in millions USD for venture-backed companies with 9 to 17 employees and headquartered outside the United States.,medium_1,normal,lognormal,,,2.08,0.5
+The average number of employees for venture-backed companies that are technology companies and have raised more than 2 million USD but no more than 4 million USD.,medium_2,normal,lognormal,,,3.22,0.5
+The average number of employees for venture-backed companies operating in the tech sector and headquartered in the United States.,medium_3,normal,lognormal,,,3.91,0.5
+The average total raised in millions USD for venture-backed companies that have more than 45 employees and are technology companies.,medium_4,normal,lognormal,,,3.91,0.6
+"The probability that a venture-backed company is based in the US, given that it is not a technology company and has raised more than 1 million USD but no more than 4 million USD.",medium_5,beta,beta,12.0,8.0,,
+The average number of employees for venture-backed companies that are located outside the United States and do not operate in the technology sector.,medium_6,normal,lognormal,,,3.0,0.7
+The average total raised in millions USD for venture-backed companies that are technology firms headquartered outside the United States.,medium_7,normal,lognormal,,,2.996,0.5
+The average number of employees for venture-backed companies that have raised over 1 million USD but no more than 4 million USD and are not technology companies.,medium_8,normal,lognormal,,,3.22,0.5
+The probability that a venture-backed company is based in the US when it has raised over 14 million USD in total funding and employs at most 28 people.,medium_9,beta,beta,7.0,3.0,,
+The average total raised in millions USD for venture-backed companies headquartered in the United States with 8 to 15 employees.,medium_10,normal,lognormal,,,2.3,0.5
+The average total raised in millions USD for venture-backed companies whose headquarters are in the United States and that operate in the technology sector.,medium_11,normal,lognormal,,,2.708,0.5
+"The probability that a venture-backed company is based in the US, given that it is a technology company and has raised over 13 million USD.",medium_12,beta,beta,20.0,5.0,,
+The average total raised in millions USD for venture-backed companies that are not technology companies and have between 8 and 16 employees.,medium_13,normal,lognormal,,,1.1,0.5
+The probability that a venture-backed company is a technology company given it has between 18 and 45 employees and has raised between 6 and 15 million USD.,medium_14,beta,beta,16.0,4.0,,
+The average total raised in millions USD for venture-backed companies based in the US with at most 7 employees.,medium_15,normal,lognormal,,,1.1,0.5
+"The probability that a venture-backed company is based in the US, given it has raised between 4 million and 14 million USD and is a technology company.",medium_16,beta,beta,14.0,6.0,,
+The average total raised in millions USD for venture-backed companies that are headquartered in the US and have more than 42 employees.,medium_17,normal,lognormal,,,3.91,0.5
+The average total raised in millions USD for venture-backed companies that are not based in the US and have more than 49 employees.,medium_18,normal,lognormal,,,3.689,0.5
+The average total raised in millions USD for venture-backed companies that have more than 45 employees and are headquartered in the United States.,medium_19,normal,lognormal,,,3.91,0.5
+"The probability that a venture-backed company is a technology company, given that it has raised between 4 and 14 million USD, is headquartered outside the US, and employs more than 52 people.",hard_0,beta,beta,14.0,6.0,,
+"The average total raised in millions USD for venture-backed companies that are based outside the US, have between 9 and 19 employees inclusive, and are not technology companies.",hard_1,normal,lognormal,,,1.1,0.6
+The average number of employees for venture-backed companies that are US-based technology companies and have raised between 6 million and 19 million USD.,hard_2,normal,lognormal,,,3.4,0.5
+"The average total raised in millions USD for venture-backed companies that are non-technology companies, are based in the United States, and have at most 7 employees.",hard_3,normal,lognormal,,,0.4,0.8
+"The average number of employees for venture-backed companies that have raised between 4 and 14 million USD, are technology companies, and are headquartered outside the United States.",hard_4,normal,lognormal,,,3.91,0.5
+"The average number of employees for venture-backed companies that are based in the US, are not in the technology sector, and have raised more than 1 million USD but no more than 4 million USD.",hard_5,normal,lognormal,,,2.708,0.5
+"The average number of employees for venture-backed companies that have raised at most 1 million USD, are based in the US, and operate as technology companies.",hard_6,normal,lognormal,,,2.3,0.5
+"The average total raised in millions USD for venture-backed companies that are based in the US, have more than 42 employees, and operate in the technology sector.",hard_7,normal,lognormal,,,3.91,0.5
+"The probability that a venture-backed company is based in the US given that it has raised at most 1 million USD, employs no more than 4 people, and is not a technology company.",hard_8,beta,beta,9.0,6.0,,
+"The average total raised in millions USD for venture-backed companies that have at most 8 employees, operate in the technology sector, and are based in the United States.",hard_9,normal,lognormal,,,1.1,0.5
+"The probability that a venture-backed company is based in the US, given it has between 18 and 45 employees, has raised at most $2 million USD, and is a technology company.",hard_10,beta,beta,14.0,6.0,,
+"The average total raised in millions USD for venture-backed companies with at most 8 employees, headquartered outside the US, and operating in the technology sector.",hard_11,normal,lognormal,,,0.405,0.6
+"The probability that a venture-backed company is based in the US given that it has raised between 4 and 14 million USD, is not a technology company, and employs between 11 and 20 people.",hard_12,beta,beta,6.0,4.0,,
+"The average total raised in millions USD for venture-backed companies that are not technology companies, are based in the United States, and have between 15 and 38 employees.",hard_13,normal,lognormal,,,1.386,0.7
+"The average number of employees for venture-backed companies that are technology firms, have raised over 13 million USD, and are headquartered outside the United States.",hard_14,normal,lognormal,,,4.317,0.3
+"The average total raised in millions USD for venture-backed companies that are not in the technology sector, have at most 7 employees, and are headquartered outside the United States.",hard_15,normal,lognormal,,,0.693,0.8
+"The average number of employees for venture-backed companies that are based in the United States, have raised no more than 2 million USD in total funding, and are not technology companies.",hard_16,normal,lognormal,,,2.3,0.6
+"The average total raised in millions USD for venture-backed companies with 18 to 45 employees, headquartered outside the US, and operating outside the technology sector.",hard_17,normal,lognormal,,,2.08,0.6
+The average number of employees for venture-backed companies that are non-technology companies based in the US and have raised more than 2 million USD and at most 6 million USD.,hard_18,normal,lognormal,,,3.689,0.6
+"The average number of employees for venture-backed companies that are based in the US, are not in the technology sector, and have raised more than 6 million USD but do not exceed 20 million USD.",hard_19,normal,lognormal,,,4.605,0.5

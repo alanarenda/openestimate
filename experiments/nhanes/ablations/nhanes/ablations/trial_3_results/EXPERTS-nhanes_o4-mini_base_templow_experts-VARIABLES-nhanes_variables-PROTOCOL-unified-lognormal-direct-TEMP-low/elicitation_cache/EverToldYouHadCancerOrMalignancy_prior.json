@@ -1,0 +1,27 @@
+{
+  "The probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor": {
+    "var_output": {
+      "variable": "the probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "distribution_type": "Beta",
+      "alpha": "7",
+      "beta": "93"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about human health."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.\n\nYour estimates should reflect **uncertainty about the population-level parameter** \u2014 not the variation across individual observations.\n\nHere is the variable you need to model:\n\nthe probability that a member of the US population who is over 18 has ever been diagnosed with cancer by a doctor\n\n\n---\n\n## Available Distribution Types\n\nYou may choose from:\n- **Normal** (Gaussian)\n- **Lognormal**\n- **Beta**\n\n---\n\n## Instructions\n\n1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:\n   - What range do you expect the population parameter to fall in and why?\n   - How certain/uncertain are you about this parameter?\n   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?\n   - Why is this distribution type appropriate for this variable?\n\n2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:\n\n### If you choose Normal:\n<distribution_type>Normal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\n### If you choose Lognormal:\n<distribution_type>Lognormal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\nCRITICAL: \u03bc (mu) and \u03c3 (sigma) are parameters in LOG-SPACE, not real-space!\n\nKey relationships to real-space values:\n- MEDIAN (real-space) = exp(\u03bc)\n- MEAN (real-space) = exp(\u03bc + \u03c3\u00b2/2)\n- MODE (real-space) = exp(\u03bc - \u03c3\u00b2)\n\nHOW TO SET \u03bc:\n1. First decide what you think the MEDIAN value should be (in the original units)\n2. Then set \u03bc = log(median)\n3. Examples:\n   - If median should be $30, then \u03bc = log(30) \u2248 3.4\n   - If median should be 100 employees, then \u03bc = log(100) \u2248 4.6\n   - If median should be $1000, then \u03bc = log(1000) \u2248 6.9\n\nHOW TO SET \u03c3:\n- \u03c3 controls the spread in log-space (typical values: 0.2 to 1.0)\n- \u03c3 = 0.3 gives roughly a 95% credible interval of [exp(\u03bc-0.6), exp(\u03bc+0.6)]\n- \u03c3 = 0.5 gives roughly a 95% credible interval of [exp(\u03bc-1.0), exp(\u03bc+1.0)]\n\nCOMMON MISTAKE TO AVOID:\n\u274c WRONG: Setting \u03bc = 30 when you mean the value is $30\n   (This gives median = exp(30) = $10 trillion!)\n\u2713 CORRECT: Setting \u03bc = log(30) \u2248 3.4 when you mean the value is $30\n   (This gives median = exp(3.4) = $30)\n\nALWAYS VERIFY YOUR ANSWER:\n- Calculate exp(\u03bc) - does this match your expected median?\n- Calculate exp(\u03bc + \u03c3\u00b2/2) - does this match your expected mean?\n- If these are wildly different from what you expect, you've made an error!\n\n### If you choose Beta:\n<distribution_type>Beta</distribution_type>\n<alpha>value</alpha>\n<beta>value</beta>\n\n---\n\nCRITICAL UNIT CHECK: Pay close attention to units. If the variable says \"in millions USD\", you need to work in millions!\n\nE.g. \n- I think the typical company has raised about $3.5 million\n- In millions, this is: 3.5\n- NOT 3500000!\n\nNow, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.\n"
+      },
+      {
+        "role": "assistant",
+        "content": "Here\u2019s my reasoning and choice of prior:\n\n1. The quantity of interest is a probability (probability an adult has ever been diagnosed), so a Beta distribution is most appropriate (supports [0,1]).\n2. Empirical data (e.g. American Cancer Society) indicate there are about 18 million cancer survivors among roughly 258 million US adults (\u226518 years), giving a point estimate of \u22480.07.\n3. I\u2019m moderately certain this is the neighborhood of the true population prevalence, but allow for plausible values from roughly 0.03 up to about 0.12.\n4. To encode this, I choose a Beta prior with mean = 0.07 and a moderate \u201cprior sample size\u201d of about 100, so that the standard deviation is sqrt(0.07\u00b70.93/101) \u2248 0.025, yielding a 95% interval roughly [0.02,0.12].\n5. Hence \u03b1 = mean\u00b7(n\u2080) \u2248 0.07\u00b7100 = 7, and \u03b2 = (1\u2212mean)\u00b7(n\u2080) \u2248 0.93\u00b7100 = 93.\n\n<distribution_type>Beta</distribution_type>\n<alpha>7</alpha>\n<beta>93</beta>"
+      }
+    ]
+  }
+}

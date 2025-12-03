@@ -41,9 +41,58 @@ def fit_gaussian_prior(q1, median, q3, plausible_range):
     # Validate the fit
     print(f"Fitted mean: {mean}, Fitted std: {std}")
 
-    return {'mean': mean, 'std': std, 'type': 'gaussian'}
-    
-    
+    return {'mu': mean, 'sigma': std, 'type': 'gaussian'}
+
+
+def fit_lognormal_prior(q1, median, q3, plausible_range):
+    """
+    Fit a lognormal distribution to quartiles.
+
+    For lognormal: if X ~ Lognormal(mu, sigma), then log(X) ~ Normal(mu, sigma)
+    The median of lognormal is exp(mu), so mu = log(median).
+
+    Args:
+        q1: 25th percentile
+        median: 50th percentile (median)
+        q3: 75th percentile
+        plausible_range: Tuple of (lower, upper) bounds (5th and 95th percentiles)
+
+    Returns:
+        Dictionary with mu, sigma (log-space parameters) and type
+    """
+    from scipy.stats import lognorm
+
+    def objective(params):
+        mu, sigma = params
+        if sigma <= 0:
+            return 1e10
+        # lognorm uses scale=exp(mu) and s=sigma
+        q1_fit = lognorm.ppf(0.25, s=sigma, scale=np.exp(mu))
+        median_fit = lognorm.ppf(0.5, s=sigma, scale=np.exp(mu))
+        q3_fit = lognorm.ppf(0.75, s=sigma, scale=np.exp(mu))
+        p5_fit = lognorm.ppf(0.05, s=sigma, scale=np.exp(mu))
+        p95_fit = lognorm.ppf(0.95, s=sigma, scale=np.exp(mu))
+
+        return ((q1 - q1_fit)**2 + (median - median_fit)**2 + (q3 - q3_fit)**2 +
+                (plausible_range[0] - p5_fit)**2 + (plausible_range[1] - p95_fit)**2)
+
+    # Initial guesses: mu from median, sigma from IQR ratio
+    # For lognormal, median = exp(mu), so mu = log(median)
+    initial_mu = np.log(median) if median > 0 else 0
+    # Rough estimate of sigma from quartile ratio
+    initial_sigma = (np.log(q3) - np.log(q1)) / 1.349 if q1 > 0 and q3 > 0 else 0.5
+
+    result = minimize(objective, [initial_mu, initial_sigma],
+                      bounds=[(None, None), (1e-5, None)])
+    mu, sigma = result.x
+
+    print(f"Fitted lognormal mu: {mu}, sigma: {sigma}")
+    print(f"  -> Median (exp(mu)): {np.exp(mu)}")
+    print(f"  -> Mean (exp(mu + sigma^2/2)): {np.exp(mu + sigma**2/2)}")
+
+    return {'mu': mu, 'sigma': sigma, 'type': 'lognormal'}
+
+
 def fit_beta_prior(q1, median, q3, plausible_range):
     """
     Fit a beta distribution to quantiles in [0,1] scale.
@@ -380,6 +429,41 @@ def fit_beta_prior_from_mean_variance(mean, variance):
     return alpha, beta
 
 
+def fit_lognormal_prior_from_mean_variance(mean, std):
+    """
+    Fit a Lognormal distribution from real-space mean and standard deviation.
+
+    For a lognormal distribution with log-space parameters (mu, sigma):
+    - Real-space mean = exp(mu + sigma^2/2)
+    - Real-space variance = (exp(sigma^2) - 1) * exp(2*mu + sigma^2)
+
+    Solving for mu and sigma:
+    - sigma^2 = log(1 + (std/mean)^2)
+    - mu = log(mean) - sigma^2/2
+
+    Parameters:
+        mean (float): Desired real-space mean (must be positive)
+        std (float): Desired real-space standard deviation (must be positive)
+
+    Returns:
+        tuple: (mu, sigma) parameters for Lognormal distribution (log-space)
+    """
+    if mean <= 0:
+        raise ValueError("Mean must be positive for lognormal distribution")
+    if std <= 0:
+        raise ValueError("Standard deviation must be positive")
+
+    # Coefficient of variation
+    cv = std / mean
+
+    # Calculate log-space parameters
+    sigma_squared = np.log(1 + cv**2)
+    sigma = np.sqrt(sigma_squared)
+    mu = np.log(mean) - sigma_squared / 2
+
+    return mu, sigma
+
+
 def fit_prior_quantile(elicited_priors, variables):
     """
     Fit priors using quantile method for all variables.
@@ -407,19 +491,33 @@ def fit_prior_quantile(elicited_priors, variables):
         median = p50
         q1 = p25
         q3 = p75
-        
-        if var[1]['ground_truth_distribution_type'] == 'normal':
+
+        # Determine distribution type: prefer LLM-chosen, fall back to ground truth
+        if 'distribution_type' in elicited_prior:
+            distr_type = elicited_prior['distribution_type'].lower().strip()
+            print(f"Using LLM-chosen distribution type: {distr_type}")
+        else:
+            distr_type = var[1]['ground_truth_distribution_type'].lower().strip()
+            print(f"Using ground truth distribution type: {distr_type}")
+
+        if distr_type in ['normal', 'gaussian']:
             print("Fitting Gaussian prior for ", var_name)
             distr_params = fit_gaussian_prior(q1, median, q3, plausible_range)
-        elif var[1]['ground_truth_distribution_type'] in ['binomial', 'beta']:
+        elif distr_type == 'lognormal':
+            print("Fitting Lognormal prior for ", var_name)
+            # Lognormal requires positive values
+            if q1 <= 0 or median <= 0 or q3 <= 0:
+                raise ValueError(f"Var name: {var_name}, Lognormal requires positive values. Got q1={q1}, median={median}, q3={q3}")
+            distr_params = fit_lognormal_prior(q1, median, q3, plausible_range)
+        elif distr_type in ['binomial', 'beta']:
             # Check if plausible range contains q1, median, q3
-            if not (plausible_range[0] <= q1 <= plausible_range[1] and 
+            if not (plausible_range[0] <= q1 <= plausible_range[1] and
                     plausible_range[0] <= median <= plausible_range[1] and
                     plausible_range[0] <= q3 <= plausible_range[1]):
                 raise ValueError(f"Var name: {var_name}, Values must be within plausible range [{plausible_range[0]}, {plausible_range[1]}]. Got q1={q1}, median={median}, q3={q3}")
-            
+
             # Check if all values are already between 0 and 1
-            if (0 <= q1 <= 1 and 0 <= median <= 1 and 0 <= q3 <= 1 and 
+            if (0 <= q1 <= 1 and 0 <= median <= 1 and 0 <= q3 <= 1 and
                 0 <= plausible_range[0] <= 1 and 0 <= plausible_range[1] <= 1):
                 print("Values already in probability range, skipping processing")
             else:
@@ -428,7 +526,7 @@ def fit_prior_quantile(elicited_priors, variables):
 
             distr_params = fit_beta_prior(q1, median, q3, plausible_range)
         else:
-            raise ValueError("Unknown distribution type: ", var[1]['ground_truth_distribution_type'])
+            raise ValueError(f"Unknown distribution type: {distr_type}")
         
         results[var_name]['fitted_prior'] = distr_params
         print("--------------------------------")
@@ -439,11 +537,17 @@ def fit_prior_quantile(elicited_priors, variables):
 def fit_prior_mean_variance(elicited_priors, variables):
     """
     Fit priors using mean-variance method for all variables.
-    
+
+    Supports two modes:
+    1. Unified mode: LLM chooses distribution type (checks for 'distribution_type' in output)
+    2. Traditional mode: Uses ground truth distribution type from variables
+
+    Supports Normal, Lognormal, and Beta distributions.
+
     Args:
         elicited_priors: Dictionary of elicited priors
         variables: Dictionary of variable specifications
-        
+
     Returns:
         Updated elicited_priors with fitted_prior added to each variable
     """
@@ -454,17 +558,42 @@ def fit_prior_mean_variance(elicited_priors, variables):
         elicited_prior = elicited_priors[var_name][var_name]['var_output']
         mean = convert_number_to_float(elicited_prior['mean'])
         stdev = convert_number_to_float(elicited_prior['std_dev'])
-        
-        if var[1]['ground_truth_distribution_type'] == 'normal':
+
+        # Determine distribution type: prefer LLM-chosen, fall back to ground truth
+        if 'distribution_type' in elicited_prior:
+            distr_type = elicited_prior['distribution_type'].lower().strip()
+            print(f"Using LLM-chosen distribution type: {distr_type}")
+        else:
+            distr_type = var[1]['ground_truth_distribution_type'].lower().strip()
+            print(f"Using ground truth distribution type: {distr_type}")
+
+        if distr_type == 'normal' or distr_type == 'gaussian':
             if mean is None or stdev is None:
-                distr_params = {'type': 'gaussian', 'mean': None, 'std': None}
+                distr_params = {'type': 'gaussian', 'mu': None, 'sigma': None}
             else:
                 distr_params = {
                     'type': 'gaussian',
+                    'mu': mean,
+                    'sigma': stdev
+                }
+
+        elif distr_type == 'lognormal':
+            if mean is None or stdev is None:
+                distr_params = {'type': 'lognormal', 'mu': None, 'sigma': None, 'mean': None, 'std': None}
+            else:
+                if mean <= 0:
+                    raise ValueError(f"Var name: {var_name}, Lognormal requires positive mean. Got mean={mean}")
+                mu, sigma = fit_lognormal_prior_from_mean_variance(mean, stdev)
+                distr_params = {
+                    'type': 'lognormal',
+                    'mu': mu,
+                    'sigma': sigma,
                     'mean': mean,
                     'std': stdev
                 }
-        elif var[1]['ground_truth_distribution_type'] == 'beta':
+                print(f"Fitted lognormal mu: {mu}, sigma: {sigma}")
+
+        elif distr_type == 'beta':
             if mean is None or stdev is None:
                 distr_params = {'type': 'beta', 'a': None, 'b': None, 'mean': None, 'std': None}
             else:
@@ -474,32 +603,38 @@ def fit_prior_mean_variance(elicited_priors, variables):
                     stdev = stdev / 100.0
                 variance = stdev**2
 
-                alpha, beta = fit_beta_prior_from_mean_variance(mean, variance)
-                if alpha == 0 or beta == 0:
+                alpha, beta_param = fit_beta_prior_from_mean_variance(mean, variance)
+                if alpha == 0 or beta_param == 0:
                     raise ValueError("Alpha or beta is 0, which is not possible for a beta distribution")
                 distr_params = {
                     'type': 'beta',
                     'a': alpha,
-                    'b': beta, 
+                    'b': beta_param,
                     'mean': mean,
                     'std': stdev
                 }
         else:
-            raise ValueError("Unknown distribution type: ", var[1]['ground_truth_distribution_type'])
+            raise ValueError(f"Unknown distribution type: {distr_type}")
+
         results[var_name]['fitted_prior'] = distr_params
     return results
 
 
 def fit_priors(elicited_priors, variables):
     """
-    Legacy function for fitting priors using quartile method.
-    This appears to be an older version of fit_prior_quantile.
+    Fit priors using quartile method for all variables.
+
+    Supports two modes:
+    1. Unified mode: LLM chooses distribution type (checks for 'distribution_type' in output)
+    2. Traditional mode: Uses ground truth distribution type from variables
+
+    Supports Normal, Lognormal, and Beta distributions.
     """
     results = elicited_priors.copy()
     for var in variables.items():
         var_name = var[1]['variable']
         print("Processing ", var_name)
-    
+
         elicited_prior = elicited_priors[var_name][var_name]['var_output']
         plausible_range = (
             convert_number_to_float(elicited_prior['lower_bound']),
@@ -509,18 +644,34 @@ def fit_priors(elicited_priors, variables):
         q1 = convert_number_to_float(elicited_prior['lower_quartile'])
         q3 = convert_number_to_float(elicited_prior['upper_quartile'])
 
-        if var[1]['ground_truth_distribution_type'] == 'normal':
+        # Determine distribution type: prefer LLM-chosen, fall back to ground truth
+        if 'distribution_type' in elicited_prior:
+            distr_type = elicited_prior['distribution_type'].lower().strip()
+            print(f"Using LLM-chosen distribution type: {distr_type}")
+        else:
+            distr_type = var[1]['ground_truth_distribution_type'].lower().strip()
+            print(f"Using ground truth distribution type: {distr_type}")
+
+        if distr_type == 'normal' or distr_type == 'gaussian':
             print("Fitting Gaussian prior for ", var_name)
             distr_params = fit_gaussian_prior(q1, median, q3, plausible_range)
-        elif var[1]['ground_truth_distribution_type'] == 'beta':
+
+        elif distr_type == 'lognormal':
+            print("Fitting Lognormal prior for ", var_name)
+            # Lognormal requires positive values
+            if q1 <= 0 or median <= 0 or q3 <= 0:
+                raise ValueError(f"Var name: {var_name}, Lognormal requires positive values. Got q1={q1}, median={median}, q3={q3}")
+            distr_params = fit_lognormal_prior(q1, median, q3, plausible_range)
+
+        elif distr_type == 'beta':
             # Check if plausible range contains q1, median, q3
-            if not (plausible_range[0] <= q1 <= plausible_range[1] and 
+            if not (plausible_range[0] <= q1 <= plausible_range[1] and
                     plausible_range[0] <= median <= plausible_range[1] and
                     plausible_range[0] <= q3 <= plausible_range[1]):
                 raise ValueError(f"Var name: {var_name}, Values must be within plausible range [{plausible_range[0]}, {plausible_range[1]}]. Got q1={q1}, median={median}, q3={q3}")
 
             # Check if all values are already between 0 and 1
-            if (0 <= q1 <= 1 and 0 <= median <= 1 and 0 <= q3 <= 1 and 
+            if (0 <= q1 <= 1 and 0 <= median <= 1 and 0 <= q3 <= 1 and
                 0 <= plausible_range[0] <= 1 and 0 <= plausible_range[1] <= 1):
                 print("Values already in probability range, skipping processing")
             else:
@@ -529,6 +680,7 @@ def fit_priors(elicited_priors, variables):
 
             distr_params = fit_beta_prior(q1, median, q3, plausible_range)
         else:
-            raise ValueError("Unknown distribution type: ", var[1]['ground_truth_distribution_type'])
+            raise ValueError(f"Unknown distribution type: {distr_type}")
+
         results[var_name]['fitted_prior'] = distr_params
     return results

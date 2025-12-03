@@ -1,0 +1,27 @@
+{
+  "The average number of employees for venture-backed companies": {
+    "var_output": {
+      "variable": "the average number of employees for venture-backed companies",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "normal",
+      "distribution_type": "Lognormal",
+      "mu": "3.91",
+      "sigma": "0.8"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.\n\nYour estimates should reflect **uncertainty about the population-level parameter** \u2014 not the variation across individual observations.\n\nHere is the variable you need to model:\n\nthe average number of employees for venture-backed companies\n\n\n---\n\n## Available Distribution Types\n\nYou may choose from:\n- **Normal** (Gaussian)\n- **Lognormal**\n- **Beta**\n\n---\n\n## Instructions\n\n1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:\n   - What range do you expect the population parameter to fall in and why?\n   - How certain/uncertain are you about this parameter?\n   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?\n   - Why is this distribution type appropriate for this variable?\n\n2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:\n\n### If you choose Normal:\n<distribution_type>Normal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\n### If you choose Lognormal:\n<distribution_type>Lognormal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\nCRITICAL: \u03bc (mu) and \u03c3 (sigma) are parameters in LOG-SPACE, not real-space!\n\nKey relationships to real-space values:\n- MEDIAN (real-space) = exp(\u03bc)\n- MEAN (real-space) = exp(\u03bc + \u03c3\u00b2/2)\n- MODE (real-space) = exp(\u03bc - \u03c3\u00b2)\n\nHOW TO SET \u03bc:\n1. First decide what you think the MEDIAN value should be (in the original units)\n2. Then set \u03bc = log(median)\n3. Examples:\n   - If median should be $30, then \u03bc = log(30) \u2248 3.4\n   - If median should be 100 employees, then \u03bc = log(100) \u2248 4.6\n   - If median should be $1000, then \u03bc = log(1000) \u2248 6.9\n\nHOW TO SET \u03c3:\n- \u03c3 controls the spread in log-space (typical values: 0.2 to 1.0)\n- \u03c3 = 0.3 gives roughly a 95% credible interval of [exp(\u03bc-0.6), exp(\u03bc+0.6)]\n- \u03c3 = 0.5 gives roughly a 95% credible interval of [exp(\u03bc-1.0), exp(\u03bc+1.0)]\n\nCOMMON MISTAKE TO AVOID:\n\u274c WRONG: Setting \u03bc = 30 when you mean the value is $30\n   (This gives median = exp(30) = $10 trillion!)\n\u2713 CORRECT: Setting \u03bc = log(30) \u2248 3.4 when you mean the value is $30\n   (This gives median = exp(3.4) = $30)\n\nALWAYS VERIFY YOUR ANSWER:\n- Calculate exp(\u03bc) - does this match your expected median?\n- Calculate exp(\u03bc + \u03c3\u00b2/2) - does this match your expected mean?\n- If these are wildly different from what you expect, you've made an error!\n\n### If you choose Beta:\n<distribution_type>Beta</distribution_type>\n<alpha>value</alpha>\n<beta>value</beta>\n\n---\n\nCRITICAL UNIT CHECK: Pay close attention to units. If the variable says \"in millions USD\", you need to work in millions!\n\nE.g. \n- I think the typical company has raised about $3.5 million\n- In millions, this is: 3.5\n- NOT 3500000!\n\nNow, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I\u2019ve chosen a Lognormal prior because the average number of employees is strictly positive and likely right\u2010skewed (few very large companies pull the mean up).  \n\n1. Expected scale and range  \n   - Most venture\u2010backed firms are early\u2010stage with a few dozen employees; a smaller fraction have hundreds or thousands.  \n   - I judge the median average to be around 50 employees (i.e. 50 is our best guess for the typical mean).  \n   - I\u2019m moderately uncertain: I believe there\u2019s about a 95% chance the true average lies between 10 and 250 employees.  \n\n2. Setting the parameters in log\u2010space  \n   - \u03bc = log(median) = log(50) \u2248 3.91  \n   - To get a 95% interval of roughly [10,250], we need \u00b12\u03c3 \u2248 log(250)\u2013log(50) = 5.52\u20133.91 = 1.61, so \u03c3 \u2248 0.8.  \n\n3. Implications in real space  \n   - Median = exp(\u03bc) = 50 employees  \n   - Mean = exp(\u03bc + \u03c3\u00b2/2) = exp(3.91 + 0.32) \u2248 69 employees  \n   - 95% credible interval \u2248 [exp(3.91\u20131.6), exp(3.91+1.6)] \u2248 [10,250]  \n\n4. Appropriateness  \n   - The Lognormal supports positive values only and captures our belief in a right\u2010skewed distribution of possible average sizes.  \n\n<distribution_type>Lognormal</distribution_type>\n<mu>3.91</mu>\n<sigma>0.8</sigma>"
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor": {
+    "var_output": {
+      "variable": "the probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "distribution_type": "Beta",
+      "alpha": "8",
+      "beta": "42"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about human health. You tend to be conservative in your estimates."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.\n\nYour estimates should reflect **uncertainty about the population-level parameter** \u2014 not the variation across individual observations.\n\nHere is the variable you need to model:\n\nthe probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they have ever been diagnosed with diabetes by a doctor\n\n\n---\n\n## Available Distribution Types\n\nYou may choose from:\n- **Normal** (Gaussian)\n- **Lognormal**\n- **Beta**\n\n---\n\n## Instructions\n\n1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:\n   - What range do you expect the population parameter to fall in and why?\n   - How certain/uncertain are you about this parameter?\n   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?\n   - Why is this distribution type appropriate for this variable?\n\n2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:\n\n### If you choose Normal:\n<distribution_type>Normal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\n### If you choose Lognormal:\n<distribution_type>Lognormal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\nCRITICAL: \u03bc (mu) and \u03c3 (sigma) are parameters in LOG-SPACE, not real-space!\n\nKey relationships to real-space values:\n- MEDIAN (real-space) = exp(\u03bc)\n- MEAN (real-space) = exp(\u03bc + \u03c3\u00b2/2)\n- MODE (real-space) = exp(\u03bc - \u03c3\u00b2)\n\nHOW TO SET \u03bc:\n1. First decide what you think the MEDIAN value should be (in the original units)\n2. Then set \u03bc = log(median)\n3. Examples:\n   - If median should be $30, then \u03bc = log(30) \u2248 3.4\n   - If median should be 100 employees, then \u03bc = log(100) \u2248 4.6\n   - If median should be $1000, then \u03bc = log(1000) \u2248 6.9\n\nHOW TO SET \u03c3:\n- \u03c3 controls the spread in log-space (typical values: 0.2 to 1.0)\n- \u03c3 = 0.3 gives roughly a 95% credible interval of [exp(\u03bc-0.6), exp(\u03bc+0.6)]\n- \u03c3 = 0.5 gives roughly a 95% credible interval of [exp(\u03bc-1.0), exp(\u03bc+1.0)]\n\nCOMMON MISTAKE TO AVOID:\n\u274c WRONG: Setting \u03bc = 30 when you mean the value is $30\n   (This gives median = exp(30) = $10 trillion!)\n\u2713 CORRECT: Setting \u03bc = log(30) \u2248 3.4 when you mean the value is $30\n   (This gives median = exp(3.4) = $30)\n\nALWAYS VERIFY YOUR ANSWER:\n- Calculate exp(\u03bc) - does this match your expected median?\n- Calculate exp(\u03bc + \u03c3\u00b2/2) - does this match your expected mean?\n- If these are wildly different from what you expect, you've made an error!\n\n### If you choose Beta:\n<distribution_type>Beta</distribution_type>\n<alpha>value</alpha>\n<beta>value</beta>\n\n---\n\nCRITICAL UNIT CHECK: Pay close attention to units. If the variable says \"in millions USD\", you need to work in millions!\n\nE.g. \n- I think the typical company has raised about $3.5 million\n- In millions, this is: 3.5\n- NOT 3500000!\n\nNow, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.\n"
+      },
+      {
+        "role": "assistant",
+        "content": "Here we\u2019re modeling a probability (a proportion between 0 and 1), so a Beta prior is most natural.  Epidemiological surveys (e.g. CDC data) suggest that among U.S. adults diagnosed with diabetes, roughly 10\u201320% have ever had a doctor-confirmed heart attack.  We want our prior to:\n\n\u2022 Center near 0.15\u20130.16  \n\u2022 Allow plausible values from about 0.06 up to around 0.27 (approximate 95% range)  \n\u2022 Reflect moderate uncertainty (equivalent to about 50 \u201cprior patients\u201d)\n\nA Beta(\u03b1,\u03b2) with \u03b1+\u03b2=50 and mean \u03b1/(\u03b1+\u03b2)\u22480.16 achieves this.  In particular, \u03b1=8, \u03b2=42 gives:\n\n\u2022 Mean = 8/(8+42) = 0.16  \n\u2022 Mode = (8\u22121)/(8+42\u22122) \u2248 0.146  \n\u2022 Approximate 95% credible interval \u2248 [0.065,\u20090.27]  \n\nThis captures our substantive knowledge (around 15% prevalence) while allowing for uncertainty.\n\n<distribution_type>Beta</distribution_type>\n<alpha>8</alpha>\n<beta>42</beta>"
+      }
+    ]
+  }
+}

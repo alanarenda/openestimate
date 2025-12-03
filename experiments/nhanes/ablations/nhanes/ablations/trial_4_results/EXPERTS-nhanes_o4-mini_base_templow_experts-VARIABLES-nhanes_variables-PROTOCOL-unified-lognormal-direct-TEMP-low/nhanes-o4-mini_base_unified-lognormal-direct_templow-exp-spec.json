@@ -1,0 +1,8 @@
+{
+  "experiment_name": "o4-mini_base_unified-lognormal-direct_templow",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/nhanes/ablations/nhanes_o4-mini_base_templow_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/nhanes_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "unified-lognormal-direct"
+  }
+}

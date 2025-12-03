@@ -1,0 +1,8 @@
+{
+  "experiment_name": "gpt-4o_base_unified-lognormal-direct_temp1.0",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/glassdoor/ablations/glassdoor_gpt-4o_base_temp1.0_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/glassdoor_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "unified-lognormal-direct"
+  }
+}

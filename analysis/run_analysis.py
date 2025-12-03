@@ -20,8 +20,8 @@ def parse_args():
 def main(datasets, output_dir): 
     if os.path.exists(output_dir) is False:
         os.makedirs(output_dir)
-    compare_models(datasets, output_dir)
-    # run_ablations(datasets, output_dir)
+    # compare_models(datasets, output_dir)
+    run_ablations(datasets, output_dir)
     print("Analysis completed for datasets:", datasets)
 
 

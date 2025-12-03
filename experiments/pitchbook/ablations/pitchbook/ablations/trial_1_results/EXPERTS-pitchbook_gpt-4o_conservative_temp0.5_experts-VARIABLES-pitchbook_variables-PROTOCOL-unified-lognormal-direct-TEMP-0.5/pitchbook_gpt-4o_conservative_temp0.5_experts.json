@@ -1,0 +1,8 @@
+{
+  "model_type": "openai/gpt-4o",
+  "model_kwargs": {
+    "temperature": 0.5,
+    "max_tokens": 8192
+  },
+  "system_prompt": "You are a helpful assistant that can answer questions about venture capital. You tend to be conservative in your estimates."
+}

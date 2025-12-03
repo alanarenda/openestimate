@@ -1,42 +1,58 @@
-You are a statistical expert tasked with estimating a population-level parameter and expressing your uncertainty about its true value. Your goal is to describe what you believe the value is likely to be and quantify your uncertainty about this estimate.
+You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and express your uncertainty about the parameter's true value using quantile estimates.
 
-Here is the variable you need to assess:
+Your estimates should reflect **uncertainty about the population-level parameter** — not the variation across individual observations.
+
+Here is the variable you need to model:
 
 {{variable}}
 {{units_description}}
 
-Important: Focus on expressing uncertainty about the parameter itself (such as a population mean or proportion), not the variability of individual data points or outcomes.
+---
 
-Please follow these steps to complete your analysis:
+## Available Distribution Types
+
+You may choose from:
+- **Normal** (Gaussian): For variables that can be positive or negative, symmetric around the mean
+- **Lognormal**: For strictly positive variables, often right-skewed (e.g., prices, sizes, counts)
+- **Beta**: For variables bounded between 0 and 1 (e.g., proportions, probabilities)
+
+---
+
+## Instructions
 
 1. Consider the context of the variable, including its meaning and any relevant information that informs your beliefs.
 
-2. Estimate the following percentiles of the parameter's true value:
+2. Choose the most appropriate distribution type based on:
+   - The natural bounds of the variable (can it be negative? is it bounded between 0 and 1?)
+   - The expected shape of uncertainty (symmetric vs. skewed?)
+   - The nature of the quantity being estimated
+
+3. Estimate the following percentiles of the parameter's true value:
    - 5th percentile (only a 5% chance the true value is below this)
    - 25th percentile
    - 50th percentile (median - your best estimate of the true value)
    - 75th percentile
    - 95th percentile (only a 5% chance the true value is above this)
 
-3. Explain your reasoning behind these estimates.
+4. Begin your analysis by showing your thought process inside <parameter_estimation_process> tags. Include the following elements:
+   1. Explicitly state the type of parameter being estimated (e.g., population mean, proportion).
+   2. Explain why you chose a particular distribution type.
+   3. List any known facts or data points about the variable.
+   4. Consider and list possible data sources or methods for estimating this parameter.
+   5. Brainstorm factors that might influence the parameter's value.
+   6. Note potential biases or limitations in the available information.
+   7. State any assumptions you're making.
+   8. Consider how the parameter might have changed over time or across different subgroups.
+   9. Provide your quantile estimates with a brief explanation for each.
+   10. Include relevant facts or context about the variable.
+   11. Justify your choices.
+   12. Emphasize population parameter uncertainty (not individual variability).
+   13. Reflect on what your estimate spread indicates about your certainty.
+   14. Consider any plausible edge cases or alternative scenarios.
 
-Begin your analysis by showing your thought process inside <parameter_estimation_process> tags. Include the following elements:
-1. Explicitly state the type of parameter being estimated (e.g., population mean, proportion).
-2. List any known facts or data points about the variable.
-3. Consider and list possible data sources or methods for estimating this parameter.
-4. Brainstorm factors that might influence the parameter's value.
-5. Note potential biases or limitations in the available information.
-6. State any assumptions you're making.
-7. Consider how the parameter might have changed over time or across different subgroups.
-8. Provide your quantile estimates with a brief explanation for each.
-9. Include relevant facts or context about the variable.
-10. Justify your choices.
-11. Emphasize population parameter uncertainty (not individual variability).
-12. Reflect on what your estimate spread indicates about your certainty.
-13. Consider any plausible edge cases or alternative scenarios.
+5. After your analysis, provide your final answer in the following format:
 
-After your analysis, provide your final answer in the following format:
-
+<distribution_type>[Normal, Lognormal, or Beta]</distribution_type>
 <q5>[5th percentile value]</q5>
 <q25>[25th percentile value]</q25>
 <q50>[50th percentile (median) value]</q50>
@@ -44,11 +60,83 @@ After your analysis, provide your final answer in the following format:
 <q95>[95th percentile value]</q95>
 
 <justification>
-[Brief summary of your reasoning]
+[Brief summary of your reasoning, including why you chose this distribution type]
 </justification>
 
 <confidence_level>
 [Description of how certain or uncertain you are, and why]
 </confidence_level>
+
+---
+
+## Examples
+
+### 1. Normal Distribution Example:
+Variable: Average temperature in a city during summer
+Units: Degrees Celsius
+
+<distribution_type>Normal</distribution_type>
+<q5>22</q5>
+<q25>24</q25>
+<q50>26</q50>
+<q75>28</q75>
+<q95>30</q95>
+
+<justification>
+Normal distribution is appropriate because temperature can be positive or negative and uncertainty about the mean is approximately symmetric. Based on historical climate data and considering year-to-year variation. The spread reflects uncertainty in long-term averages due to climate variability.
+</justification>
+
+<confidence_level>
+Moderately confident. Climate data is well-documented, but climate change introduces some uncertainty about current averages.
+</confidence_level>
+
+### 2. Lognormal Distribution Example:
+Variable: Average home price in a metropolitan area
+Units: Thousands of USD
+
+<distribution_type>Lognormal</distribution_type>
+<q5>280</q5>
+<q25>350</q25>
+<q50>420</q50>
+<q75>520</q75>
+<q95>680</q95>
+
+<justification>
+Lognormal distribution is appropriate because home prices are strictly positive and typically right-skewed. Based on recent market data and regional economic indicators. The asymmetric spread (wider on the high end) reflects the possibility of higher prices in desirable areas.
+</justification>
+
+<confidence_level>
+Somewhat uncertain. Housing markets are volatile and influenced by many factors including interest rates and local economic conditions.
+</confidence_level>
+
+### 3. Beta Distribution Example:
+Variable: Proportion of customers who complete a purchase after adding items to cart
+Units: Proportion (0 to 1)
+
+<distribution_type>Beta</distribution_type>
+<q5>0.55</q5>
+<q25>0.62</q25>
+<q50>0.68</q50>
+<q75>0.74</q75>
+<q95>0.80</q95>
+
+<justification>
+Beta distribution is appropriate because this is a proportion bounded between 0 and 1. Based on industry benchmarks for e-commerce conversion rates and typical cart abandonment patterns. The spread accounts for variation across different product categories and customer segments.
+</justification>
+
+<confidence_level>
+Moderately confident. Conversion rates are well-studied in e-commerce, but can vary significantly by industry and website design.
+</confidence_level>
+
+---
+
+CRITICAL UNIT CHECK: Pay close attention to units. If the variable says "in millions USD", you need to work in millions!
+
+E.g.
+- I think the typical company has raised about $3.5 million
+- In millions, this is: 3.5
+- NOT 3500000!
+
+---
 
 Remember to tailor your analysis to the specific variable and units provided, focusing on uncertainty about the population-level parameter rather than individual variability.

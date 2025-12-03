@@ -10,6 +10,22 @@ from pathlib import Path
 PROJECT_ROOT = str(Path(__file__).parent.parent.resolve())
 
 
+def get_protocol_spec(protocol):
+    """Generate protocol spec for a given protocol name."""
+    if protocol == "unified":
+        return {"individual_elicitation_protocol": "unified"}
+    elif protocol == "unified-lognormal-direct":
+        return {"individual_elicitation_protocol": "unified-lognormal-direct"}
+    elif protocol == "unified-no-lognormal":
+        return {"individual_elicitation_protocol": "unified-no-lognormal-direct"}
+    elif protocol == "direct":
+        return {"individual_elicitation_protocol": "direct"}
+    else:
+        return {
+            "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
+        }
+
+
 # Dataset-specific configurations
 DATASET_CONFIGS = {
     'glassdoor': {
@@ -123,19 +139,7 @@ def generate_experiment_specs(dataset):
             
             # Create experiment specification
             exp_name = f"{model_short_name}_{prompt_name}_{protocol}_temp{temp}"
-
-            if protocol == "unified":
-                protocol_spec = {"individual_elicitation_protocol": "unified"}
-            elif protocol == "unified-lognormal-direct":
-                protocol_spec = {"individual_elicitation_protocol": "unified-lognormal-direct"}
-            elif protocol == "unified-no-lognormal":
-                protocol_spec = {"individual_elicitation_protocol": "unified-no-lognormal-direct"}
-            elif protocol == "direct":
-                protocol_spec = {"individual_elicitation_protocol": "direct"}
-            else:
-                protocol_spec = {
-                    "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
-                }
+            protocol_spec = get_protocol_spec(protocol)
             exp_spec = {
                 "experiment_name": exp_name,
                 "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -151,10 +155,10 @@ def generate_experiment_specs(dataset):
     eval_model = "openai/o4-mini"
     eval_model_short_name = "o4-mini"
     eval_default_temp = 'medium'
-    eval_default_protocol = "direct"
+    eval_default_protocol = "unified-lognormal-direct"
     eval_default_prompt = "base"
     eval_system_prompts = ["base", "superforecaster", "conservative"]
-    eval_protocols = ["direct", "quantile", "mean-variance"]
+    eval_protocols = ["unified-lognormal-direct", "quantile", "mean-variance"]
     
     experiment_name = "ablations"
     
@@ -175,7 +179,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{eval_model_short_name}_{eval_default_prompt}_{eval_default_protocol}_temp{temp}"
-        protocol_spec = {"individual_elicitation_protocol": "direct"}
+        protocol_spec = get_protocol_spec(eval_default_protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -203,7 +207,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{eval_model_short_name}_{prompt_name}_{eval_default_protocol}_temp{eval_default_temp}"
-        protocol_spec = {"individual_elicitation_protocol": "direct"}
+        protocol_spec = get_protocol_spec(eval_default_protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -230,12 +234,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{eval_model_short_name}_{eval_default_prompt}_{protocol}_temp{eval_default_temp}"
-        if protocol == "direct":
-            protocol_spec = {"individual_elicitation_protocol": "direct"}
-        else:
-            protocol_spec = {
-                "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
-            }
+        protocol_spec = get_protocol_spec(protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -250,11 +249,11 @@ def generate_experiment_specs(dataset):
     regular_model = "openai/gpt-4o"
     regular_model_short_name = "gpt-4o"
     regular_default_temp = 0.5
-    regular_default_protocol = "direct"
+    regular_default_protocol = "unified-lognormal-direct"
     regular_default_prompt = "base"
     regular_temperatures = [0.2, 0.5, 1.0]
     regular_system_prompts = ["base", "superforecaster", "conservative"]
-    regular_protocols = ["direct", "quantile", "mean-variance"]
+    regular_protocols = ["unified-lognormal-direct", "quantile", "mean-variance"]
     
     experiment_name = "ablations"
     if not os.path.exists(f"{dataset}/{experiment_name}"):
@@ -275,7 +274,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{regular_model_short_name}_{regular_default_prompt}_{regular_default_protocol}_temp{temp}"
-        protocol_spec = {"individual_elicitation_protocol": "direct"}
+        protocol_spec = get_protocol_spec(regular_default_protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -302,7 +301,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{regular_model_short_name}_{prompt_name}_{regular_default_protocol}_temp{regular_default_temp}"
-        protocol_spec = {"individual_elicitation_protocol": "direct"}
+        protocol_spec = get_protocol_spec(regular_default_protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",
@@ -328,12 +327,7 @@ def generate_experiment_specs(dataset):
         with open(experts_spec_path, 'w') as f:
             json.dump(experts_spec, f, indent=2)
         exp_name = f"{regular_model_short_name}_{regular_default_prompt}_{protocol}_temp{regular_default_temp}"
-        if protocol == "direct":
-            protocol_spec = {"individual_elicitation_protocol": "direct"}
-        else:
-            protocol_spec = {
-                "individual_elicitation_protocol": f"{PROJECT_ROOT}/elicitation/prompts/{protocol}.txt"
-            }
+        protocol_spec = get_protocol_spec(protocol)
         exp_spec = {
             "experiment_name": exp_name,
             "experts_spec": f"{PROJECT_ROOT}/experiments/{dataset}/{experiment_name}/{experts_spec_name}",

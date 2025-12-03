@@ -1,0 +1,27 @@
+{
+  "The probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they are currently taking insulin": {
+    "var_output": {
+      "variable": "the probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they are currently taking insulin",
+      "variable_description": "",
+      "units_description": "",
+      "ground_truth_distribution_type": "beta",
+      "distribution_type": "Beta",
+      "alpha": "8",
+      "beta": "32"
+    },
+    "conversation": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant that can answer questions about human health."
+      },
+      {
+        "role": "user",
+        "content": "You are a statistical expert tasked with constructing a prior distribution for a variable. Your goal is to choose the most appropriate distribution type and estimate its parameters.\n\nYour estimates should reflect **uncertainty about the population-level parameter** \u2014 not the variation across individual observations.\n\nHere is the variable you need to model:\n\nthe probability that a member of the US population who is over 18 has ever had a heart attack that was confirmed by a doctor, given they are currently taking insulin\n\n\n---\n\n## Available Distribution Types\n\nYou may choose from:\n- **Normal** (Gaussian)\n- **Lognormal**\n- **Beta**\n\n---\n\n## Instructions\n\n1. **Reasoning**: First, provide detailed reasoning explaining how you arrived at your specific parameter values. Address:\n   - What range do you expect the population parameter to fall in and why?\n   - How certain/uncertain are you about this parameter?\n   - How do your chosen parameter values translate to meaningful quantities in the original scale (e.g., median, mean, quantiles, credible intervals)?\n   - Why is this distribution type appropriate for this variable?\n\n2. **Output**: After your reasoning, provide your answer using EXACTLY these XML tags based on which distribution you choose:\n\n### If you choose Normal:\n<distribution_type>Normal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\n### If you choose Lognormal:\n<distribution_type>Lognormal</distribution_type>\n<mu>value</mu>\n<sigma>value</sigma>\n\nCRITICAL: \u03bc (mu) and \u03c3 (sigma) are parameters in LOG-SPACE, not real-space!\n\nKey relationships to real-space values:\n- MEDIAN (real-space) = exp(\u03bc)\n- MEAN (real-space) = exp(\u03bc + \u03c3\u00b2/2)\n- MODE (real-space) = exp(\u03bc - \u03c3\u00b2)\n\nHOW TO SET \u03bc:\n1. First decide what you think the MEDIAN value should be (in the original units)\n2. Then set \u03bc = log(median)\n3. Examples:\n   - If median should be $30, then \u03bc = log(30) \u2248 3.4\n   - If median should be 100 employees, then \u03bc = log(100) \u2248 4.6\n   - If median should be $1000, then \u03bc = log(1000) \u2248 6.9\n\nHOW TO SET \u03c3:\n- \u03c3 controls the spread in log-space (typical values: 0.2 to 1.0)\n- \u03c3 = 0.3 gives roughly a 95% credible interval of [exp(\u03bc-0.6), exp(\u03bc+0.6)]\n- \u03c3 = 0.5 gives roughly a 95% credible interval of [exp(\u03bc-1.0), exp(\u03bc+1.0)]\n\nCOMMON MISTAKE TO AVOID:\n\u274c WRONG: Setting \u03bc = 30 when you mean the value is $30\n   (This gives median = exp(30) = $10 trillion!)\n\u2713 CORRECT: Setting \u03bc = log(30) \u2248 3.4 when you mean the value is $30\n   (This gives median = exp(3.4) = $30)\n\nALWAYS VERIFY YOUR ANSWER:\n- Calculate exp(\u03bc) - does this match your expected median?\n- Calculate exp(\u03bc + \u03c3\u00b2/2) - does this match your expected mean?\n- If these are wildly different from what you expect, you've made an error!\n\n### If you choose Beta:\n<distribution_type>Beta</distribution_type>\n<alpha>value</alpha>\n<beta>value</beta>\n\n---\n\nCRITICAL UNIT CHECK: Pay close attention to units. If the variable says \"in millions USD\", you need to work in millions!\n\nE.g. \n- I think the typical company has raised about $3.5 million\n- In millions, this is: 3.5\n- NOT 3500000!\n\nNow, please analyze the variable and provide your reasoning followed by your distribution choice and parameters.\n"
+      },
+      {
+        "role": "assistant",
+        "content": "I expect the lifetime probability that an adult US insulin\u2010user has had a doctor\u2010confirmed heart attack to be on the order of 10\u201330%, with some chance it\u2019s as low as 5% or as high as 40%.  Epidemiological studies suggest that insulin users (mostly type 2 diabetics) have elevated CVD risk, so a central value around 20% is reasonable.  I\u2019m moderately uncertain\u2014enough that a 95% prior credible interval might span roughly 6% to 34%, but not so diffuse as to imply almost any value between 0 and 1 is plausible.\n\nA Beta distribution is natural for a probability.  To center the prior at mean = 0.20 and achieve a 95% interval roughly [0.06, 0.34], I choose an effective \u201cprior sample size\u201d of about 40 (\u03b1+\u03b2\u224840), giving:\n\nmean = \u03b1/(\u03b1+\u03b2) = 8/40 = 0.20  \napprox. 95% CI \u2248 mean \u00b11.96\u00b7\u221a[mean\u00b7(1\u2013mean)/(\u03b1+\u03b2+1)] \u2248 0.06 to 0.34  \n\nThis encodes moderate confidence in a ~20% rate of past heart attack among adult insulin users, while allowing plausible variation down toward single\u2010digit percentages or up toward about one\u2010third.\n\n<distribution_type>Beta</distribution_type>\n<alpha>8</alpha>\n<beta>32</beta>"
+      }
+    ]
+  }
+}

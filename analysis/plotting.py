@@ -280,7 +280,6 @@ def z_score_cdf_plot(results_sets, output_dir="analysis_results"):
 
         o4_mini = df[df['model_family'] == 'o4-mini']['z']
         o4_mini_stats = o4_mini.describe()
-        print(o4_mini_stats)
         with open (f"{output_dir}/o4_mini_z_score_stats.txt", "w") as f: 
             f.write(f"O4 Mini Z-Score Statistics:\n{o4_mini_stats}\n")
             o4_mini.to_csv(f"{output_dir}/o4_mini_z_score_stats.csv")
@@ -294,7 +293,6 @@ def z_score_cdf_plot(results_sets, output_dir="analysis_results"):
         for fam in families:
             z_vals = df.loc[df["model_family"] == fam, "z"].values
             coverage[fam] = np.array([(z_vals <= s).mean() * 100 for s in sigmas])
-            print("coverage: ", fam, coverage[fam])
             # Use specific color if available, otherwise use default matplotlib color
             color = color_map.get(fam, None)
             # Use pretty name for legend if available

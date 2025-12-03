@@ -1,0 +1,8 @@
+{
+  "experiment_name": "qwen3-235b-a22b-fp8-tput_base_unified-lognormal-direct_temp0.6",
+  "experts_spec": "/home/ubuntu/alana/openestimate/experiments/glassdoor/model_family_comparison/glassdoor_qwen3-235b-a22b-fp8-tput_base_temp0.6_experts.json",
+  "variables": "/home/ubuntu/alana/openestimate/data/variables/glassdoor_variables.json",
+  "protocol_spec": {
+    "individual_elicitation_protocol": "unified-lognormal-direct"
+  }
+}

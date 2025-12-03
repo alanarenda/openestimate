@@ -371,7 +371,7 @@ def get_quartiles_from_lognormal(mu, sigma):
 
 def compute_crps_score_gaussian(mu, sigma, y):    
     z = (y - mu) / sigma
-    phi_z = stats.norm.cdf(z) - 1
+    phi_z = stats.norm.cdf(z) 
     first_term = z * (2 * phi_z - 1) 
     second_term = 2 * stats.norm.pdf(z)
     third_term = 1 / np.sqrt(np.pi)
@@ -787,7 +787,6 @@ def aggregate_results(dataset, results_dirs, var_file_path, baselines_file_path)
     print(f"\nExact distribution type matches: {exact_match_count}")
     print(f"Fallback to any available baseline: {fallback_count}")
 
-    
     results = compute_crps_scores(results)
 
     results.to_csv(os.path.expanduser("{}experiments/{dataset}/{dataset}_combined_processed_results.csv".format(os.environ['OPENESTIMATE_ROOT'], dataset=dataset)), index=False)
@@ -914,17 +913,31 @@ def preprocess_posteriors(results, variables):
     return results, variables
 
 
-def load_experiment_results(dataset, experiment_name): 
+def load_experiment_results(dataset, experiment_name, use_cache=False):
     # Get project root (assuming this file is in openestimate/analysis/)
     print("loading results for dataset: ", dataset)
     project_root = Path(__file__).parent.parent
+
+    # Check for cached processed results first
+    if use_cache:
+        cached_path = os.path.expanduser(
+            "{}experiments/{}/{}_combined_processed_results.csv".format(
+                os.environ.get('OPENESTIMATE_ROOT', ''), dataset, dataset
+            )
+        )
+        if os.path.exists(cached_path):
+            print(f"Loading cached results from: {cached_path}")
+            results = pd.read_csv(cached_path, low_memory=False)
+            return results
+
+    # Fall back to recomputing if no cache or cache disabled
     base_path = project_root / 'experiments' / dataset
     results_dir = base_path / experiment_name / dataset / experiment_name
     results_dirs = list(results_dir.glob('trial_*'))
     print('Number of trials found: ', len(results_dirs))
     var_file_path = project_root / 'data' / 'variables' / f'{dataset}_variables.json'
     baseline_file_path = project_root / 'data' / 'baselines' / f'{dataset}_baselines.json'
-    results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path) 
+    results, variables = aggregate_results(dataset, results_dirs, var_file_path, baseline_file_path)
     return results
 
 
