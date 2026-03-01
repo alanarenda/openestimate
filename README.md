@@ -179,12 +179,12 @@ openestimate/
 If you use OpenEstimate in your research, please cite:
 
 ```bibtex
-@article{openestimate2024,
+@article{openestimate2025,
   title={OpenEstimate: A Benchmark for Evaluating Language Models on Probabilistic Estimation},
-  author={[Authors]},
-  journal={[Venue]},
-  year={2024},
-  url={https://github.com/your-username/openestimate}
+  author={Alana Renda and Jillian Ross and Michael Cafarella and Jacob Andreas},
+  journal={The Fourteenth International Conference on Learning Representations},
+  year={2025},
+  url={https://github.com/alanarenda/openestimate}
 }
 ```
 
