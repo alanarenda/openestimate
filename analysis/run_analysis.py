@@ -24,6 +24,5 @@ def main(datasets, output_dir):
 
 if __name__ == "__main__":
     args = parse_args()
-    datasets = args.datasets[0].split(',')
-    datasets = [ds.strip() for ds in datasets]
+    datasets = [ds.strip() for item in args.datasets for ds in item.split(',')]
     main(datasets, args.output_dir)
